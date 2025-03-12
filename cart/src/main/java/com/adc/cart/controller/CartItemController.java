@@ -13,11 +13,13 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class CartItemController {
     private final CartItemService cartItemService;
 
     @PostMapping("/storefront/cart/add")
     public ResponseEntity<CartItemGetVm> addCartItem(@RequestBody CartItemPost cartItemPost) {
+        System.out.println(cartItemPost);
         return ResponseEntity.ok(cartItemService.addCartItem(cartItemPost));
     }
 

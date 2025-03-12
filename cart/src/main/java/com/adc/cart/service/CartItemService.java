@@ -37,6 +37,7 @@ public class CartItemService {
 //        validateProduct(cartItemPostVm.productId());
 
         String currentUser = AuthenticationUtils.extractUserId();
+        System.out.println(currentUser);
         CartItem cartItem = performAddCartItem(cartItemPostVm, currentUser);
 
         return cartItemMapper.toGetVm(cartItem);

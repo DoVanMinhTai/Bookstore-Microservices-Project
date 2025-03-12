@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { formatPrice } from '@/utils/formatPrice';
 import ImageWithFallBack from './ImageWithFallBack';
 import Link from 'next/link';
+import { addToCartItem } from '@/modules/cart/services/Cart';
 interface ProductCardBase {
     product: {
+        id : number;
         name: string  ;
         price: number  ;
         slug: string  ;
@@ -12,7 +14,22 @@ interface ProductCardBase {
 }
 
 
+
 const ProductCardBase: React.FC<ProductCardBase> = ({ product, thumbnailUrl }) => {
+    // const[currentProduct, setCurrentProduct] = useState<ProductCardBase>(product);
+    const addToCart = async () => {
+        const payload = {productId: product.id, quantity: 1};
+        try {
+            await addToCartItem(payload);
+        } catch (error) {
+        console.log("error",error);
+        
+         console.log("loi roi");
+            
+        }
+        console.log("here");
+        
+    }
     return (
         <>
             <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2">
@@ -22,7 +39,7 @@ const ProductCardBase: React.FC<ProductCardBase> = ({ product, thumbnailUrl }) =
                     <h2 className="text-lg font-semibold mt-2">{product.name}</h2>
                     <p className="text-gray-500">{formatPrice(product.price)}</p>
                     </Link>
-                    <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md" onClick={addToCart()}>
+                    <button className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-md" onClick={addToCart}>
                         Thêm vào giỏ Hàng
                     </button>
                 </div>

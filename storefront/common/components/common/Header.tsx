@@ -5,10 +5,11 @@ import { faFacebook, faInstagram, faPinterest } from '@fortawesome/free-brands-s
 import { faEnvelope, faPhone, faCartShopping } from '@fortawesome/free-solid-svg-icons';
 import logo from '../../../assets/images/logo.webp'
 import Image from 'next/image';
-import CartModal from '@/modules/cart/CartModal';
+import CartModal from '@/modules/cart/components/CartModal';
 import AuthenticationInfo from '../AuthenticationInfo';
 
 const Header = () => {
+    
     return (
         <header >
             {/* Header Top */}

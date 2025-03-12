@@ -10,6 +10,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 public class AuthenticationController {
@@ -18,7 +20,10 @@ public class AuthenticationController {
         if (principal == null) {
             return ResponseEntity.ok(new AuthenticatedInforVm(false, null));
         }
+
+        System.out.println(Optional.ofNullable(principal.getAttribute("preferred_username")));
         AuthenticatedIUserVm authenticatedUser = new AuthenticatedIUserVm(principal.getAttribute("preferred_username"));
+        System.out.println(authenticatedUser);
         return ResponseEntity.ok(new AuthenticatedInforVm(true, authenticatedUser));
     }
 }

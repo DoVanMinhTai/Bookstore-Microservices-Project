@@ -131,5 +131,65 @@ INSERT INTO media (id, file_name, file_path, media_type) VALUES(5, 'me_lam_gi_co
 
 
 
+-- Insert data into book_publisher
+INSERT INTO book_publisher (name) VALUES
+('Penguin Random House'),
+('HarperCollins'),
+('Simon & Schuster'),
+('Macmillan'),
+('Hachette');
+
+-- Insert data into brand
+INSERT INTO brand (created_by, created_on, last_modified_by, last_modified_on, is_published, name, slug) VALUES
+('admin', NOW(), 'admin', NOW(), true, 'Brand A', 'brand-a'),
+('admin', NOW(), 'admin', NOW(), true, 'Brand B', 'brand-b'),
+('admin', NOW(), 'admin', NOW(), true, 'Brand C', 'brand-c'),
+('admin', NOW(), 'admin', NOW(), true, 'Brand D', 'brand-d'),
+('admin', NOW(), 'admin', NOW(), true, 'Brand E', 'brand-e');
+
+-- Insert data into category
+INSERT INTO category (id, created_by, created_on, last_modified_by, last_modified_on, active, description, name) VALUES
+(1, 'admin', NOW(), 'admin', NOW(), true, 'Fiction books', 'Fiction'),
+(2, 'admin', NOW(), 'admin', NOW(), true, 'Science books', 'Science'),
+(3, 'admin', NOW(), 'admin', NOW(), true, 'History books', 'History'),
+(4, 'admin', NOW(), 'admin', NOW(), true, 'Technology books', 'Technology'),
+(5, 'admin', NOW(), 'admin', NOW(), true, 'Business books', 'Business');
+
+-- Insert data into book
+INSERT INTO book (author_name, availability, description, dimensions, discount_percentage, is_allowed_to_order, is_featured, is_published, is_visible_individually, isbn13, item_weight, meta_description, meta_keyword, meta_title, name, num_pages, package_dimensions, price, publish_date, ratings_count, shortdescription, size, slug, specification, stock_quantity, thumbnail_media_id, title, title_without_series, weight, brand_id, publisher_id) VALUES
+('Author 1', 10, 'Description 1', '10x15', 10.5, true, true, true, true, '978-3-16-148410-0', 1.2, 'Meta Desc 1', 'Keyword1', 'Meta Title 1', 'Book 1', 300, '15x20', 20.99, NOW(), 50, 'Short Desc 1', 'Large', 'book-1', 'Spec 1', 100, 1, 'Title 1', 'Title Without Series 1', 1.2, 1, 1),
+('Author 2', 15, 'Description 2', '12x18', 5.0, true, false, true, true, '978-1-23-456789-7', 1.5, 'Meta Desc 2', 'Keyword2', 'Meta Title 2', 'Book 2', 400, '18x24', 25.99, NOW(), 40, 'Short Desc 2', 'Medium', 'book-2', 'Spec 2', 120, 2, 'Title 2', 'Title Without Series 2', 1.5, 2, 2),
+('Author 3', 8, 'Description 3', '8x12', 15.0, true, true, false, true, '978-0-12-345678-9', 1.1, 'Meta Desc 3', 'Keyword3', 'Meta Title 3', 'Book 3', 200, '10x14', 15.99, NOW(), 30, 'Short Desc 3', 'Small', 'book-3', 'Spec 3', 80, 3, 'Title 3', 'Title Without Series 3', 1.1, 3, 3),
+('Author 4', 12, 'Description 4', '11x17', 8.0, false, false, true, false, '978-9-87-654321-6', 1.3, 'Meta Desc 4', 'Keyword4', 'Meta Title 4', 'Book 4', 350, '13x19', 30.99, NOW(), 20, 'Short Desc 4', 'Medium', 'book-4', 'Spec 4', 60, 4, 'Title 4', 'Title Without Series 4', 1.3, 4, 4),
+('Author 5', 20, 'Description 5', '9x14', 12.5, true, true, true, true, '978-6-54-321098-7', 1.4, 'Meta Desc 5', 'Keyword5', 'Meta Title 5', 'Book 5', 250, '11x16', 18.99, NOW(), 10, 'Short Desc 5', 'Large', 'book-5', 'Spec 5', 90, 5, 'Title 5', 'Title Without Series 5', 1.4, 5, 5);
+
+-- Insert data into book_cate
+INSERT INTO book_cate (book_id, cate_id) VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5);
+
+-- Insert data into book_image
+INSERT INTO book_image (image_id, book_id) VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5);
+
+-- Insert data into product_related
+INSERT INTO product_related (book_id, related_book_id) VALUES
+(1, 2),
+(2, 3),
+(3, 4),
+(4, 5),
+(5, 1);
+
+
+
+select * from book
+
 SELECT * FROM media
 

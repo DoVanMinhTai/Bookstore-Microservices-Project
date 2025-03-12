@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 export default function AuthenticationInfo() {
   type AuthenticatedUser = {
-    username: string;
+    userName: string;
   };
 
   type AuthenticationInfoVm = {
@@ -13,7 +13,7 @@ export default function AuthenticationInfo() {
 
   const [authenticatedInfoVm, setAuthenticatedInfoVm] = useState<AuthenticationInfoVm>({
     isAuthenticated: false,
-    authenticatedUser: { username: '' },
+    authenticatedUser: { userName: '' },
   });
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -44,7 +44,7 @@ export default function AuthenticationInfo() {
           {dropdownOpen && (
             <div className="absolute mt-1 bg-gray-800 text-white rounded-md shadow-lg ">
                 <div>
-                Xin Chào: {authenticatedInfoVm.authenticatedUser.username}
+                Xin Chào: {authenticatedInfoVm.authenticatedUser.userName}
 
                 </div>
               <Link href="/profile" className="block px-4 py-2 hover:bg-gray-700">
