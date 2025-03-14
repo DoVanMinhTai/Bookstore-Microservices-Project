@@ -17,7 +17,13 @@ spring:
             provider: keycloak
             client-id: storefront-bff
             client-secret: ZrU9I0q2uXBglBnmvyJdkl1lf0ncr8tn
-            scope: openid, profile, email, roles
+#            scope: openid, profile, email, roles
+#  session:
+#    store-type: redis
+#  data:
+#    redis:
+#      host: localhost
+#      port: 6379
 logging:
   pattern:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
@@ -64,3 +70,4 @@ spring:
 adc:
   services:
     token-identity: http://identity/realms/Identity/protocol/openid-connect/token
+    cart: http://localhost:8084

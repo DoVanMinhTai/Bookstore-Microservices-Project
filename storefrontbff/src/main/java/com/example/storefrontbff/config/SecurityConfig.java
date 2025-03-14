@@ -106,6 +106,7 @@ public class SecurityConfig {
 
 
                 if (userAttributes.containsKey(REALM_ACCESS_CLAIM)) {
+                    System.out.println(userAttributes);
                     var realmAccess = (Map<String, Object>) userAttributes.get(REALM_ACCESS_CLAIM);
                     var roles = (Collection<String>) realmAccess.get(ROLES_CLAIM);
 
