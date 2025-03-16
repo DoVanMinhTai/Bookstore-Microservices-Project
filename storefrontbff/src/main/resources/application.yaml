@@ -17,7 +17,7 @@ spring:
             provider: keycloak
             client-id: storefront-bff
             client-secret: ZrU9I0q2uXBglBnmvyJdkl1lf0ncr8tn
-#            scope: openid, profile, email, roles
+            scope: openid, profile, email, roles
 #  session:
 #    store-type: redis
 #  data:

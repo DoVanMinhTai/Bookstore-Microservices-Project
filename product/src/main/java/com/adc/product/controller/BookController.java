@@ -5,6 +5,7 @@ import com.adc.product.model.Book;
 import com.adc.product.model.PaginatedItems;
 import com.adc.product.service.ProductService;
 import com.adc.product.viewmodel.*;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -82,5 +83,8 @@ public class BookController {
         return ResponseEntity.ok(productService.getProductDetail(slug));
     }
 
-
+    @GetMapping("/storefront/product/listProduct")
+    public ResponseEntity<List<ProductThumbnailGetVm>> getProductById(@RequestParam List<Long> productIds) {
+        return ResponseEntity.ok(productService.getProductByIds(productIds));
+    }
 }

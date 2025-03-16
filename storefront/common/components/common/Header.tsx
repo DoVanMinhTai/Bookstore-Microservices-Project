@@ -7,9 +7,10 @@ import logo from '../../../assets/images/logo.webp'
 import Image from 'next/image';
 import CartModal from '@/modules/cart/components/CartModal';
 import AuthenticationInfo from '../AuthenticationInfo';
+import { CartContext, useCartContext } from '@/context/CartContext';
 
 const Header = () => {
-    
+    const{numberCartItems} = useCartContext();
     return (
         <header >
             {/* Header Top */}
@@ -80,6 +81,8 @@ const Header = () => {
                             {/* Cart & Account */}
                             <div className="flex gap-4">
                                 <div className="flex items-center gap-2">
+                                    {/* <CartContext ></CartContext> */}
+                                    <div>{numberCartItems}</div>
                                     <CartModal />
                                     <AuthenticationInfo />
                                 </div>

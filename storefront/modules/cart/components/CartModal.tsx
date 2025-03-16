@@ -1,9 +1,24 @@
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
+import { CartItemGetDetailVms, CartItemGetVm } from "../model/CartItemGetVm";
+import { getCartItems } from "../services/CartServices";
+import { error } from "console";
+import { getCartItemDetailVms } from "../services/CartServices";
 const CartModal = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const[cartItems,setCartItem]  = useState<CartItemGetDetailVms[]>([]);
+
+    useEffect(() => {
+        getCartItemDetailVms()
+        .then((res) => {
+            setCartItem(res);
+            console.log(res);
+            
+        })
+        .catch((error) => 
+        setCartItem([]))
+    },[]);
 
     return (
         <div>
@@ -25,19 +40,31 @@ const CartModal = () => {
                     onClick={() => setIsOpen(false)} // Đóng modal khi click vào backdrop
                 >
                     <div
-                        className="relative m-4 p-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white shadow-sm"
+                        className="relative m-4 p-4 w-2/5 min-w-[70%] max-w-[70%] rounded-lg bg-white shadow-sm"
                         onClick={(e) => e.stopPropagation()} // Ngăn sự kiện đóng modal khi click vào nội dung modal
                     >
-                        <div className="flex items-center pb-4 text-xl font-medium text-slate-800">
-                            It's a simple Modal
+
+                        <div className="flex items-center w-full">
+                            <div className="w-[70%]">
+                                <div className="flex items-center pb-4 text-xl font-medium text-slate-800">
+                                    Giỏ Hàng
+                                </div>
+                                <div className="border-t border-slate-200 py-4 leading-normal text-slate-600 font-light">
+                                    {cartItems.map((cartItem) => (
+                                        <div key={cartItem.productId}>ID sản phẩm{cartItem.productId}</div>
+
+                                    ))}                                 
+
+                                </div>
+
+
+                            </div>
+                            <div>
+                                <div>Summary</div>
+                                <div></div>
+                            </div>
                         </div>
-                        <div className="border-t border-slate-200 py-4 leading-normal text-slate-600 font-light">
-                            The key to more success is to have a lot of pillows. Put it this
-                            way, it took me twenty-five years to get these plants, twenty-five
-                            years of blood, sweat, and tears, and I&apos;m never giving up,
-                            I&apos;m just getting started.
-                        </div>
-                        <div className="flex items-center pt-4 justify-end">
+                        {/* <div className="flex items-center pt-4 justify-end">
                             <button
                                 onClick={() => setIsOpen(false)}
                                 className="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-slate-600 hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100"
@@ -52,7 +79,7 @@ const CartModal = () => {
                             >
                                 Confirm
                             </button>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             )}

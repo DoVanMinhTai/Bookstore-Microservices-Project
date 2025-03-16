@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { formatPrice } from '@/utils/formatPrice';
 import ImageWithFallBack from './ImageWithFallBack';
 import Link from 'next/link';
-import { addToCartItem } from '@/modules/cart/services/Cart';
+import { addToCartItem } from '@/modules/cart/services/CartServices';
 interface ProductCardBase {
     product: {
         id : number;

@@ -7,3 +7,4 @@ import lombok.Builder;
 public record CartItemGetVm(String customerId,Long productId, Integer quantity ) {
 
 }
+    

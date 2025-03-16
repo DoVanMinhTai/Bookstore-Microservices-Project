@@ -31,6 +31,9 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Query("SELECT p FROM Book p WHERE p.id IN :productIds AND p.isPublished = TRUE")
     Page<Book> findAllPublishedProductsByIds(@Param("productIds") List<Long> productIds, Pageable pageable);
 
+    @Query("SELECT p FROM Book p WHERE p.id IN :productIds AND p.isPublished = TRUE")
+    List<Book> findAllPublishedProductsByIds(@Param("productIds") List<Long> productIds);
+
     @Query("FROM Book b where b.isPublished = TRUE AND b.isFeatured = TRUE AND b.isVisibleIndividually = TRUE" +
             " ORDER BY b.id asc ")
     Page<Book> getFeaturedProducts(Pageable pageable);

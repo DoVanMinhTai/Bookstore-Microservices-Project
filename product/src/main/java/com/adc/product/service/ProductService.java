@@ -7,6 +7,7 @@ import com.adc.product.respository.*;
 import com.adc.product.viewmodel.*;
 import io.micrometer.common.util.StringUtils;
 //import jakarta.ws.rs.NotFoundException;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -162,5 +163,20 @@ public class ProductService {
                 product.getSlug(),
                 product.getPackageDimensions()
         );
+    }
+
+    public List<ProductThumbnailGetVm> getProductByIds(@Valid List<Long> productIds) {
+        List<Book> books = bookRepository.findAllById(productIds);
+        List<ProductThumbnailGetVm> result = books.stream().map(
+              product -> new ProductThumbnailGetVm(
+                      product.getId(),
+                      product.getName(),
+                      product.getSlug(),
+                      mediaService.getMedia(product.getThumbnailMediaId()).url()
+                      ,product.getPrice()
+                      )
+        ).toList();
+
+        return result;
     }
 }
