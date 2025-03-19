@@ -3,6 +3,7 @@ import { formatPrice } from '@/utils/formatPrice';
 import ImageWithFallBack from './ImageWithFallBack';
 import Link from 'next/link';
 import { addToCartItem } from '@/modules/cart/services/CartServices';
+import { useCartContext } from '@/context/CartContext';
 interface ProductCardBase {
     product: {
         id : number;
@@ -17,10 +18,13 @@ interface ProductCardBase {
 
 const ProductCardBase: React.FC<ProductCardBase> = ({ product, thumbnailUrl }) => {
     // const[currentProduct, setCurrentProduct] = useState<ProductCardBase>(product);
+    const {fetchNumberCartItems} = useCartContext();
     const addToCart = async () => {
         const payload = {productId: product.id, quantity: 1};
         try {
             await addToCartItem(payload);
+            fetchNumberCartItems();
+            
         } catch (error) {
         console.log("error",error);
         

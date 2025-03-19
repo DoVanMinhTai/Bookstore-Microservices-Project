@@ -11,15 +11,17 @@ export const CartContext = createContext({
 export function CartProvider({ children }: React.PropsWithChildren) {
     const [numberCartItems, setNumberCartItem] = useState(0);
 
-    useEffect(() => {
-        fetchNumberCartItems()
-    }, []);
+  
 
     const fetchNumberCartItems = useCallback(() => {
         getNumberCartItem()
             .then((res) => setNumberCartItem(res))
             .catch((error) => console.error(error))
     },[]);
+    
+    useEffect(() => {
+        fetchNumberCartItems()
+    }, []);
 
     const state = useMemo(() =>( {
         numberCartItems,

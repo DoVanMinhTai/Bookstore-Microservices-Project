@@ -47,6 +47,10 @@ export async function getCartItemDetailVms(): Promise<CartItemGetDetailVms[]> {
 
 }
 
+export async function deleteCartItemByProductIds(productId : number) {
+    const reponse = await apiClientService.delete(`${baseUrl}/cart/${productId}`);
+}
+
 function mapCartItemsToProduct(
     cartItems: CartItemGetVm[],
     products: ProductThumbnail[]

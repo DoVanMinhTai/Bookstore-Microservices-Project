@@ -5,10 +5,7 @@ import com.adc.cart.model.CartItemId;
 import com.adc.cart.viewmodel.CartItemGetVm;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.QueryHint;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.QueryHints;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,4 +20,12 @@ public interface CartItemRepository extends JpaRepository<CartItem, CartItemId> 
     Optional<CartItem> findByCustomerIdAndProductId(String customerId, Long productId);
 
     List<CartItem> findByCustomerId(String currentUserId);
+
+
+    void deleteByCustomerIdAndProductId(String customerId, Long productId);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @QueryHints({@QueryHint(name = "jakarta.persistence.lock.timeout", value = "0")})
+    @Query("SELECT ca from CartItem ca WHERE ca.customerId = :currentUserId and ca.productId IN :productIds")
+    List<CartItem> findByCustomerIdAndProductIdIn(String currentUserId, List<Long> productIds);
 }

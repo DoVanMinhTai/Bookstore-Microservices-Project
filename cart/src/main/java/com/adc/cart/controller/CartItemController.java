@@ -1,6 +1,7 @@
 package com.adc.cart.controller;
 
 import com.adc.cart.service.CartItemService;
+import com.adc.cart.viewmodel.CartItemDeteleVms;
 import com.adc.cart.viewmodel.CartItemGetVm;
 import com.adc.cart.viewmodel.CartItemPost;
 import com.adc.cart.viewmodel.CartItemPutVm;
@@ -25,12 +26,23 @@ public class CartItemController {
 
     @PutMapping("/storefront/cart/update/{productId}")
     public ResponseEntity<CartItemGetVm> updateCartItem(@PathVariable @Valid Long productId, @RequestBody CartItemPutVm cartItemPutVm) {
-        return ResponseEntity.ok(cartItemService.updateCartItem(productId,cartItemPutVm));
+        return ResponseEntity.ok(cartItemService.updateCartItem(productId, cartItemPutVm));
     }
 
     @GetMapping("/storefront/cart/list")
     public ResponseEntity<List<CartItemGetVm>> getCartItems() {
         return ResponseEntity.ok(cartItemService.getCartItems());
+    }
+
+    @DeleteMapping("/storefront/cart/{productId}")
+    public ResponseEntity<Void> deleteCartItem(@PathVariable @Valid Long productId) {
+        cartItemService.deleteCartItem(productId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/storefront/cart/items")
+    public ResponseEntity<List<CartItemGetVm>> delelteOrAddAdjustCartItem(@RequestBody List<CartItemDeteleVms> cartItemDeteleVms) {
+        return ResponseEntity.ok(cartItemService.deleteOrAdjustCartItem(cartItemDeteleVms));
     }
 
 
