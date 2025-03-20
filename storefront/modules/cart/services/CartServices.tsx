@@ -3,6 +3,8 @@ import { CartPost } from "../model/CartPost";
 import { CartItemGetDetailVms, CartItemGetVm } from "../model/CartItemGetVm";
 import { ProductThumbnail } from "@/modules/homepage/models/ProductThumbnail";
 import { getProductById } from "@/modules/catalog/services/ProductServices";
+import  {CartItemDeleteVms} from "../model/CartItemDeleteVms"
+import { CartItemPutVm } from "../model/CartItemPutVm";
 
 const baseUrl = 'http://localhost:8087/api/cart/storefront';
 
@@ -73,5 +75,22 @@ function mapCartItemsToProduct(
         )
     }
     return detailCartItem;
+
+}
+
+// export async function decreaseCartItemButton(payload : CartItemDeleteVms[]) : Promise<CartItemDeleteVms[]> {
+//     const reponse = await apiClientService.put(`${baseUrl}/cart/items`,payload);
+//     if(!reponse.ok) {
+//         throw new Error("Error from server")
+//     }
+//     return reponse.json();
+// }
+
+export async function updateCartItem(productId:number, payload: CartItemPutVm) : Promise<CartItemGetVm> {
+    const reponse = await apiClientService.put(`${baseUrl}/cart/update/${productId}`,JSON.stringify(payload));
+    if(!reponse.ok) {
+        throw new Error("Error Fron Server");
+    }
+    return reponse.json();
 
 }

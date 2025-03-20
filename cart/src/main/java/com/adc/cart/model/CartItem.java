@@ -14,7 +14,8 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class CartItem{
+@ToString
+public class CartItem extends AbstractAuditEntity{
     @Id
     private String customerId;
 

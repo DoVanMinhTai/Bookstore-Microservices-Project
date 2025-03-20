@@ -14,8 +14,6 @@ import org.springframework.data.annotation.LastModifiedBy;
 import java.time.ZonedDateTime;
 
 @MappedSuperclass
-@Getter
-@Setter
 @EntityListeners(CustomerAuditingEntityListener.class)
 public class AbstractAuditEntity {
 
