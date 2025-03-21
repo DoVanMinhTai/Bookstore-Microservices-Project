@@ -1,5 +1,6 @@
 package com.adc.order.model;
 
+import com.adc.commonlibrary.model.AbstractAuditEntity;
 import com.adc.order.model.enumeration.DeliveryMethod;
 import com.adc.order.model.enumeration.DeliveryStatus;
 import com.adc.order.model.enumeration.OrderStatus;
@@ -18,7 +19,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Builder
-public class Order {
+public class Order extends AbstractAuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

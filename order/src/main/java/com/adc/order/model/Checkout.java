@@ -1,5 +1,6 @@
 package com.adc.order.model;
 
+import com.adc.commonlibrary.model.AbstractAuditEntity;
 import com.adc.order.model.enumeration.CheckoutState;
 import com.adc.order.model.enumeration.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -17,11 +18,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Checkout {
+public class Checkout extends AbstractAuditEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     private String email;
 

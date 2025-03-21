@@ -8,6 +8,7 @@ import com.adc.order.model.Checkout;
 import com.adc.order.model.CheckoutItem;
 import com.adc.order.model.OrderItem;
 import com.adc.order.model.enumeration.CheckoutState;
+import com.adc.order.repository.CheckoutItemRepository;
 import com.adc.order.repository.CheckoutRepository;
 import com.adc.order.utils.Constants;
 import com.adc.order.viewmodel.checkout.*;
@@ -35,6 +36,8 @@ public class CheckoutService {
     private final CheckoutRepository checkoutRepository;
     private final CheckoutMapper checkoutMapper;
     private final ProductService productService;
+    private final CheckoutItemRepository checkoutItemRepository;
+
     public CheckoutVm createCheckout(CheckoutPostVm checkoutPostVm) {
         Checkout checkout = checkoutMapper.toModel(checkoutPostVm);
 //      authentication and create state checkout
@@ -42,14 +45,14 @@ public class CheckoutService {
         checkout.setCheckoutState(CheckoutState.PENDING);
 
 //      prepare list product in order
-        prepareCheckoutItems(checkout,checkoutPostVm);
+        prepareCheckoutItems(checkout, checkoutPostVm);
         checkoutRepository.save(checkout);
 
         CheckoutVm checkoutVm = checkoutMapper.toVm(checkout);
         Set<CheckoutItemVm> checkoutItemVms = checkout.getCheckoutItems().stream().map(
-                checkoutMapper::toVm)
+                        checkoutMapper::toVm)
                 .collect(Collectors.toSet());
-        log.info(Constants.MessageCode.CREATE_CHECKOUT,checkout.getId(),checkout.getCustomerId());
+        log.info(Constants.MessageCode.CREATE_CHECKOUT, checkout.getId(), checkout.getCustomerId());
         return checkoutVm.toBuilder().checkoutItemVms(checkoutItemVms).build();
     }
 
@@ -69,14 +72,14 @@ public class CheckoutService {
                 .toList();
 
         Map<Long, ProductCheckoutListVm> products =
-                productService.getProductInformation(productIds,0, productIds.size());
+                productService.getProductInformation(productIds, 0, productIds.size());
 
 //        gắn sản phẩm với checkout item
-        List<CheckoutItem> enrichedItems = enrichCheckoutItemWithProductDetails(products,checkoutItems);
+        List<CheckoutItem> enrichedItems = enrichCheckoutItemWithProductDetails(products, checkoutItems);
 
 //        Tính tổng tiền của 1 đơn hang
-        BigDecimal totalAmount =  enrichedItems.stream().map(
-                item -> item.getProductPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+        BigDecimal totalAmount = enrichedItems.stream().map(
+                        item -> item.getProductPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         checkout.setCheckoutItems(enrichedItems);
         checkout.setTotalAmount(totalAmount);
@@ -84,16 +87,16 @@ public class CheckoutService {
     }
 
     private List<CheckoutItem> enrichCheckoutItemWithProductDetails(Map<Long, ProductCheckoutListVm> products,
-                                                                 List<CheckoutItem> checkoutItems) {
+                                                                    List<CheckoutItem> checkoutItems) {
         return checkoutItems.stream().map(item -> {
-                ProductCheckoutListVm product = products.get(item.getId());
-                if (product == null) {
-                    throw new NotFoundException(MessagesUtils.getMessage("PRODUCT_NOT_FOUND", item.getId()));
-                }
-                return item.toBuilder()
-                        .productName(product.getName())
-                        .productPrice(BigDecimal.valueOf(product.getPrice()))
-                        .build();
+            ProductCheckoutListVm product = products.get(item.getProductId());
+            if (product == null) {
+                throw new NotFoundException(MessagesUtils.getMessage("PRODUCT_NOT_FOUND", item.getId()));
+            }
+            return item.toBuilder()
+                    .productName(product.getName())
+                    .productPrice(BigDecimal.valueOf(product.getPrice()))
+                    .build();
         }).toList();
 
     }
@@ -109,4 +112,19 @@ public class CheckoutService {
         checkoutRepository.save(checkout);
 
     }
+
+    public CheckoutVm getCheckoutWithPendingStateById(String id) {
+        Checkout checkout = checkoutRepository.findByIdAndCheckoutState(id, CheckoutState.PENDING);
+        if (checkout == null | isNotOwnerByCurrentUser(checkout)) {
+            throw new NotFoundException(CHECKOUT_NOT_FOUND, id);
+        }
+
+        Set<CheckoutItemVm> checkoutItems = checkout.getCheckoutItems().stream().map(checkoutMapper::toVm).collect(Collectors.toSet());
+        return checkoutMapper.toVm(checkout);
+    }
+
+    private boolean isNotOwnerByCurrentUser(Checkout checkout) {
+        return !checkout.getCreatedBy().equals(AuthenticationUtils.extractUserId());
+    }
+
 }

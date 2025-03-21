@@ -23,7 +23,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/swagger-ui","/swagger-ui/**").permitAll()
-                        .requestMatchers("/storefront/customer/**").hasRole("CUSTOMER")
+                        .requestMatchers("/storefront/customer/**").permitAll()
                         .anyRequest().permitAll()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));

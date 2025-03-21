@@ -49,7 +49,7 @@ export async function getCartItemDetailVms(): Promise<CartItemGetDetailVms[]> {
 
 }
 
-export async function deleteCartItemByProductIds(productId : number) {
+export async function deleteCartItemByProductId(productId : number) {
     const reponse = await apiClientService.delete(`${baseUrl}/cart/${productId}`);
 }
 

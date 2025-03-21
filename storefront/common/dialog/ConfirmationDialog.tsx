@@ -22,7 +22,7 @@ export default function ConfimationDialog(
     if(!isOpen) return null;
 
     return (
-        <div className="fixed flex items-center justify-center inset-0 bg-opacity-50">
+        <div className="fixed flex items-center justify-center bg-black inset-0 bg-opacity-50">
             <div className="bg-white shadow-lg rounded-lg w-96">
                 {/* header */}
 

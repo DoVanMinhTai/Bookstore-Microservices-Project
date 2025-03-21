@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 
 public record CheckoutPostVm(
+        String id,
         String email,
         String note,
         String promotionCode,

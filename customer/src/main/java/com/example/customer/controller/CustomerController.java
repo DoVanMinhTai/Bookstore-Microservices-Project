@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class CustomerController {
     private final CustomerService customerService;
 
@@ -27,6 +28,6 @@ public class CustomerController {
     @GetMapping("/storefront/customer/profile")
     public ResponseEntity<CustomerVm> getUserProfile() {
         return ResponseEntity.ok(
-                customerService.getCustomerProfilce(SecurityContextHolder.getContext().getAuthentication().getName()));
+                customerService.getCustomerProfile(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
 }

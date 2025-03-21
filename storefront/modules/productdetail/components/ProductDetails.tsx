@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { ProductDetail } from '../model/ProductDetail'
 import { formatPrice } from '@/utils/formatPrice'
 import ImageWithFallBack from '@/common/components/ImageWithFallBack'
-import { ProductImageGarelly } from '@/common/ProductImageGarelly'
+import { ProductImageGarelly } from '@/common/components/ProductImageGarelly'
 import { ProductActions, ProductImage, ProductInfo, ProductOptions, ProductSimilar, ProductTabs } from './index'
 type ProductDetailProps = {
     product: ProductDetail;

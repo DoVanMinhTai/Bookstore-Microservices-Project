@@ -27,4 +27,10 @@ public class CheckoutController {
         checkoutService.updateCheckoutPaymentMethod(id,checkoutPaymentMethodPutVm);
         return ResponseEntity.ok().build();
     }
+
+
+    @GetMapping("/storefront/checkouts/{id}")
+    public ResponseEntity<CheckoutVm> getCheckout(@PathVariable final String id) {
+        return ResponseEntity.ok(checkoutService.getCheckoutWithPendingStateById(id));
+    }
 }

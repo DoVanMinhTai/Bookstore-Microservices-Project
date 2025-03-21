@@ -8,7 +8,6 @@ import org.keycloak.admin.client.Keycloak;
 import static org.keycloak.OAuth2Constants.CLIENT_CREDENTIALS;
 
 @Configuration
-
 public class KeyCloakClientConfig {
     private final KeyCloakPropsConfig propsConfig;
 

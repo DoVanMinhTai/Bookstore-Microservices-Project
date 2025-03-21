@@ -1,5 +1,6 @@
 package com.adc.order.model;
 
+import com.adc.commonlibrary.model.AbstractAuditEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OrderAddress {
+public class OrderAddress extends AbstractAuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

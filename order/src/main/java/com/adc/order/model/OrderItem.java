@@ -1,5 +1,6 @@
 package com.adc.order.model;
 
+import com.adc.commonlibrary.model.AbstractAuditEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +13,7 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderItem {
+public class OrderItem extends AbstractAuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
