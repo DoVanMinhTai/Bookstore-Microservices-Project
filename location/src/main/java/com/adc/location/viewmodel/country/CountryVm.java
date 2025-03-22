@@ -1,7 +1,9 @@
 package com.adc.location.viewmodel.country;
 
 import com.adc.location.model.Country;
+import lombok.Builder;
 
+@Builder
 public record CountryVm(Long id, String code2, String name, String code3, Boolean isBillingEnabled,
                         Boolean isShippingEnabled,
                         Boolean isCityEnabled, Boolean isZipCodeEnabled,

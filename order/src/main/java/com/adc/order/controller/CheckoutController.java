@@ -17,6 +17,7 @@ public class CheckoutController {
 
     @PostMapping("/storefront/checkouts")
     public ResponseEntity<CheckoutVm> checkout(@Valid @RequestBody CheckoutPostVm checkoutPostVm) {
+        System.out.println("received checkout post vm: " + checkoutPostVm);
         return ResponseEntity.ok(checkoutService.createCheckout(checkoutPostVm));
     }
 

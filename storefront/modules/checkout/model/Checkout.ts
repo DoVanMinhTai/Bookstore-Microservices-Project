@@ -5,6 +5,9 @@ export type Checkout = {
     email: string;
     note?: '';
     promotionCode?: string;
-    checkOutItemPostVms: CheckoutItem[];
+    shipmentMethodId?: string;
+    paymentMethodId?: string;
+    shippingAddressId?: number;
+    checkoutItemVms: CheckoutItem[];
 
 }

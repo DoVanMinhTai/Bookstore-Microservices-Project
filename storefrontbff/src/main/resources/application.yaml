@@ -60,6 +60,13 @@ spring:
           filters:
             - TokenRelay=
             - StripPrefix=1
+        - id: api_location_local
+          uri: http://localhost:8090
+          predicates:
+            - Path=/api/location/**
+          filters:
+            - TokenRelay=
+            - StripPrefix=1
         - id: api_cart_local
           uri: http://localhost:8084
           predicates:

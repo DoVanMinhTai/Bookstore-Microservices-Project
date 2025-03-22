@@ -115,16 +115,22 @@ public class CheckoutService {
 
     public CheckoutVm getCheckoutWithPendingStateById(String id) {
         Checkout checkout = checkoutRepository.findByIdAndCheckoutState(id, CheckoutState.PENDING);
-        if (checkout == null | isNotOwnerByCurrentUser(checkout)) {
+        System.out.println(AuthenticationUtils.extractUserId());
+
+        if (checkout == null || isNotOwnerByCurrentUser(checkout)) {
             throw new NotFoundException(CHECKOUT_NOT_FOUND, id);
         }
 
         Set<CheckoutItemVm> checkoutItems = checkout.getCheckoutItems().stream().map(checkoutMapper::toVm).collect(Collectors.toSet());
-        return checkoutMapper.toVm(checkout);
+        CheckoutVm checkoutVm = checkoutMapper.toVm(checkout);
+        checkoutVm = checkoutVm.toBuilder().checkoutItemVms(checkoutItems).build();
+
+        return checkoutVm;
     }
 
     private boolean isNotOwnerByCurrentUser(Checkout checkout) {
-        return !checkout.getCreatedBy().equals(AuthenticationUtils.extractUserId());
+        String userId = AuthenticationUtils.extractUserId();
+        return checkout == null || checkout.getCreatedBy() == null || !checkout.getCreatedBy().equals(userId);
     }
 
 }

@@ -3,6 +3,7 @@ package com.adc.location.config;
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -22,10 +23,10 @@ public class SecurityConfig {
         return http
 
                 .authorizeHttpRequests(
-                auth -> auth.requestMatchers(
-                        "/swagger-ui","/swagger-ui/**","/v3/api-docs/**").permitAll()
-                        .anyRequest().authenticated()
-        ).oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+                        auth -> auth.requestMatchers(
+                                        "/swagger-ui", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                                .anyRequest().authenticated()
+                ).oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .build();
     }
 

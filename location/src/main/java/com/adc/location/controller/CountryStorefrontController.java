@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/storefront/countries")
 @RequiredArgsConstructor
+@RequestMapping("storefront/countries")
 public class CountryStorefrontController {
     private final CountryService countryService;
 
     @GetMapping
     public ResponseEntity<List<CountryVm>> listAllCountry() {
-        return countryService.listAllCountry();
+        return ResponseEntity.ok(countryService.listAllCountry());
     }
 }

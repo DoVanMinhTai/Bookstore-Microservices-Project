@@ -1,6 +1,7 @@
 package com.adc.location.service;
 
 import com.adc.location.mapper.CountryMapper;
+import com.adc.location.model.Country;
 import com.adc.location.repository.CountryRepository;
 import com.adc.location.viewmodel.country.CountryListGetVm;
 import com.adc.location.viewmodel.country.CountryVm;
@@ -21,9 +22,11 @@ public class CountryService {
 
     @Transactional(readOnly = true)
     public List<CountryVm> listAllCountry() {
-        return null;
+        List<Country> country = countryRepository.findAll();
+        return countryMapper.toCountryViewModel(country);
     }
 
     public CountryListGetVm getPageableCountries(int pageNo, int pageSize) {
+        return null;
     }
 }

@@ -1,7 +1,8 @@
 export type CheckoutItem = {
     productId: number;
-    productName: string;
+    productName?: string;
     quantity: number;
-    productPrice: number;
-    discountAmount: number;
+    description?: string;
+    productPrice?: number;
+    discountAmount?: number;
 }

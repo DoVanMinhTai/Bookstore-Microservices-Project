@@ -3,7 +3,7 @@ import { CartPost } from "../model/CartPost";
 import { CartItemGetDetailVms, CartItemGetVm } from "../model/CartItemGetVm";
 import { ProductThumbnail } from "@/modules/homepage/models/ProductThumbnail";
 import { getProductById } from "@/modules/catalog/services/ProductServices";
-import  {CartItemDeleteVms} from "../model/CartItemDeleteVms"
+import { CartItemDeleteVms } from "../model/CartItemDeleteVms"
 import { CartItemPutVm } from "../model/CartItemPutVm";
 
 const baseUrl = 'http://localhost:8087/api/cart/storefront';
@@ -49,7 +49,7 @@ export async function getCartItemDetailVms(): Promise<CartItemGetDetailVms[]> {
 
 }
 
-export async function deleteCartItemByProductId(productId : number) {
+export async function deleteCartItemByProductId(productId: number) {
     const reponse = await apiClientService.delete(`${baseUrl}/cart/${productId}`);
 }
 
@@ -63,7 +63,7 @@ function mapCartItemsToProduct(
 
     for (const cartI of cartItems) {
         const product = productGetId.get(cartI.productId);
-        if (!product) continue; 
+        if (!product) continue;
         detailCartItem.push(
             {
                 ...cartI,
@@ -86,9 +86,9 @@ function mapCartItemsToProduct(
 //     return reponse.json();
 // }
 
-export async function updateCartItem(productId:number, payload: CartItemPutVm) : Promise<CartItemGetVm> {
-    const reponse = await apiClientService.put(`${baseUrl}/cart/update/${productId}`,JSON.stringify(payload));
-    if(!reponse.ok) {
+export async function updateCartItem(productId: number, payload: CartItemPutVm): Promise<CartItemGetVm> {
+    const reponse = await apiClientService.put(`${baseUrl}/cart/update/${productId}`, JSON.stringify(payload));
+    if (!reponse.ok) {
         throw new Error("Error Fron Server");
     }
     return reponse.json();
