@@ -7,16 +7,21 @@ import { Districts } from "@/modules/districts/model/Districts";
 const baseUrl = 'http://localhost:8087/api/location';
 
 export async function getAllCoutries() : Promise<CountryVm[]> {
-    const reponse = await apiClientService.get(`${baseUrl}/countries`);
-    return reponse.json();
+    const reponse = await apiClientService.get(`${baseUrl}/storefront/countries`);
+    console.log("checktype",Array.isArray(reponse));
+    if(!reponse.ok) {
+        throw new Error("error 12345")
+        console.log("error23")
+    }
+    return await reponse.json();
 }
 
 export async function getDistricts(stateOrProvinceId: number) : Promise<Districts[]> {
-    const reponse = await apiClientService.get(`${baseUrl}/${stateOrProvinceId}`);
+    const reponse = await apiClientService.get(`${baseUrl}/storefront/district/${stateOrProvinceId}`);
     return reponse.json();
 }
 
 export async function getStateOrProvinces(countryId: number) : Promise<StateOrProvince[]> {
-    const reponse = await apiClientService.get(`${baseUrl}/${countryId}`);
+    const reponse = await apiClientService.get(`${baseUrl}/storefront/state-or-province/${countryId}`);
     return reponse.json();
 }

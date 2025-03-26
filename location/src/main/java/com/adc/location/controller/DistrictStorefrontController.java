@@ -14,12 +14,22 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/storefront/state-or-province")
-public class DistrictController {
+@RequestMapping("/storefront")
+public class DistrictStorefrontController {
     private final DistrictService districtService;
 
-    @GetMapping("/{stateOrProvinceId}")
+    @GetMapping("/district/{stateOrProvinceId}")
     public ResponseEntity<List<DistrictVm>> getStateOrProvinceByCountryId(@PathVariable final Long stateOrProvinceId) {
         return ResponseEntity.ok(districtService.getAllByStateOrProvinceId(stateOrProvinceId));
+    }
+
+    @GetMapping("/districtList")
+    public ResponseEntity<List<DistrictVm>> getDistrictList() {
+        return ResponseEntity.ok(districtService.getAllDistrict());
+    }
+
+    @GetMapping("/district/{id}")
+    public ResponseEntity<DistrictVm> getDistrictById(@PathVariable final Long id) {
+        return ResponseEntity.ok(districtService.findById(id));
     }
 }

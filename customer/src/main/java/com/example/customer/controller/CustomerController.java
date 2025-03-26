@@ -30,4 +30,6 @@ public class CustomerController {
         return ResponseEntity.ok(
                 customerService.getCustomerProfile(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
+
+
 }

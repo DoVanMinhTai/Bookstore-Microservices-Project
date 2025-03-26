@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring"
         ,nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
 public interface DistrictMapper {
-    @Mapping(target = "stateOrProvinceId", source = "stateOrProvinceId.id")
+    @Mapping(target = "stateProvinceId", source = "stateProvince.id")
     DistrictVm ToDistrictVmFromDistrict(District district);
 //    StateOrProvinceVm toStateOrProvinceViewModelFromStateOrProvince(StateOrProvince stateOrProvince);
 

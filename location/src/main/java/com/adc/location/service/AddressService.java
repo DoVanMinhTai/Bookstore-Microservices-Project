@@ -31,7 +31,9 @@ public class AddressService {
         Country country = countryRepository.findById(dto.countryId()).orElseThrow(
                 () -> new IllegalArgumentException("Country not found")
         );
+
         address.setCountry(country);
+        System.out.println(address);
         return AddressGetVm.fromModel(addressRepository.save(address));
     }
 

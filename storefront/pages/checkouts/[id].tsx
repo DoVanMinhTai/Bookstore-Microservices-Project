@@ -24,8 +24,8 @@ const CheckoutPage = () => {
 
     const [checkout, setCheckout] = useState<Checkout>();
     const [product, setProduct] = useState<ProductThumbnail[]>([])
-    const[country,setCountry] = useState<CountryListGetVm>();
-     
+    const [country, setCountry] = useState<CountryListGetVm>();
+
     useEffect(() => {
         if (id) {
             const fetchCheckout = async () => {
@@ -92,11 +92,10 @@ const CheckoutPage = () => {
 
     return (
         <>
-            <div className="grid grid-cols-3  container mx-auto">
+            <div className="grid grid-cols-2      container mx-auto">
+                <CheckoutShippingInfo checkout={checkout ?? { email: '', checkoutItemVms: [] }} />
                 <CheckoutComponents products={product} checkoutItems={checkout?.checkoutItemVms ?? []} />
-                <CheckoutShippingInfo checkout={checkout ?? {email: '' , checkoutItemVms: []}} />
-                    
-                <CheckoutPaymentMethod />
+                {/* <CheckoutPaymentMethod /> */}
             </div>
         </>
     )

@@ -74,6 +74,13 @@ spring:
           filters:
             - TokenRelay=
             - StripPrefix=1
+        - id: api_customer_local
+          uri: http://localhost:8088
+          predicates:
+            - Path=/api/customer/**
+          filters:
+            - TokenRelay=
+            - StripPrefix=1
 
         - id: api
           uri: http://api.adc.local

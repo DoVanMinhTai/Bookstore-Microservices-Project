@@ -9,7 +9,7 @@ type Props =  {
 }
 const Layout = ({children} : Props) => {
     const router = useRouter();
-    const hiddenFooterPages = ['/carts']
+    const hiddenFooterPages = ['/carts','/checkouts']
     return (
         <>
         <Head>
