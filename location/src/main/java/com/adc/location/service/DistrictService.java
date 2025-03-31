@@ -25,6 +25,6 @@ public class DistrictService {
     }
 
     public DistrictVm findById(Long id) {
-        return districtRepository.findById(id).stream().map(districtMapper::ToDistrictVmFromDistrict).toList().get(0);
+        return districtMapper.ToDistrictVmFromDistrict(districtRepository.findDistrictById(id));
     }
 }

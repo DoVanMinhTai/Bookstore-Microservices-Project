@@ -1,13 +1,7 @@
 package com.adc.location.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.adc.location.model.enumeration.AddressType;
+import jakarta.persistence.*;
 import lombok.*;
 
 
@@ -18,6 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Builder
+@EqualsAndHashCode(exclude = {"id" , "addressType"})
 public class Address {
 
     @Id
@@ -53,4 +48,9 @@ public class Address {
     @ManyToOne
     @JoinColumn(name = "country_id", nullable = false)
     private Country country;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "address_type",length = 20)
+    private AddressType addressType;
 }
+

@@ -12,7 +12,7 @@ interface Props {
 export default function CheckoutComponents({products,checkoutItems} : Props) {
     return (
         <>
-            <div className="p-5 gap-3">
+            <div className="p-4  border rounded-lg shadow-md bg-white">
                     <div className="font-bold text-center text-lg text-gray-700">
                         Thông tin sản phẩm
                     </div>

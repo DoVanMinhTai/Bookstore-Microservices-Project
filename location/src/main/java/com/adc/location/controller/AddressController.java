@@ -1,5 +1,6 @@
 package com.adc.location.controller;
 
+import com.adc.location.model.enumeration.AddressType;
 import com.adc.location.service.AddressService;
 import com.adc.location.viewmodel.address.AddressDetailVm;
 import com.adc.location.viewmodel.address.AddressPostVm;
@@ -39,4 +40,10 @@ public class AddressController {
         addressService.deleteAddress(id);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/storefront/address/billingaddress/{id}")
+    public ResponseEntity<List<AddressDetailVm>> getBillingAddressByID(@PathVariable Long id) {
+        return ResponseEntity.ok(addressService.getBillingAddressByID(id));
+    }
+
 }

@@ -27,8 +27,5 @@ public class StateOrProvinceStoreFrontController {
         return ResponseEntity.ok(stateOrProvinceService.getAllStateOrProvince());
     }
 
-    @GetMapping("/stateOrProvince/{id}")
-    public ResponseEntity<StateOrProvinceVm> getStateOrProvinceById(@PathVariable final Long id) {
-        return ResponseEntity.ok(stateOrProvinceService.findById(id));
-    }
+
 }

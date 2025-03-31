@@ -28,4 +28,13 @@ public class UserAddressController {
         return ResponseEntity.ok(userAddressService.getUserAddressList());
     }
 
+    @GetMapping("/storefront/getAddressIsActive")
+    public ResponseEntity<AddressDetailVm> getAddressIsActive() {
+        return ResponseEntity.ok(userAddressService.getAddressIsActive());
+    }
+
+    @GetMapping("/storefront/getAddressBillingIsActive")
+    public ResponseEntity<List<AddressDetailVm>> getAddressBillingIsActive() {
+        return ResponseEntity.ok(userAddressService.getAddressBillingIsActive());
+    }
 }

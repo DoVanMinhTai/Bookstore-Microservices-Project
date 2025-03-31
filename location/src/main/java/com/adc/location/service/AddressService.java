@@ -2,6 +2,7 @@ package com.adc.location.service;
 
 import com.adc.location.model.Address;
 import com.adc.location.model.Country;
+import com.adc.location.model.enumeration.AddressType;
 import com.adc.location.repository.AddressRepository;
 import com.adc.location.repository.CountryRepository;
 import com.adc.location.repository.DistrictRepository;
@@ -70,5 +71,11 @@ public class AddressService {
                 () -> new IllegalArgumentException("Address not found")
         );
         addressRepository.delete(address);
+    }
+
+
+    public List<AddressDetailVm> getBillingAddressByID(Long id) {
+        List<Address> billingAddress = addressRepository.findAllByIdAndAddressType(id, AddressType.BILLING);
+        return billingAddress.stream().map(AddressDetailVm::fromModel).toList();
     }
 }

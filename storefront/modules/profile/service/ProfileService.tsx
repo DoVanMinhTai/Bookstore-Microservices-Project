@@ -19,4 +19,23 @@ export async function getUserAddressList() : Promise<AddressDetail[]> {
     }
 }
 
+export async function getAddressDefault() : Promise<AddressDetail | undefined> {
+    const reponse = await apiClientService.get(`${baseUrl}/getAddressIsActive`);
+    if(!reponse.ok) {
+        console.error("có lỗi gì đó")
+
+    } else {
+        return reponse.json();
+    }
+    
+}
+
+export async function getAddressBillingList() {
+    const reponse = await apiClientService.get(`${baseUrl}/getAddressBillingIsActive`);
+    if(!reponse.ok) {
+        return [];
+    } else {
+        return reponse.json();
+    }
+}
 

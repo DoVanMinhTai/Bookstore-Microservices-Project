@@ -26,7 +26,7 @@ public class LocationService {
         final String jwt = ((Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getTokenValue();
 
         final URI uri = UriComponentsBuilder.fromHttpUrl(serviceUrlConfig.location())
-                .path("/storefront/address/{id}")
+                .path("/storefront/addresses/{id}")
                 .buildAndExpand(id)
                 .toUri();
         return restClient.get()
@@ -34,7 +34,19 @@ public class LocationService {
                 .headers(httpHeaders -> httpHeaders.setBearerAuth(jwt))
         .retrieve().body(AddressDetailVm.class);
     }
+    public List<AddressDetailVm> getAddressBillingById(Long addressId) {
+        final String jwt = ((Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getTokenValue();
 
+        final URI uri = UriComponentsBuilder.fromHttpUrl(serviceUrlConfig.location())
+                .path("/storefront/address/billingaddress/{id}")
+                .buildAndExpand(addressId)
+                .toUri();
+        return restClient.get()
+                .uri(uri)
+                .retrieve().body(
+                        new ParameterizedTypeReference<List<AddressDetailVm>>() {
+                        });
+    }
     public AddressVm createAddress(AddressPostVm addressPostVm) {
         final String jwt = ((Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getTokenValue();
 
@@ -59,4 +71,6 @@ public class LocationService {
                         new ParameterizedTypeReference<List<AddressDetailVm>>() {}
                 );
     }
+
+
 }

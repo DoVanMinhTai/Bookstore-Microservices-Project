@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,5 +52,22 @@ public class UserAddressService {
 
         List<AddressDetailVm> result = locationService.getAddressDetailByIds(listAddressIds);
         return result;
+    }
+
+    public AddressDetailVm getAddressIsActive() {
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Optional<UserAddress> userAddress = userAddressRespository.findByUserIdAndIsActiveTrue(userId);
+
+        AddressDetailVm addressDetailVm = locationService.getAddressById(userAddress.get().getAddressId());
+        return addressDetailVm;
+    }
+
+    public List<AddressDetailVm> getAddressBillingIsActive() {
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Optional<UserAddress> userAddress = userAddressRespository.findByUserIdAndIsActiveTrue(userId);
+        List<AddressDetailVm> addressDetailVm = locationService.getAddressBillingById(userAddress.get().getAddressId());
+        return  addressDetailVm;
     }
 }

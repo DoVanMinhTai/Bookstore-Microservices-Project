@@ -1,0 +1,6 @@
+export enum  DeliveryStatus {
+    PREPARING="PREPARING",
+    DELIVERING="DELIVERING",
+    DELIVERED="DELIVERED",
+    CANCELLED="CANCELLED"
+}

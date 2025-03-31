@@ -5,11 +5,11 @@ export type CartItemGetVm = {
 }
 
 export type CartItemGetDetailVms = {
-    customerId: string;
+    customerId?: string;
     productId: number;
     quantity: number;
     productName: string;
-    slug: string;
+    slug?: string;
     thumbnailUrl: string;
     price: number;
 

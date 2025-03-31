@@ -17,7 +17,7 @@ export async function getAllCoutries() : Promise<CountryVm[]> {
 }
 
 export async function getDistricts(stateOrProvinceId: number) : Promise<Districts[]> {
-    const reponse = await apiClientService.get(`${baseUrl}/storefront/district/${stateOrProvinceId}`);
+    const reponse = await apiClientService.get(`${baseUrl}/storefront/district/list/${stateOrProvinceId}`);
     return reponse.json();
 }
 

@@ -18,7 +18,7 @@ import java.util.List;
 public class DistrictStorefrontController {
     private final DistrictService districtService;
 
-    @GetMapping("/district/{stateOrProvinceId}")
+    @GetMapping("/district/list/{stateOrProvinceId}")
     public ResponseEntity<List<DistrictVm>> getStateOrProvinceByCountryId(@PathVariable final Long stateOrProvinceId) {
         return ResponseEntity.ok(districtService.getAllByStateOrProvinceId(stateOrProvinceId));
     }

@@ -14,13 +14,17 @@ import com.adc.order.viewmodel.order.OrderVm;
 import com.adc.order.viewmodel.orderaddress.OrderAddressPostVm;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
@@ -103,5 +107,14 @@ public class OrderService {
                 () -> new NotFoundException("ORDER_NOT_FOUND",orderId));
         order.setOrderStatus(OrderStatus.ACCEPTED);
         orderRepository.save(order);
+    }
+
+
+    public OrderVm getOrderById(Long id) {
+        Order order = orderRepository.findById(id).orElseThrow();
+        Set<OrderItem> orderItemSet = new HashSet<>(orderItemRepository.findByOrderId(order.getId()));
+        OrderVm orderVm =  OrderVm.fromModel(order,orderItemSet);
+        return orderVm;
+
     }
 }

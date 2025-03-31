@@ -16,4 +16,6 @@ public interface OrderItemRepository  extends JpaRepository<OrderItem, Long> {
             "GROUP BY oi.productId " +
             "ORDER BY SUM(oi.quantity) DESC")
     List<Long> findProductIdsByCompletedOrders();
+
+    List<OrderItem> findByOrderId(Long orderId);
 }
