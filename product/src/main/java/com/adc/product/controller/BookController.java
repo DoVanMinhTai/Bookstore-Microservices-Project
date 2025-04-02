@@ -87,4 +87,9 @@ public class BookController {
     public ResponseEntity<List<ProductThumbnailGetVm>> getProductById(@RequestParam List<Long> productIds) {
         return ResponseEntity.ok(productService.getProductByIds(productIds));
     }
+
+    @GetMapping("/storefront/product/{id}")
+    public ResponseEntity<ProductThumbnailGetVm> getProductById(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProductById(id));
+    }
 }

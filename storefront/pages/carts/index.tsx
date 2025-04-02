@@ -29,7 +29,6 @@ const index = () => {
   const { fetchNumberCartItems, numberCartItems } = useCartContext();
   const [quantity, setQuantity] = useState(0);
   const [selectedCartItem, setSelectedCartItem] = useState<Set<number>>(new Set());
-  // const [totalPrice, setTotalPrice] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { firstname, lastname, email, fetchUserInfo } = useUserInfoContext();
   const router = useRouter();

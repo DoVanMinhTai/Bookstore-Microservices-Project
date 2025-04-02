@@ -21,6 +21,6 @@ export type OrderVm = {
     deliveryMethod: DeliveryMethod;
     deliveryStatus: DeliveryStatus;
     paymentStatus: PaymentStatus;
-    orderItemVm: Set<OrderItemVm>;
+    orderItemVms: Set<OrderItemVm>;
     checkoutId: string;
 }

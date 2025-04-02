@@ -154,8 +154,10 @@ const CheckoutPage = () => {
         }
 
         const reponse = await createOrder(ordersPostVm);
-        Array.from(reponse.data.orderItemVm).map((item) => item.productId)
-            .forEach(deleteCartItemByProductId)
+        console.log('test',reponse);
+        if(reponse.data.orderItemVms) {
+        Array.from(reponse.data.orderItemVms).map((item) => item.productId) 
+            .forEach(deleteCartItemByProductId)}
         if (reponse.status === 200) {
             const orderId = reponse.data.id;
             router.push(`/order-success/${orderId}`)

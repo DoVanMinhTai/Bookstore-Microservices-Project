@@ -1,0 +1,11 @@
+package com.adc.inventory.viewmodel.warehouse;
+
+import lombok.Builder;
+
+@Builder
+public record WarehouseDetailVm
+       (Long id, String name, String contactName, String phone, String addressLine1,
+       String addressLine2, String city, String zipCode,
+       Long districtId, Long stateOrProvinceId, Long countryId
+) {
+}

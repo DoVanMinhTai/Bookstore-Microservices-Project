@@ -179,4 +179,16 @@ public class ProductService {
 
         return result;
     }
+
+    public ProductThumbnailGetVm getProductById(Long id) {
+        Book book =  bookRepository.findById(id).orElseThrow();
+        ProductThumbnailGetVm productThumbnailGetVm = new ProductThumbnailGetVm(
+                book.getId(),
+                book.getName()
+        ,book.getSlug(),
+                mediaService.getMedia(book.getThumbnailMediaId()).url()
+                ,book.getPrice());
+
+        return productThumbnailGetVm;
+    }
 }

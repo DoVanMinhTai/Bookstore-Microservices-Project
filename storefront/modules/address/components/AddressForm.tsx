@@ -57,7 +57,6 @@ export default function AddressForm({titleModal, handleSubmit, register, setValu
         setValue('stateOrProvinceName', event.target.selectedOptions[0].text);
         getDistricts(event.target.value).then(setDistricts);
     };
-    console.log('address in form', address);
     
     
     
