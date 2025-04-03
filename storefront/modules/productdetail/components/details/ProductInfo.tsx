@@ -4,9 +4,11 @@ import { formatPrice } from "@/utils/formatPrice";
 import ProductOptions from "../options/ProductOptions";
 type product = {
     product: ProductDetail;
+    handleQuantityChange: (quantity: number) => void
 }
 
-export default function ProductInfo({ product }: product) {
+export default function ProductInfo({ product, handleQuantityChange }: product) {
+   
     return (
         <>
             <div className="px-10 mt-4 flex flex-grow flex-col  gap-5 h-auto     ">
@@ -26,7 +28,7 @@ export default function ProductInfo({ product }: product) {
                         <div>9{product.isPublished}</div> */}
                 <div>Kích thước: {product.packageDimensions}</div>
                 <div className="border-b-4 border-b-slate-600"></div>
-                <ProductOptions />
+                <ProductOptions onQuantityChange={handleQuantityChange} />
 
             </div>
         </>

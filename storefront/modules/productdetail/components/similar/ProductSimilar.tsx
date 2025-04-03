@@ -26,13 +26,12 @@
 
                     </div>
                     {productSimilar && productSimilar.map((item,index) => (
-                        <>
+                        
                             <div className="flex item-center px-3 w-full gap-3 mt-3 " key={index}>
                                 <ImageWithFallBack className="h-20 w-20 rounded-md" src={item.thumbnailUrl} alt={item.name} />
                                 <div className="flex-grow items-center">{item.name}</div>
                                 <div className="flex-grow items-center">{item.price}</div>
                             </div>
-                        </>
 
                     ))}
                 </div>
