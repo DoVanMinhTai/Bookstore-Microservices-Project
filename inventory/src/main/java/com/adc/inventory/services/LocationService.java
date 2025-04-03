@@ -1,8 +1,12 @@
 package com.adc.inventory.services;
 
 import com.adc.inventory.config.ServiceUrlConfig;
+import com.adc.inventory.viewmodel.location.AddressPostVm;
+import com.adc.inventory.viewmodel.location.AddressVm;
 import com.adc.inventory.viewmodel.location.LocationGetVm;
+import com.adc.inventory.viewmodel.warehouse.WareHousePostVm;
 import lombok.AllArgsConstructor;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -30,5 +34,33 @@ public class LocationService {
                 .headers(httpHeaders -> httpHeaders.setBearerAuth(jwt))
                 .retrieve()
                 .body(LocationGetVm.class);
+    }
+
+    public AddressVm createAddress(AddressPostVm addressPostVm) {
+        final String jwt = ((Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getTokenValue();
+
+        URI uri = UriComponentsBuilder.fromHttpUrl(serviceUrlConfig.location())
+                .path("/storefront/addresses")
+                .buildAndExpand()
+                .toUri();
+        return restClient.post()
+                .uri(uri)
+                .headers(httpHeaders -> httpHeaders.setBearerAuth(jwt))
+                .body(addressPostVm)
+                .retrieve()
+                .body(AddressVm.class);
+    }
+
+    public void updateAddress(Long addressId, WareHousePostVm wareHousePostVm) {
+        final String jwt = ((Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getTokenValue();
+
+        URI uri = UriComponentsBuilder.fromHttpUrl(serviceUrlConfig.location())
+                .path("/storefront/addresses/{id}")
+                .buildAndExpand(addressId)
+                .toUri();
+         restClient.put()
+                .uri(uri)
+                .headers(httpHeaders -> httpHeaders.setBearerAuth(jwt))
+                 .body(wareHousePostVm);
     }
 }

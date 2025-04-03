@@ -1,6 +1,5 @@
 export {default as ProductOptions} from './options/ProductOptions';
 export {default as ProductActions} from './actions/ProductActions';
-export {default as ProductImage} from './details/ProductImage';
 export {default as ProductInfo} from './details/ProductInfo';
 export {default as ProductTabs} from './tabs/ProductTabs';
 export {default as ProductSimilar} from './similar/ProductSimilar';

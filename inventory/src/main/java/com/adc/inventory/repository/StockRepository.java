@@ -15,9 +15,9 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
 
     boolean existsByWareHouseIdAndProductId(Long wareHouseId, Long productId);
 
-    List<Stock> findAllByWareHouseIdAndProductIds(Long warehouseId, List<Long> list);
+    List<Stock> findAllByWareHouseIdAndProductIdIn(Long warehouseId, List<Long> list);
 
-    List<Stock> findAllByProductId(List<Long> productId);
+    List<Stock> findAllByProductIdIn(List<Long> productId);
 
     List<Long> getByWareHouseId(Long warehouseId);
 }

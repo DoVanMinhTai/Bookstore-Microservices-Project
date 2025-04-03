@@ -37,6 +37,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Query("FROM Book b where b.isPublished = TRUE AND b.isFeatured = TRUE AND b.isVisibleIndividually = TRUE" +
             " ORDER BY b.id asc ")
     Page<Book> getFeaturedProducts(Pageable pageable);
+
+    List<Book> findAllByIdAndBrand_Id(Long id, Long brandId);
 }
 
 

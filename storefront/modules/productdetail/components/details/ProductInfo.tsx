@@ -9,7 +9,7 @@ type product = {
 export default function ProductInfo({ product }: product) {
     return (
         <>
-            <div className="px-10 mt-4 flex flex-grow flex-col  gap-5 h-auto  ">
+            <div className="px-10 mt-4 flex flex-grow flex-col  gap-5 h-auto     ">
                 <div className=" text-center text-2xl">{product.name}</div>
                 <div className=" text-2xl">Tên sản phẩm: {product.name}</div>
                 <div className="brand">Thương hiệu: {product.brandName}</div>
