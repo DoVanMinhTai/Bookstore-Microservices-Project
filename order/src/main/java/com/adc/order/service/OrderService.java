@@ -13,6 +13,7 @@ import com.adc.order.viewmodel.order.OrderPostVm;
 import com.adc.order.viewmodel.order.OrderVm;
 import com.adc.order.viewmodel.orderaddress.OrderAddressPostVm;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -117,5 +118,19 @@ public class OrderService {
         OrderVm orderVm =  OrderVm.fromModel(order,orderItemSet);
         return orderVm;
 
+    }
+
+    public List<OrderVm> getAllOrderByUserId() {
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        List<Order> orders = orderRepository.findAllByCreatedBy(userId);
+        Set<OrderItem> orderItems = new HashSet<>(orderItemRepository.findByOrderId(orders.get(0).getId()));
+        return orders.stream().map(
+                order -> {
+                    Set<OrderItem> orderItemSet = new HashSet<>(orderItemRepository.findByOrderId(order.getId()));
+                    OrderVm orderVm =  OrderVm.fromModel(order,orderItemSet);
+                    return orderVm;
+                }
+        ).toList();
     }
 }

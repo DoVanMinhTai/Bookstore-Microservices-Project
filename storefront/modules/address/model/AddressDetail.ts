@@ -1,4 +1,4 @@
-export type AddressDetail = {
+export type AddressDetailVm = {
     id: number;
     contactName: string;
     phone: string;

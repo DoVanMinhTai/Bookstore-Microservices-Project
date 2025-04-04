@@ -50,7 +50,7 @@ export default function AuthenticationInfo() {
               <Link href="/profile" className="block px-4 py-2 hover:bg-gray-700">
                 Profile
               </Link>
-              <Link href="/my-orders" className="block px-4 py-2 hover:bg-gray-700">
+              <Link href="/myorders" className="block px-4 py-2 hover:bg-gray-700">
                 My Orders
               </Link>
               <Link href="/logout" className="block px-4 py-2 hover:bg-gray-700">
