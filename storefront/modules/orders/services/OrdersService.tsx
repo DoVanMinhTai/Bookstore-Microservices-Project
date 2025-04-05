@@ -28,7 +28,7 @@ export async function getOrderById(id: number): Promise<OrderVm> {
 
 }
 
-export async function getListOrderByCreatedBy(): Promise<OrderVm> {
+export async function getListOrderByCreatedBy(): Promise<OrderVm[]> {
     const reponse = await apiClientService.get(`${baseUrl}/orders/listOrders`)
     if (!reponse.ok) {
         throw new Error("Có Lỗi Rồi");
