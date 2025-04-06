@@ -29,6 +29,7 @@ public class StockService {
     private final StockHistoryRepository stockHistoryRepository;
     private final ProductService productService;
     private final WareHouseService wareHouseService;
+    private final StockHistoryService stockHistoryService;
 
     /*     Steps:
      *           1.check warehouseid and productid
@@ -67,14 +68,14 @@ public class StockService {
         stockRepository.saveAll(stocks);
     }
 
-    public List<StockVm> getStocksByWarehouseIdAndProductNameAndSku(Long warehouseId, String productName, String productSku,FilterExitsInWhSelection exitsInWhSelection) {
+    public List<StockVm> getStocksByWarehouseIdAndProductNameAndSku(Long warehouseId, String productName, String productSku) {
 
-        HashMap<Long, ProductInfo> productInfoHashMap = (HashMap<Long, ProductInfo>) wareHouseService.getProductWarehouse(warehouseId, productName, productSku, exitsInWhSelection)
+        HashMap<Long, ProductInfo> productInfoHashMap = (HashMap<Long, ProductInfo>) wareHouseService.getProductWarehouse(warehouseId, productName, productSku, FilterExitsInWhSelection.YES)
                 .parallelStream()
                 .collect(Collectors.toMap(ProductInfo::id, productInfo -> productInfo));
 
 
-        List<Stock> stocks = stockRepository.findAllByWareHouseIdAndProductIds(warehouseId
+        List<Stock> stocks = stockRepository.findAllByWareHouseIdAndProductIdIn(warehouseId
                 , productInfoHashMap.values().parallelStream().map(ProductInfo::id).toList());
 
         return stocks.stream().map(
@@ -108,7 +109,7 @@ public class StockService {
             stock.setQuantity(stockQuantityVm.quantity() + adjustedQuantity);
         }
         stockRepository.saveAll(stocks);
-        stockHistoryRepository.createStockHistories(stocks);
+        stockHistoryService.createStockHistories(stocks,stockQuantityVms);
 
 //      cat nhat quantity product
         List<ProductQuantityPostVm> productQuantityPostVms = stocks.parallelStream()

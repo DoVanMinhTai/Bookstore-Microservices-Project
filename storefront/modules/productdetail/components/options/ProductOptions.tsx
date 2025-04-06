@@ -1,12 +1,28 @@
-import { useState } from "react"
+import { SetStateAction, useState } from "react"
 
-export default function ProductOptions() {
+type Props = {
+    onQuantityChange: (quantity: number ) => void
+}
+
+export default function ProductOptions({onQuantityChange} : Props) {
     const[quantity,setQuantity] = useState(1);
 
-    const increaseQuantity = () => setQuantity(quantity + 1);
+    const updateQuantity = (newQuantity: number) => {
+        setQuantity(newQuantity);
+        onQuantityChange(newQuantity);
+    }
+
+
+    const increaseQuantity = () =>{
+        const newQuantity = quantity + 1 
+        setQuantity(newQuantity);
+        onQuantityChange(newQuantity)
+    }
     const decreaseQuantity = () => {
         if(quantity > 1) {
-            setQuantity(quantity-1);
+            const newQuantity = quantity -1
+            setQuantity(newQuantity);
+            onQuantityChange(newQuantity);
         }
     }
     return (
@@ -20,7 +36,7 @@ export default function ProductOptions() {
                             onClick={decreaseQuantity}
                         >−</button>
                         <input min="1" value={quantity} className="w-full text-center border-x border-gray-300 outline-none"
-                            onChange={(e) => setQuantity(Number(e.target.value))}
+                            onChange={(e) => updateQuantity(Number(e.target.value))}
                         />
                         <button className="bg-gray-200 px-3 py-2 hover:bg-gray-300 grow"
                             onClick={increaseQuantity}

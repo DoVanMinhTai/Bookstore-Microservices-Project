@@ -134,7 +134,6 @@ public class ProductService {
             }
         }
 
-//        List<String> productCategories = bookCategoryRepository.findById(product.getId());
         return new ProductDetailGetVm(
                 product.getId(),
                 product.getName(),
@@ -190,5 +189,19 @@ public class ProductService {
                 ,book.getPrice());
 
         return productThumbnailGetVm;
+    }
+
+    public List<ProductThumbnailGetVm> getProductSimilarBySlug(String slug) {
+        Book book = bookRepository.findBySlugAndIsPublishedTrue(slug).orElseThrow();
+
+        List<Book> productThumbnailGetVms = bookRepository.findAllByIdAndBrand_Id(book.getId(), book.getBrand().getId());
+
+        return productThumbnailGetVms.stream().map(product ->
+                new ProductThumbnailGetVm(product.getId()
+                ,product.getName()
+                ,product.getSlug()
+                ,mediaService.getMedia(product.getThumbnailMediaId()).url()
+                ,product.getPrice()
+                )).toList();
     }
 }

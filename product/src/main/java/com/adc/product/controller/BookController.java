@@ -76,7 +76,7 @@ public class BookController {
         return ResponseEntity.ok(productService.getFeaturedProduct(pageNo, pageSize));
     }
 
-    @GetMapping("/storefront/product/{slug}")
+    @GetMapping("/storefront/productdetail/{slug}")
     public ResponseEntity<ProductDetailGetVm> getProductDetail(
             @PathVariable String slug
     ) {
@@ -91,5 +91,10 @@ public class BookController {
     @GetMapping("/storefront/product/{id}")
     public ResponseEntity<ProductThumbnailGetVm> getProductById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getProductById(id));
+    }
+
+    @GetMapping("/storefront/product/productSimilar/{slug}")
+    public ResponseEntity<List<ProductThumbnailGetVm>> getProductSimilar(@PathVariable String slug) {
+        return ResponseEntity.ok(productService.getProductSimilarBySlug(slug));
     }
 }

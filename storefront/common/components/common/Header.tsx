@@ -10,7 +10,7 @@ import AuthenticationInfo from '../AuthenticationInfo';
 import { CartContext, useCartContext } from '@/context/CartContext';
 
 const Header = () => {
-    const{numberCartItems} = useCartContext();
+    const { numberCartItems } = useCartContext();
     return (
         <header >
             {/* Header Top */}
@@ -20,7 +20,7 @@ const Header = () => {
                         <div className="flex  items-center justify-center h-full p-1">
                             <ul className="p-0 m-0 gap-3 flex items-center justify-center text-sm h-full ">
                                 <li className="">Đặt bánh lấy ngay tại Thành phố Hồ Chí Minh</li>
-                                <li className="">Hệ thống bánh sinh nhật chính hãng</li>
+                                <li className="">Hệ thống sách chính hãng</li>
                                 <li className="">Hotline: 01234576789</li>
                             </ul>
                         </div>
@@ -64,16 +64,16 @@ const Header = () => {
                         <div className="flex grow justify-between">
                             <ul className="flex h-full items-center space-x-6 p-0 ">
                                 <li>
-                                    <a href="../pages/homepage.html" className="active no-underline">Trang chủ</a>
+                                    <a href="" className="active no-underline">Trang chủ</a>
                                 </li>
 
                                 <li className="relative group">
-                                    <a href="../pages/ProductCatalog.html" className='no-underline'>Danh mục</a>
-                                  
+                                    <a href="" className='no-underline'>Danh mục</a>
+
                                 </li>
 
                                 <li>
-                                    <a className='no-underline' href="../pages/introWebsite.html">Giới thiệu</a>
+                                    <a className='no-underline' href="">Giới thiệu</a>
                                 </li>
                             </ul>
 
@@ -82,8 +82,12 @@ const Header = () => {
                             <div className="flex gap-4">
                                 <div className="flex items-center gap-2">
                                     {/* <CartContext ></CartContext> */}
-                                    <div>{numberCartItems}</div>
-                                    <CartModal />
+                                    <div className="relative   ">
+                                        <CartModal />
+                                        <div className="absolute -right-2 -top-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                                            {numberCartItems}
+                                        </div>
+                                    </div>
                                     <AuthenticationInfo />
                                 </div>
                             </div>

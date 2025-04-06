@@ -42,15 +42,15 @@ export default function AuthenticationInfo() {
 
           {/* Dropdown Menu */}
           {dropdownOpen && (
-            <div className="absolute mt-1 bg-gray-800 text-white rounded-md shadow-lg ">
-                <div>
-                Xin Chào: {authenticatedInfoVm.authenticatedUser.userName}
+            <div className="absolute mt-1  bg-gray-800 text-white rounded-md shadow-lg ">
+              <div className="block text-lg px-4 py-2">
+               Xin chào: {authenticatedInfoVm.authenticatedUser.userName.split('@')[0]}
 
-                </div>
+              </div>
               <Link href="/profile" className="block px-4 py-2 hover:bg-gray-700">
                 Profile
               </Link>
-              <Link href="/my-orders" className="block px-4 py-2 hover:bg-gray-700">
+              <Link href="/myorders" className="block px-4 py-2 hover:bg-gray-700">
                 My Orders
               </Link>
               <Link href="/logout" className="block px-4 py-2 hover:bg-gray-700">

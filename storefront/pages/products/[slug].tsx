@@ -1,8 +1,8 @@
 import { GetServerSideProps, GetServerSidePropsContext } from "next"
-import { ProductDetail } from "@/modules/productdetail/model/ProductDetail";
 import { getProductDetail } from "@/modules/productdetail/services/ProductService";
-import Head from "next/head";
+import { ProductDetail } from "@/modules/productdetail/model/ProductDetail";
 import ProductDetails from "@/modules/productdetail/components/ProductDetails";
+import Head from "next/head";
  type Props = {
     product: ProductDetail;
     pvid: string | null;
@@ -16,6 +16,7 @@ export const getServerSideProps: GetServerSideProps = async (
 ) => {
     const {slug} = context.query;
 
+    
     const product =  await getProductDetail(slug as string);
     return {
         props: {

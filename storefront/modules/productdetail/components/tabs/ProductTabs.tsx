@@ -4,8 +4,8 @@ import { ProductTabContentTabProps } from "..";
 export default function ProductTabs() {
   const [activeTab, setActiveTab] = useState('specification');
   return (<>
-    <div className="  gap-10 border-2 p-2">
-      <div className="flex-grow flex text-center">
+    <div className="  gap-10 border-2">
+      <div className="flex-grow border-b-2 flex items-center text-center">
         {[
           { id: "specification", label: "Chi tiết sản phẩm" },
           { id: "warranty", label: "Chính sách đổi trả" },
@@ -13,7 +13,7 @@ export default function ProductTabs() {
           { id: "seller", label: "Nhà cung cấp" },
         ].map((tab) => (
           <div key={tab.id}
-            className={`cursor-pointer flex-grow text-center p-2 ${activeTab === tab.id ? "border-4 border-blue-500 font-bold text-blue-500" : "text-gray-600"
+            className={`cursor-pointer flex-grow text-center p-2 ${activeTab === tab.id ? "border-4 border-blue-500 font-bold text-sm bg-blue-500" : "text-sm font-bold"
               }`}
             onClick={() => setActiveTab(tab.id)}
           >

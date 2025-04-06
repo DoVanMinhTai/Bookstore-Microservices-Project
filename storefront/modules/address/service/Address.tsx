@@ -1,7 +1,7 @@
 import apiClientService from "@/common/components/services/ApiClientService";
 import { Address } from "../model/Address";
 import { AddressPostVm } from "../model/AddressPostVm";
-import { AddressDetail } from "../model/AddressDetail";
+import { AddressDetailVm } from "../model/AddressDetail";
 
 const baseUrl = 'http://localhost:8087/api/location/storefront';
 
@@ -30,7 +30,7 @@ export async function updateAddress(id: number, addressPostVm: AddressPostVm) {
 }
 
 
-export async function getAddressById(id: number): Promise<AddressDetail> {
+export async function getAddressById(id: number): Promise<AddressDetailVm> {
     const reponse =  await apiClientService.get(`${baseUrl}/addresses/${id}`);
     if(!reponse.ok) {
         throw new Error("Co loi roi")

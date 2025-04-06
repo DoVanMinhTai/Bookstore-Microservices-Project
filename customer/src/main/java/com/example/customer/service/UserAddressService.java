@@ -60,6 +60,7 @@ public class UserAddressService {
         Optional<UserAddress> userAddress = userAddressRespository.findByUserIdAndIsActiveTrue(userId);
 
         AddressDetailVm addressDetailVm = locationService.getAddressById(userAddress.get().getAddressId());
+        System.out.println(addressDetailVm);
         return addressDetailVm;
     }
 
@@ -68,6 +69,6 @@ public class UserAddressService {
 
         Optional<UserAddress> userAddress = userAddressRespository.findByUserIdAndIsActiveTrue(userId);
         List<AddressDetailVm> addressDetailVm = locationService.getAddressBillingById(userAddress.get().getAddressId());
-        return  addressDetailVm;
+        return addressDetailVm;
     }
 }
