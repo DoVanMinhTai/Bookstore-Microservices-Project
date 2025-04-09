@@ -36,7 +36,7 @@ URLS=[
   { url: 'http://api.adc.local/order/v3/api-docs', name: 'Order' }
 ]
 ```
-###  Installation
+### ⚙️ Installation
 ```
 1. Edit file hosts and add the following records to your host file:
 127.0.0.1 api.adc.local
