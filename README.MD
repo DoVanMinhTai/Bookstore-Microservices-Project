@@ -35,7 +35,7 @@ URLS=[
   { url: 'http://api.adc.local/media/v3/api-docs', name: 'Media' },
   { url: 'http://api.adc.local/order/v3/api-docs', name: 'Order' }
 ]
-
+```
 ###  Installation
 - 1. Edit file hosts and add the following records to your host file:
  > 127.0.0.1 api.adc.local
