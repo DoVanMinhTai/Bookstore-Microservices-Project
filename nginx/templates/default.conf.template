@@ -3,21 +3,22 @@ server {
 
     resolver 127.0.0.11;
 
-
-
-    location /customer/ {
-        proxy_pass http://host.docker.internal:8088;
-    }
-    location /product/ {
-        proxy_pass http://host.docker.internal:8080;
-    }
-    location /order/ {
-        proxy_pass http://host.docker.internal:8085;
-    }
-     location /media/ {
-        proxy_pass http://host.docker.internal:8083;
+    location /swagger-ui/ {
+      proxy_pass http://swagger-ui:8080;
      }
 
+    location /customer/ {
+        proxy_pass http://customer;
+    }
+    location /product/ {
+        proxy_pass http://product;
+    }
+     location /cart/ {
+            proxy_pass http://cart;
+         }
+     location /inventory/ {
+             proxy_pass http://inventory;
+          }
 }
 
 

@@ -15,7 +15,9 @@ com\example\customer\CustomerApplication.class
 com\example\customer\viewmodel\address\AddressVm.class
 com\example\customer\config\KeyCloakPropsConfig$Credentials.class
 com\example\customer\config\ServiceUrlConfig.class
+com\example\customer\service\LocationService$1.class
 com\example\customer\controller\UserAddressController.class
+com\example\customer\service\LocationService.class
 com\example\customer\config\SwaggerConfig.class
 com\example\customer\utils\Constants.class
 com\example\customer\viewmodel\address\AddressPostVm.class
@@ -26,7 +28,7 @@ com\example\customer\config\KeyCloakPropsConfig.class
 com\example\customer\config\RestClientConfig.class
 com\example\customer\controller\CustomerController.class
 com\example\customer\respository\UserAddressRespository.class
-com\example\customer\service\LoationService.class
 com\example\customer\viewmodel\customer\CustomerVm.class
 com\example\customer\viewmodel\address\AddressDetailVm.class
+com\example\customer\service\LocationService$2.class
 com\example\customer\viewmodel\address\AddressVm$AddressVmBuilder.class

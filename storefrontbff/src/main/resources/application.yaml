@@ -29,6 +29,9 @@ logging:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
 ---
 spring:
+  config:
+    activate:
+      on-profile: "dev"
   cloud:
     gateway:
       routes:
@@ -90,7 +93,28 @@ spring:
       default-filters:
         - SaveSession
 ---
+spring:
+  config:
+    activate:
+      on-profile: "prod"
+  cloud:
+    gateway:
+      routes:
+        - id: api
+          uri: http://nginx
+          predicates:
+            - Path=/api/**
+          filters:
+            - DedupeResponseHeader=Origin Access-Control-Request-Method Access-Control-Request-Headers
+            - TokenRelay=
+            - StripPrefix=1
+        - id: nextjs
+          uri: http://storefront-nextjs:3000
+          predicates:
+            - Path=/**
+---
 adc:
   services:
     token-identity: http://identity/realms/Identity/protocol/openid-connect/token
-    cart: http://localhost:8084
+    cart: http://api.adc.local/cart
+    customer: http://api.adc.local/customer
