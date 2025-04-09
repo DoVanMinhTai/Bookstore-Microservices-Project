@@ -3,6 +3,7 @@ import { AddressDetailVm } from '@/modules/address/model/AddressDetail';
 import { CountryVm } from '@/modules/country/model/CountryVm';
 import { getAllCoutries, getDistricts, getStateOrProvinces } from '@/modules/country/service/CountryService';
 import { Districts } from '@/modules/districts/model/Districts';
+import { OrderItemVm } from '@/modules/orders/model/OrderItemVm';
 import { OrderVm } from '@/modules/orders/model/OrderVm'
 import { getListOrderByCreatedBy } from '@/modules/orders/services/OrdersService'
 import { StateOrProvince } from '@/modules/stateorprovince/model/StateOrProvince';
@@ -24,6 +25,9 @@ export default function myorders() {
   const [listDistricts, setListDistricts] = useState<Districts[]>();
   const [shippingAddressVm, setShippingAddressVm] = useState<AddressDetailVm>();
   const [billingAddressVm, seBillingAddressVm] = useState<AddressDetailVm>();
+  const [isDisplay,setisDisplay] = useState<Boolean>(false);
+  const [orderModalVm,setOrderModalVm] = useState<OrderVm>();
+  const [orderItemModalVm,setOrderItemModalVm] = useState<OrderItemVm[]>();
 
   useEffect(() => {
     getListOrderByCreatedBy()
@@ -65,23 +69,28 @@ export default function myorders() {
     return name ? name.name : "Unknow Name District";
 
   }
+  const handleModalOrderDetail = (orderVmModal: OrderVm, orderItemVmsModal: OrderItemVm[]) => {
+      setisDisplay(!isDisplay);
+      setOrderModalVm(orderVmModal);
+      orderItemVmsModal ? setOrderItemModalVm(orderItemVmsModal) : [];
 
+  }
 
 
   return (
     <>
       <div className="container mx-auto">
         <h2 className="text-center font-bold">Danh sách đơn hàng</h2>
-        <div>
           {orderVm && orderVm.map((item, index) => (
-            <div className="flex flex-col w-[70%] mx-auto mt-5 gap-3" key={index}>
+        <div key={index}>
+            <div className="flex flex-col w-[70%] mx-auto mt-5 gap-3"  onClick={() => handleModalOrderDetail(item,Array.from(item.orderItemVms))}>
 
               <>
                 <div className="mx-auto"
                 >
                   <div className="flex justify-between">
                     <div>
-                      Đơn hàng chi tiết: #{item.id}
+                      ID Đơn hàng: {item.id}
                     </div>
                     <div>Trạng thái đơn hàng : {deliveryStatusTranslations[item.deliveryStatus]}</div>
                   </div>
@@ -95,6 +104,13 @@ export default function myorders() {
                     {getDistrictsName(item.billingAddressVm.districtId)}
 
                   </div>
+                    {Array.from(item.orderItemVms).map((item,index) => (
+                  <div key={index}>
+                      <>
+                      {item.productId}
+                      </>
+                  </div>
+                    ))}
                 </div>
                 <div>
                 </div >
@@ -102,9 +118,9 @@ export default function myorders() {
 
 
             </div>
-          ))}
 
         </div>
+          ))}
 
       </div>
     </>
