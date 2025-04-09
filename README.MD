@@ -37,13 +37,20 @@ URLS=[
 ]
 ```
 ###  Installation
-- 1. Edit file hosts and add the following records to your host file:
- > 127.0.0.1 api.adc.local
- > 127.0.0.1 pgadmin.adc.local
- > 127.0.0.1 identity
- > 127.0.0.1 storefront
-- 2. Clone the reponsitory git clone https://github.com/DoVanMinhTai/BookStore.git
-- 3. Open the terminal in project root and change directory to src folder using: cd adc
-- 4. Create .env file which has the structured like specified in the note above in the src folder and fill in your own services
-- 5. Build the project using the command: docker-compose build
-- 6. Please login through the login api in the Identity API and assign the JWT token to the bearer in these APIs (account: admin admin)
+```
+1. Edit file hosts and add the following records to your host file:
+127.0.0.1 api.adc.local
+127.0.0.1 pgadmin.adc.local
+127.0.0.1 identity
+127.0.0.1 storefront
+2. Clone the repository: 
+git clone https://github.com/DoVanMinhTai/BookStore.git
+3. Navigate to the src folder:
+cd BookStore/adc
+4. Create a .env file inside the adc folder with the structure mentioned above and fill in your own service values.
+5. docker-compose build
+6. Login through the Identity API. Use the login API and assign the JWT token as Bearer token in other APIs.
+Default account:
+Username: admin
+Password: admin
+```
