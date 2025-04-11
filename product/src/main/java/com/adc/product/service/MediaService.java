@@ -24,7 +24,7 @@ public class MediaService extends AbstractCircuitBreakFallbackHandler {
             return new MetaData(null,"","","","","");
         }
         final URI url = UriComponentsBuilder.fromUriString(serviceUrlConfig.media())
-                .path("media/{id}").buildAndExpand(id).toUri();
+                .path("media/media/{id}").buildAndExpand(id).toUri();
         System.out.println(url);
         return restClient.get().uri(url)
                 .retrieve().body(MetaData.class);

@@ -54,7 +54,7 @@ public class MediaServiceImpl implements MediaService {
     private String getMediaUrl(Long id, String fileName) {
         System.out.println(id + " " + fileName);
         return UriComponentsBuilder.fromUriString(adcConfig.url())
-                .path(String.format("media/{id}/file/{name}"))
+                .path(String.format("media/media/{id}/file/{name}"))
                 .buildAndExpand(id,fileName).toUriString();
 
     }
