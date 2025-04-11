@@ -27,7 +27,7 @@ public class OrderService extends  AbstractCircuitBreakFallbackHandler {
     @CircuitBreaker(name = "restCircuitBreaker", fallbackMethod = "handleProductInfomationFallback")
     public List<Long> getProductByIdAndCompleted() {
         final URI orderServiceUrl = UriComponentsBuilder.fromHttpUrl(serviceUrlConfig.order())
-                .path("/orders/completed/products")
+                .path("/order/completed/products")
                 .build().toUri();
         log.info("🔹 Calling OrderService: {}", orderServiceUrl);
 

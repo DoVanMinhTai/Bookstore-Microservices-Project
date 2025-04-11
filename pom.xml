@@ -15,14 +15,14 @@
 	<name>adc</name>
 	<modules>
 		<module>common-library</module>
-		<module>storefrontbff</module>
-		<module>order</module>
-		<module>product</module>
-		<module>customer</module>
 		<module>media</module>
-		<module>cart</module>
-		<module>inventory</module>
-		<module>location</module>
+<!--		<module>storefrontbff</module>-->
+<!--		<module>order</module>-->
+<!--		<module>product</module>-->
+<!--		<module>customer</module>-->
+<!--		<module>cart</module>-->
+<!--		<module>inventory</module>-->
+<!--		<module>location</module>-->
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

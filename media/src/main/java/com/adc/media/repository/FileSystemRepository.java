@@ -20,7 +20,11 @@ public class FileSystemRepository {
         if (!Files.exists(path)) {
             throw new IllegalStateException(String.format(DIRECTORY_DOES_NOT_EXIST, fileSystemConfig.getDirectory()));
         }
-        return Files.newInputStream(path);
+        try {
+            return Files.newInputStream(path);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read file: " + filePath, e);
+        }
     }
 
 
