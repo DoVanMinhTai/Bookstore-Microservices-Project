@@ -31,7 +31,8 @@ public class MediaServiceImpl implements MediaService {
         if (!fileName.equalsIgnoreCase(media.getFileName()) || media == null) {
             return builder.build();
         }
-        MediaType mediaType = MediaType.valueOf(media.getMediaType());
+            MediaType mediaType = MediaType.valueOf(media.getMediaType());
+        System.out.println(media.getFilePath());
         InputStream fileContent = fileSystemRepository.getFile(media.getFilePath());
         return builder.content(fileContent).mediaType(mediaType).build();
     }
@@ -44,7 +45,7 @@ public class MediaServiceImpl implements MediaService {
 //            new ChangeSetPersister.NotFoundException();
 //        }
         String url = getMediaUrl(metaData.id(),metaData.fileName());
-
+        System.out.println("url: " + url);
         return new MediaVm(metaData.id(), metaData.caption(),
                 metaData.fileName(), metaData.mediaType(),
                 url);
@@ -53,7 +54,7 @@ public class MediaServiceImpl implements MediaService {
     private String getMediaUrl(Long id, String fileName) {
         System.out.println(id + " " + fileName);
         return UriComponentsBuilder.fromUriString(adcConfig.url())
-                .path(String.format("media/medias/{id}/file/{name}"))
+                .path(String.format("media/{id}/file/{name}"))
                 .buildAndExpand(id,fileName).toUriString();
 
     }

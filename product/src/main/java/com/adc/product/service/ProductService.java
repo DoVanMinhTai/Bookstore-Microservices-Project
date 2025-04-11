@@ -118,6 +118,7 @@ public class ProductService {
                     )
             );
         }
+        System.out.println();
         return new ProductFeaturedGetVm(productThumbnailGetVms,productPage.getTotalPages() );
 
     }
