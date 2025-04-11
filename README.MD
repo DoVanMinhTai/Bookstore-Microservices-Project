@@ -1,14 +1,23 @@
-# 📚 Book Store
+# Book Store
 
-![Swagger UI Screenshot](screenshot/image.png)
+![Swagger UI Screenshot](screenshot/image1.png)
+![Example Image](screenshot/image.png)
+![Example Image](screenshot/image2.png)
 
 ---
 
-## 📝 Note
+## Tech Stack
+- Java 17
+- Spring Boot 3.4.2
+- Next.js
+- Keycloak
+- Nginx
+
+## Note
 
 This project requires a `.env` file with the following configuration:
 
-### 🛢️ .env
+### .env
 
 ```env
 POSTGRES_HOST=postgres  
@@ -36,7 +45,7 @@ URLS=[
   { url: 'http://api.adc.local/order/v3/api-docs', name: 'Order' }
 ]
 ```
-### ⚙️ Installation
+## Installation
 ```
 1. Edit file hosts and add the following records to your host file:
 127.0.0.1 api.adc.local
@@ -48,9 +57,15 @@ git clone https://github.com/DoVanMinhTai/BookStore.git
 3. Navigate to the src folder:
 cd BookStore/adc
 4. Create a .env file inside the adc folder with the structure mentioned above and fill in your own service values.
-5. docker-compose build
+5. Open terminal of your choice,go to `adc` directory, run `docker compose -f docker-compose.yml up`
+6. All the containers up and running then we start source connectors by run script, open any terminal window... go to the adc root folder and type: ./start-source-connectors.sh
 6. Login through the Identity API. Use the login API and assign the JWT token as Bearer token in other APIs.
 Default account:
 Username: admin
 Password: admin
 ```
+
+### You might also want to explore:
+1. `http://pgadmin.yas.local/`. Account login: `admin@adc.com` / admin. Register a server: postgres, port 5432, username admin, password admin. The Postgresql server is also exposed to the host machine: servername: localhost, port: 5432, username: admin, password: admin
+2. `http://api.adc.local/swagger-ui/` for all the REST API document of all the services
+3. `http://identity/` for Keycloak console, account admin/admin
