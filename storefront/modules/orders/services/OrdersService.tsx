@@ -2,7 +2,7 @@ import apiClientService from "@/common/components/services/ApiClientService";
 import { OrdersPostVm } from "../model/OrdersPostVm";
 import { OrderVm } from "../model/OrderVm";
 
-const baseUrl = 'http://localhost:8087/api/orders/storefront'
+const baseUrl = 'http://localhost:8087/api/order/storefront'
 
 export async function createOrder(ordersPostVm: OrdersPostVm): Promise<{ status: number, data: OrderVm }> {
     const reponse = await apiClientService.post(`${baseUrl}/orders`, JSON.stringify(ordersPostVm));

@@ -20,7 +20,7 @@
 <!--		<module>order</module>-->
 <!--		<module>product</module>-->
 <!--		<module>customer</module>-->
-<!--		<module>cart</module>-->
+		<module>cart</module>
 <!--		<module>inventory</module>-->
 <!--		<module>location</module>-->
 	</modules>
