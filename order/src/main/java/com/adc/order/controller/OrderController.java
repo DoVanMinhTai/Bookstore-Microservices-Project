@@ -1,8 +1,10 @@
 package com.adc.order.controller;
 
 import com.adc.order.service.OrderService;
+import com.adc.order.viewmodel.PaymentOrderStatusVm;
 import com.adc.order.viewmodel.order.OrderPostVm;
 import com.adc.order.viewmodel.order.OrderVm;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,4 +36,11 @@ public class OrderController {
     public ResponseEntity<List<OrderVm>> getAllOrders() {
         return ResponseEntity.ok(orderService.getAllOrderByUserId());
     }
-}
+
+    @PutMapping("/storefront/orders/status")
+    public ResponseEntity<PaymentOrderStatusVm> updateOrderPaymentStatus(
+            @Valid @RequestBody PaymentOrderStatusVm paymentOrderStatusVm
+    ) {
+        PaymentOrderStatusVm orderStatusVm = orderService.updateOrderPaymentStatus(paymentOrderStatusVm);
+        return ResponseEntity.ok(orderStatusVm);
+    }}

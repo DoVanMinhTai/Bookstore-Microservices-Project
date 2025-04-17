@@ -6,12 +6,15 @@ import com.adc.order.model.OrderAddress;
 import com.adc.order.model.OrderItem;
 import com.adc.order.model.enumeration.DeliveryStatus;
 import com.adc.order.model.enumeration.OrderStatus;
+import com.adc.order.model.enumeration.PaymentStatus;
 import com.adc.order.repository.OrderItemRepository;
 import com.adc.order.repository.OrderRepository;
+import com.adc.order.viewmodel.PaymentOrderStatusVm;
 import com.adc.order.viewmodel.order.OrderItemVm;
 import com.adc.order.viewmodel.order.OrderPostVm;
 import com.adc.order.viewmodel.order.OrderVm;
 import com.adc.order.viewmodel.orderaddress.OrderAddressPostVm;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -132,5 +135,21 @@ public class OrderService {
                     return orderVm;
                 }
         ).toList();
+    }
+
+    public PaymentOrderStatusVm updateOrderPaymentStatus(@Valid PaymentOrderStatusVm paymentOrderStatusVm) {
+        Order order = orderRepository.findById(paymentOrderStatusVm.orderId()).orElseThrow(() -> new NotFoundException("ORDER_NOT_FOUND",paymentOrderStatusVm.orderId()));
+
+        order.setPaymentId(paymentOrderStatusVm.paymentId());
+        order.setPaymentStatus(PaymentStatus.valueOf(paymentOrderStatusVm.orderStatus()));
+        if(PaymentStatus.COMPLETED.equals(PaymentStatus.valueOf(paymentOrderStatusVm.paymentStatus()))) {
+            order.setOrderStatus(OrderStatus.PAID);
+        }
+        Order result = orderRepository.save(order);
+        return PaymentOrderStatusVm.builder()
+                .orderId(result.getId())
+                .orderStatus(String.valueOf(result.getOrderStatus()))
+                .paymentId(result.getPaymentId()    )
+                .paymentStatus(String.valueOf(result.getPaymentStatus())).build();
     }
 }
