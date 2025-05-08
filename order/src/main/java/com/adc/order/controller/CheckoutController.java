@@ -4,6 +4,7 @@ import com.adc.order.model.Checkout;
 import com.adc.order.service.CheckoutService;
 import com.adc.order.viewmodel.checkout.CheckoutPaymentMethodPutVm;
 import com.adc.order.viewmodel.checkout.CheckoutPostVm;
+import com.adc.order.viewmodel.checkout.CheckoutStatusPutVm;
 import com.adc.order.viewmodel.checkout.CheckoutVm;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,10 @@ public class CheckoutController {
         return ResponseEntity.ok().build();
     }
 
-
+    @PutMapping("/storefront/checkouts/status")
+    public ResponseEntity<Long> updateCheckoutStatus(@Valid @RequestBody CheckoutStatusPutVm checkoutStatusPutVm) {
+        return ResponseEntity.ok(checkoutService.updateCheckoutStatus(checkoutStatusPutVm));
+    }
     @GetMapping("/storefront/checkouts/{id}")
     public ResponseEntity<CheckoutVm> getCheckout(@PathVariable final String id) {
         return ResponseEntity.ok(checkoutService.getCheckoutWithPendingStateById(id));

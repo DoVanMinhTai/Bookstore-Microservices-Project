@@ -1,27 +1,20 @@
 import { useCartContext } from '@/context/CartContext';
 import { CartItemGetDetailVms } from '@/modules/cart/model/CartItemGetVm'
 import { getCartItemDetailVms, updateCartItem } from '@/modules/cart/services/CartServices';
-import { error } from 'console';
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
-import ImageWithFallBack from '@/common/components/ImageWithFallBack';
-import apiClientService from '@/common/components/services/ApiClientService';
 import { deleteCartItemByProductId } from '@/modules/cart/services/CartServices';
 import { formatPrice } from '@/utils/formatPrice';
 import { useRouter } from 'next/router';
 import ConfimationDialog from '@/common/dialog/ConfirmationDialog';
 import { CartItemPutVm } from '@/modules/cart/model/CartItemPutVm';
-import { ok } from 'assert';
 import { CartItem, calculateTotalPrice } from '@/modules/cart/components/CartItem';
 import { CheckoutItem } from '@/modules/checkout/model/CheckoutItem';
 import { Checkout } from '@/modules/checkout/model/Checkout';
 import { useUserInfoContext } from '@/context/UserInforProvider';
 import { createCheckout } from '@/modules/checkout/service/CheckoutService';
 
-
 const index = () => {
-
-
   const [cartItems, setCartItem] = useState<CartItemGetDetailVms[]>([]);
   const [isDropdown, setIsDropdown] = useState(false);
   const [productIdToRemove, setProductIdToRemove] = useState<number>(0);
@@ -32,7 +25,6 @@ const index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { firstname, lastname, email, fetchUserInfo } = useUserInfoContext();
   const router = useRouter();
-
 
 
   useEffect(() => {
@@ -140,7 +132,6 @@ const index = () => {
 
   const handleCheckout = () => {
     const cartItems = getSelectedCartItem();
-    console.log("handleSelectedCartIteM", cartItems);
 
     if (cartItems.length === 0) {
       alert("Vui lòng chọn 1 sản phẩm")
@@ -157,12 +148,7 @@ const index = () => {
     }
 
     createCheckout(checkOut).then((res) => {
-      // if(res.status)
-      console.log("red", res);
-
       router.push(`/checkouts/${res?.id}`)
-      console.log("red123123", res);
-
     }).catch((error) => {
       if (error.status === 403) {
         throw new Error("Bạn vui lòng đăng nhập trước");
@@ -174,11 +160,8 @@ const index = () => {
   const convertItemToCheckoutItem = (cartItems: CartItemGetDetailVms): CheckoutItem => {
     return {
       productId: cartItems.productId,
-      // productName: cartItems.productName,
       description: "a1",
       quantity: cartItems.quantity,
-      // productPrice: cartItems.price,
-      // discountAmount: 0
     };
 
 
@@ -192,7 +175,6 @@ const index = () => {
       <div className="container mx-auto my-5 px-4">
         {cartItems.length > 0 ?
           <>
-
             <div className="grid grid-cols-3 gap-4">
               <div className="col-span-2 p-5 bg-[#fff] border-2 rounded-lg">
                 <div className="flex justify-between mb-4 ">

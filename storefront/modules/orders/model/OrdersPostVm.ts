@@ -3,13 +3,13 @@ import { DeliveryMethod } from "./enum/DeliveryMethod"
 import { PaymentMethod } from "./enum/PaymentMethod";
 import { PaymentStatus } from "./enum/PaymentStatus";
 import { OrderAddressPostVm } from "./OrderAddressPostVm";
-import { AddressDetail } from "@/modules/address/model/AddressDetail";
+import { AddressDetailVm } from "@/modules/address/model/AddressDetail";
 
 export type OrdersPostVm = {
     checkoutId?: number;
     email?: string;
-    shippingAddressPostVm?: AddressDetail;
-    billingAddressPostVm?: AddressDetail;
+    shippingAddressPostVm?: AddressDetailVm;
+    billingAddressPostVm?: AddressDetailVm;
     note?: string;
     tax: number;
     discount: number;

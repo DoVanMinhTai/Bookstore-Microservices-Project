@@ -1,5 +1,6 @@
 import ImageWithFallBack from '@/common/components/ImageWithFallBack';
 import { UserInfoContext, useUserInfoContext } from '@/context/UserInforProvider';
+import AddressForm from '@/modules/address/components/AddressForm';
 import { AddressDetailVm } from '@/modules/address/model/AddressDetail';
 import { CountryVm } from '@/modules/country/model/CountryVm';
 import { getAllCoutries, getStateOrProvinces } from '@/modules/country/service/CountryService';
@@ -16,13 +17,18 @@ type Props = {
 
 const Profile = () => {
   const { firstname, email, lastname } = useUserInfoContext();
+
   const [adddressDefault, setAddressDefault] = useState<AddressDetailVm>();
-  const [stateOrProvincesList, setStateOrProvincesList] = useState<StateOrProvince[]>();
-  const [stateOrProvinces, setStateOrProvinces] = useState<StateOrProvince>();
-  const [allCountries, setAllCountries] = useState<CountryVm[]>();
-  const [countryVm, setCountryVm] = useState<CountryVm>();
-  const [districtList, setDistrictList] = useState<Districts[]>();
-  const [district, setDistrict] = useState<Districts>();
+
+  const [coutries, setCountries] = useState<CountryVm[]>();
+  const [stateOrProvinces, setStateOrProvinces] = useState<StateOrProvince[]>();
+  const [districts, setDistricts] = useState<Districts[]>();
+
+  const [selectedCountryVm, setSelectedCountry] = useState<CountryVm>();
+  const [selectedDistrict, setSelectedDistrict] = useState<Districts>();
+  const [selectedStateOrProvinces, setSelectedStateOrProvinces] = useState<StateOrProvince>();
+
+  const [isModalOpen,setIsModalOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState('Tab1');
 
   useEffect(() => {
@@ -35,47 +41,43 @@ const Profile = () => {
     if (adddressDefault) {
       getStateOrProvinces(Number(adddressDefault?.countryId))
         .then((res) => {
-          setStateOrProvincesList(res)
+          setStateOrProvinces(res)
         }).catch((error) => console.error(error));
-      getAllCoutries().then((res) => setAllCountries(res))
+      getAllCoutries().then((res) => setCountries(res))
         .catch((error) => console.error(error));
-      getDistrictsList().then((res) => setDistrictList(res))
+      getDistrictsList().then((res) => setDistricts(res))
         .catch((error) => console.error(error));
     }
   }, [adddressDefault])
 
   useEffect(() => {
-    console.log('activeallcountries', allCountries);
-
-    if (allCountries && adddressDefault) {
-      const activeCountries = allCountries.find((item) => item.id === adddressDefault?.countryId);
-      setCountryVm(activeCountries);
+    if (coutries && adddressDefault) {
+      const activeCountries = coutries.find((item) => item.id === adddressDefault?.countryId);
+      setSelectedCountry(activeCountries);
     }
 
-    if (stateOrProvincesList && adddressDefault) {
-      const active = stateOrProvincesList.find((item) => item.id === adddressDefault?.stateOrProvinceId);
-      console.log('active', active);
-
-      setStateOrProvinces(active);
+    if (stateOrProvinces && adddressDefault) {
+      const active = stateOrProvinces.find((item) => item.id === adddressDefault?.stateOrProvinceId);
+      setSelectedStateOrProvinces(active);
     }
 
-    if (districtList && adddressDefault) {
-      const activeDistrict = districtList.find((item) => item.id === adddressDefault?.districtId);
-      setDistrict(activeDistrict);
+    if (districts && adddressDefault) {
+      const activeDistrict = districts.find((item) => item.id === adddressDefault?.districtId);
+      setSelectedDistrict(activeDistrict);
     }
 
-  }, [allCountries, stateOrProvincesList, districtList, adddressDefault]);
+  }, [coutries, stateOrProvinces, districts, adddressDefault]);
 
-  const handleListAddress = () => {
-
+  const handleChangeAddress = () => {
+    setIsModalOpen(!isModalOpen);
   }
+
   const handleActiveTabs = (tab: string) => {
     setActiveTab(tab);
   }
-  return (
-    <div className="container mx-auto"
-    >
 
+  return (
+    <div className="container mx-auto">
       {activeTab === 'Tab1' &&
         <div className="grid grid-cols-9">
           <>       <div className="col-span-2 py-8  ">
@@ -120,18 +122,18 @@ const Profile = () => {
                 </div>
                 <div className="flex w-full gap-3 items-center">
                   <label htmlFor="" className="font-bold text-sm w-[30%] text-gray-700">Quận/Huyện: </label>
-                  <h3 className="w-[70%] font-bold text-sm text-gray-700">{district?.name}</h3>
+                  <h3 className="w-[70%] font-bold text-sm text-gray-700">{selectedDistrict?.name}</h3>
                 </div>
                 <div className="flex w-full gap-3 items-center">
                   <label htmlFor="" className="font-bold text-sm w-[30%] text-gray-700">Tỉnh/Thành phố: </label>
-                  <h3 className="w-[70%] font-bold text-sm text-gray-700">{stateOrProvinces?.name}</h3>
+                  <h3 className="w-[70%] font-bold text-sm text-gray-700">{selectedStateOrProvinces?.name}</h3>
                 </div>
                 <div className="flex w-full gap-3 items-center">
                   <label htmlFor="" className="font-bold text-sm w-[30%] text-gray-700">Quốc gia: </label>
-                  <h3 className="w-[70%] font-bold text-sm text-gray-700">{countryVm?.name}</h3>
+                  <h3 className="w-[70%] font-bold text-sm text-gray-700">{selectedCountryVm?.name}</h3>
                 </div>
                 <div className="flex justify-end">
-                  <button className="p-2 border rounded-md bg-blue-400 font-bold text-sm" onClick={handleListAddress}>Đổi địa chỉ</button>
+                  <button className="p-2 border rounded-md bg-blue-400 font-bold text-sm" onClick={() => handleChangeAddress()}>Đổi địa chỉ</button>
                 </div>
               </div>
             </div>
@@ -149,6 +151,27 @@ const Profile = () => {
 
 
       }
+ {/* handleSubmit: () => {};
+    register: UseFormRegister<Address>;
+    setValue: UseFormSetValue<Address>;
+    errors: FieldErrorsImpl<Address>;
+    address: Address | undefined;
+    isDisplay?: boolean | true;
+    buttonText?: string;
+    onClose: () => void ;
+    titleModal: string; */}
+      {isModalOpen && <>
+        <AddressForm 
+          titleModal=''
+          setValue={}
+          errors={}
+          address={}
+          isDisplay
+          buttonText=''
+          onClose={}
+        />
+      </>}
+
       {activeTab === 'Tab2' && <>
         <div className=" container  mx-auto gap-3 grid grid-cols-9"
         >
@@ -189,13 +212,9 @@ const Profile = () => {
           </div>
 
         </div>
-
-
       </>}
 
     </div>
-
-
   );
 };
 

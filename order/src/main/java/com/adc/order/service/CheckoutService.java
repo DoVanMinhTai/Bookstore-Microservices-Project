@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -74,10 +75,10 @@ public class CheckoutService {
         Map<Long, ProductCheckoutListVm> products =
                 productService.getProductInformation(productIds, 0, productIds.size());
 
-//        gắn sản phẩm với checkout item
+//      Merge Products and checkoutItems
         List<CheckoutItem> enrichedItems = enrichCheckoutItemWithProductDetails(products, checkoutItems);
 
-//        Tính tổng tiền của 1 đơn hang
+//      TotalAmount
         BigDecimal totalAmount = enrichedItems.stream().map(
                         item -> item.getProductPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -133,4 +134,10 @@ public class CheckoutService {
         return checkout == null || checkout.getCreatedBy() == null || !checkout.getCreatedBy().equals(userId);
     }
 
+    public Long updateCheckoutStatus(@Valid CheckoutStatusPutVm checkoutStatusPutVm) {
+        Checkout checkout = checkoutRepository.findById(checkoutStatusPutVm.checkoutId()).orElseThrow(() -> new NotFoundException(CHECKOUT_NOT_FOUND, checkoutStatusPutVm.checkoutId()));
+        checkout.setCheckoutState(CheckoutState.valueOf(checkoutStatusPutVm.checkoutStatus()));
+        checkoutRepository.save(checkout);
+        return Long.valueOf(checkout.getId());
+    }
 }
