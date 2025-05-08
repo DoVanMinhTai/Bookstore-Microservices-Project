@@ -75,10 +75,10 @@ public class CheckoutService {
         Map<Long, ProductCheckoutListVm> products =
                 productService.getProductInformation(productIds, 0, productIds.size());
 
-//        gắn sản phẩm với checkout item
+//      Merge Products and checkoutItems
         List<CheckoutItem> enrichedItems = enrichCheckoutItemWithProductDetails(products, checkoutItems);
 
-//        Tính tổng tiền của 1 đơn hang
+//      TotalAmount
         BigDecimal totalAmount = enrichedItems.stream().map(
                         item -> item.getProductPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
