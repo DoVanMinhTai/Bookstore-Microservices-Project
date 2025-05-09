@@ -1,21 +1,22 @@
+import React, { useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import ImageWithFallBack from '@/common/components/ImageWithFallBack';
 import { UserInfoContext, useUserInfoContext } from '@/context/UserInforProvider';
 import AddressForm from '@/modules/address/components/AddressForm';
+import { Address } from '@/modules/address/model/Address';
 import { AddressDetailVm } from '@/modules/address/model/AddressDetail';
 import { CountryVm } from '@/modules/country/model/CountryVm';
-import { getAllCoutries, getStateOrProvinces } from '@/modules/country/service/CountryService';
+import { getAllCountries, getStateOrProvinces } from '@/modules/country/service/CountryService';
 import { Districts } from '@/modules/districts/model/Districts';
 import { getDistrictsList } from '@/modules/districts/services/Districts';
 import { getAddressDefault } from '@/modules/profile/service/ProfileService';
 import { StateOrProvince } from '@/modules/stateorprovince/model/StateOrProvince';
-import { error } from 'console';
-import React, { useEffect, useState } from 'react';
+import { NextPage } from 'next';
+import { useRouter } from 'next/router';
 
-type Props = {
-  title?: string;
-};
+const Profile: NextPage = () => {
+  const router = useRouter();
 
-const Profile = () => {
   const { firstname, email, lastname } = useUserInfoContext();
 
   const [adddressDefault, setAddressDefault] = useState<AddressDetailVm>();
@@ -28,7 +29,12 @@ const Profile = () => {
   const [selectedDistrict, setSelectedDistrict] = useState<Districts>();
   const [selectedStateOrProvinces, setSelectedStateOrProvinces] = useState<StateOrProvince>();
 
-  const [isModalOpen,setIsModalOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const { register
+    , handleSubmit: handleSubmitUpdateAddress
+    , setValue
+    , formState: { errors } } = useForm<Address>();
+
   const [activeTab, setActiveTab] = useState('Tab1');
 
   useEffect(() => {
@@ -43,7 +49,7 @@ const Profile = () => {
         .then((res) => {
           setStateOrProvinces(res)
         }).catch((error) => console.error(error));
-      getAllCoutries().then((res) => setCountries(res))
+      getAllCountries().then((res) => setCountries(res))
         .catch((error) => console.error(error));
       getDistrictsList().then((res) => setDistricts(res))
         .catch((error) => console.error(error));
@@ -68,12 +74,19 @@ const Profile = () => {
 
   }, [coutries, stateOrProvinces, districts, adddressDefault]);
 
+
   const handleChangeAddress = () => {
     setIsModalOpen(!isModalOpen);
   }
 
   const handleActiveTabs = (tab: string) => {
     setActiveTab(tab);
+  }
+
+  const onSubmitUpdateAddress: SubmitHandler<Address> = async (data) => {
+    let addressUpdate = {
+
+    }
   }
 
   return (
@@ -134,6 +147,9 @@ const Profile = () => {
                 </div>
                 <div className="flex justify-end">
                   <button className="p-2 border rounded-md bg-blue-400 font-bold text-sm" onClick={() => handleChangeAddress()}>Đổi địa chỉ</button>
+                  <button className="p-2 border rounded-md bg-blue-400 font-bold text-sm" onClick={() => router.push('profile/address/create')}>Tạo địa chỉ</button>
+                  <button className="p-2 border rounded-md bg-blue-400 font-bold text-sm" onClick={() => router.push('profile/address/create')}>Cật nhật địa chỉ</button>
+
                 </div>
               </div>
             </div>
@@ -151,24 +167,17 @@ const Profile = () => {
 
 
       }
- {/* handleSubmit: () => {};
-    register: UseFormRegister<Address>;
-    setValue: UseFormSetValue<Address>;
-    errors: FieldErrorsImpl<Address>;
-    address: Address | undefined;
-    isDisplay?: boolean | true;
-    buttonText?: string;
-    onClose: () => void ;
-    titleModal: string; */}
       {isModalOpen && <>
-        <AddressForm 
-          titleModal=''
-          setValue={}
-          errors={}
-          address={}
-          isDisplay
-          buttonText=''
-          onClose={}
+        <AddressForm
+          titleModal='Đổi địa chỉ'
+          setValue={setValue}
+          errors={errors}
+          address={adddressDefault}
+          isDisplay={isModalOpen}
+          buttonText='Đổi địa chỉ'
+          onClose={() => setIsModalOpen(!isModalOpen)}
+          register={register}
+          handleSubmit={handleSubmitUpdateAddress(onSubmitUpdateAddress)}
         />
       </>}
 

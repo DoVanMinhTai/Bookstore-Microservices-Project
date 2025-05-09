@@ -7,32 +7,28 @@ import { Districts } from '@/modules/districts/model/Districts';
 import { useRouter } from 'next/router';
 import { Input } from '@/common/Input';
 import { OptionSelect } from '@/common/OptionSelect';
-import { getAllCoutries, getStateOrProvinces, getDistricts } from '@/modules/country/service/CountryService';
+import { getAllCountries, getStateOrProvinces, getDistricts } from '@/modules/country/service/CountryService';
 import ModalHeadersProps from './ModalHeadersProps';
+
 type AddressFormProps = {
-    handleSubmit: () => {};
+    handleSubmit: () => void;
     register: UseFormRegister<Address>;
     setValue: UseFormSetValue<Address>;
     errors: FieldErrorsImpl<Address>;
     address: Address | undefined;
     isDisplay?: boolean | true;
     buttonText?: string;
-    onClose: () => void ;
+    onClose: () => void;
     titleModal: string;
 }
 
-export default function AddressForm({titleModal, handleSubmit, register, setValue, errors, address, isDisplay, buttonText }: AddressFormProps) {
+export default function AddressForm({ titleModal, handleSubmit, register, setValue, errors, address, isDisplay, buttonText }: AddressFormProps) {
     const [countries, setCountries] = useState<CountryVm[]>([]);
     const [stateOrProvinces, setStateOrProvinces] = useState<StateOrProvince[]>()
     const [districts, setDistricts] = useState<Districts[]>([]);
-    const router = useRouter();
-    const { id } = router.query;
-
 
     useEffect(() => {
-        getAllCoutries().then((res) => {
-            console.log(res);
-
+        getAllCountries().then((res) => {
             setCountries(res);
         });
     }, []);
@@ -42,14 +38,11 @@ export default function AddressForm({titleModal, handleSubmit, register, setValu
             getStateOrProvinces(address.stateOrProvinceId).then((data) => { setStateOrProvinces(data) });
             getDistricts(address.districtId).then((data) => { setDistricts(data) });
         }
-
     }, [address]);
 
 
     const onCountryChange = async (event: any) => {
         setValue('countryName', event.target.selectedOptions[0].text);
-        console.log(event.target.value);
-
         getStateOrProvinces(event.target.value).then(setStateOrProvinces);
     };
 
@@ -57,9 +50,7 @@ export default function AddressForm({titleModal, handleSubmit, register, setValu
         setValue('stateOrProvinceName', event.target.selectedOptions[0].text);
         getDistricts(event.target.value).then(setDistricts);
     };
-    
-    
-    
+
 
     return (
         <>
