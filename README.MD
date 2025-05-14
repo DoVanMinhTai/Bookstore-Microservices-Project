@@ -1,8 +1,7 @@
 # Book Store
 
 ![Swagger UI Screenshot](screenshot/image1.png)
-![Example Image](screenshot/image.png)
-![Example Image](screenshot/image2.png)
+
 
 ---
 
