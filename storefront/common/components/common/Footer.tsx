@@ -11,7 +11,7 @@ const Footer = () => {
           <div className="w-full p-4 grid grid-cols-3 container mx-auto">
             <div className="flex grow flex-col gap-4">
               <div className="pl-6">
-                <Image src={logo} alt='logo imagee' width={100} height={100} />
+                <Image src={logo} alt='logo image' width={100} height={100} />
               </div>
               <div>Copyright @ 2020 all rights reversed</div>
               <div className="pl-6 gap-3 flex">

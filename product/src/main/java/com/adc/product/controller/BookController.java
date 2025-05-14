@@ -97,4 +97,9 @@ public class BookController {
     public ResponseEntity<List<ProductThumbnailGetVm>> getProductSimilar(@PathVariable String slug) {
         return ResponseEntity.ok(productService.getProductSimilarBySlug(slug));
     }
+
+    @GetMapping("/storefront/product/checkExistsByProductId")
+    public ResponseEntity<Boolean> checkProductExists(@RequestParam Long productId) {
+        return ResponseEntity.ok(productService.checkProductExists(productId));
+    }
 }

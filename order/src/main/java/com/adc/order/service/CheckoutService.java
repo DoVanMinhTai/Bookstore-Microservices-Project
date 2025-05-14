@@ -41,11 +41,10 @@ public class CheckoutService {
 
     public CheckoutVm createCheckout(CheckoutPostVm checkoutPostVm) {
         Checkout checkout = checkoutMapper.toModel(checkoutPostVm);
-//      authentication and create state checkout
+
         checkout.setCustomerId(AuthenticationUtils.extractUserId());
         checkout.setCheckoutState(CheckoutState.PENDING);
 
-//      prepare list product in order
         prepareCheckoutItems(checkout, checkoutPostVm);
         checkoutRepository.save(checkout);
 
@@ -53,7 +52,6 @@ public class CheckoutService {
         Set<CheckoutItemVm> checkoutItemVms = checkout.getCheckoutItems().stream().map(
                         checkoutMapper::toVm)
                 .collect(Collectors.toSet());
-        log.info(Constants.MessageCode.CREATE_CHECKOUT, checkout.getId(), checkout.getCustomerId());
         return checkoutVm.toBuilder().checkoutItemVms(checkoutItemVms).build();
     }
 
@@ -75,10 +73,8 @@ public class CheckoutService {
         Map<Long, ProductCheckoutListVm> products =
                 productService.getProductInformation(productIds, 0, productIds.size());
 
-//      Merge Products and checkoutItems
         List<CheckoutItem> enrichedItems = enrichCheckoutItemWithProductDetails(products, checkoutItems);
 
-//      TotalAmount
         BigDecimal totalAmount = enrichedItems.stream().map(
                         item -> item.getProductPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -92,7 +88,7 @@ public class CheckoutService {
         return checkoutItems.stream().map(item -> {
             ProductCheckoutListVm product = products.get(item.getProductId());
             if (product == null) {
-                throw new NotFoundException(MessagesUtils.getMessage("PRODUCT_NOT_FOUND", item.getId()));
+                throw new NotFoundException(MessagesUtils.getMessage("PRODUCT_NOT_FOUND", item.getProductId()));
             }
             return item.toBuilder()
                     .productName(product.getName())
@@ -116,7 +112,6 @@ public class CheckoutService {
 
     public CheckoutVm getCheckoutWithPendingStateById(String id) {
         Checkout checkout = checkoutRepository.findByIdAndCheckoutState(id, CheckoutState.PENDING);
-        System.out.println(AuthenticationUtils.extractUserId());
 
         if (checkout == null || isNotOwnerByCurrentUser(checkout)) {
             throw new NotFoundException(CHECKOUT_NOT_FOUND, id);

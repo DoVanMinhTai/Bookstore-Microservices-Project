@@ -10,7 +10,7 @@ export function AppProvider({ children }: React.PropsWithChildren) {
         <UserInfoProvider>
             <CartProvider>
                 {children}
-                </CartProvider>
+            </CartProvider>
         </UserInfoProvider>
     )
 }

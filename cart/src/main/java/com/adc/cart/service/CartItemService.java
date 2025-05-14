@@ -138,9 +138,8 @@ public class CartItemService {
 
 
     private void validateProduct(Long idProduct) {
-        if (!productService.exitstProduct(idProduct)) {
-            throw new NotFoundException("NOT EXITST PRODUCT", idProduct);
-
+        if (!productService.existsProduct(idProduct)) {
+            throw new NotFoundException("NOT EXISTS PRODUCT", idProduct);
         }
     }
 }

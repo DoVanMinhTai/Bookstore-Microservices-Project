@@ -1,6 +1,7 @@
 package com.adc.order.service;
 
 import com.adc.commonlibrary.exception.NotFoundException;
+import com.adc.commonlibrary.utils.AuthenticationUtils;
 import com.adc.order.model.Order;
 import com.adc.order.model.OrderAddress;
 import com.adc.order.model.OrderItem;
@@ -20,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.AccessDeniedException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -96,7 +98,7 @@ public class OrderService {
                         .orderId(order.getId()).build())
                 .collect(Collectors.toSet());
         orderItemRepository.saveAll(orderItems);
-        OrderVm orderVm = OrderVm.fromModel(order,orderItems);
+        OrderVm orderVm = OrderVm.fromModel(order, orderItems);
 
 //        con tru san pham trong kho
 //        xoa san pham trong gio hang
@@ -109,16 +111,20 @@ public class OrderService {
 
     private void acceptOrder(Long orderId) {
         Order order = this.orderRepository.findById(orderId).orElseThrow(
-                () -> new NotFoundException("ORDER_NOT_FOUND",orderId));
+                () -> new NotFoundException("ORDER_NOT_FOUND", orderId));
         order.setOrderStatus(OrderStatus.ACCEPTED);
         orderRepository.save(order);
     }
 
 
-    public OrderVm getOrderById(Long id) {
+    public OrderVm getOrderById(Long id) throws AccessDeniedException {
         Order order = orderRepository.findById(id).orElseThrow();
+        String userId = AuthenticationUtils.extractUserId();
+        if (!order.getCreatedBy().equals(userId)) {
+            throw new AccessDeniedException("ORDER_ACCESS_DENIED");
+        }
         Set<OrderItem> orderItemSet = new HashSet<>(orderItemRepository.findByOrderId(order.getId()));
-        OrderVm orderVm =  OrderVm.fromModel(order,orderItemSet);
+        OrderVm orderVm = OrderVm.fromModel(order, orderItemSet);
         return orderVm;
 
     }
@@ -128,28 +134,32 @@ public class OrderService {
 
         List<Order> orders = orderRepository.findAllByCreatedBy(userId);
         Set<OrderItem> orderItems = new HashSet<>(orderItemRepository.findByOrderId(orders.get(0).getId()));
+        if (orderItems.isEmpty()) {
+            return List.of();
+        }
+
         return orders.stream().map(
                 order -> {
                     Set<OrderItem> orderItemSet = new HashSet<>(orderItemRepository.findByOrderId(order.getId()));
-                    OrderVm orderVm =  OrderVm.fromModel(order,orderItemSet);
+                    OrderVm orderVm = OrderVm.fromModel(order, orderItemSet);
                     return orderVm;
                 }
         ).toList();
     }
 
     public PaymentOrderStatusVm updateOrderPaymentStatus(@Valid PaymentOrderStatusVm paymentOrderStatusVm) {
-        Order order = orderRepository.findById(paymentOrderStatusVm.orderId()).orElseThrow(() -> new NotFoundException("ORDER_NOT_FOUND",paymentOrderStatusVm.orderId()));
+        Order order = orderRepository.findById(paymentOrderStatusVm.orderId()).orElseThrow(() -> new NotFoundException("ORDER_NOT_FOUND", paymentOrderStatusVm.orderId()));
 
         order.setPaymentId(paymentOrderStatusVm.paymentId());
-        order.setPaymentStatus(PaymentStatus.valueOf(paymentOrderStatusVm.orderStatus()));
-        if(PaymentStatus.COMPLETED.equals(PaymentStatus.valueOf(paymentOrderStatusVm.paymentStatus()))) {
+        order.setPaymentStatus(PaymentStatus.valueOf(paymentOrderStatusVm.paymentStatus()));
+        if (PaymentStatus.COMPLETED.equals(PaymentStatus.valueOf(paymentOrderStatusVm.paymentStatus()))) {
             order.setOrderStatus(OrderStatus.PAID);
         }
         Order result = orderRepository.save(order);
         return PaymentOrderStatusVm.builder()
                 .orderId(result.getId())
                 .orderStatus(String.valueOf(result.getOrderStatus()))
-                .paymentId(result.getPaymentId()    )
+                .paymentId(result.getPaymentId())
                 .paymentStatus(String.valueOf(result.getPaymentStatus())).build();
     }
 }

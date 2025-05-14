@@ -19,8 +19,17 @@ export default function AuthenticationInfo() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   async function getAuthenticationInfo(): Promise<AuthenticationInfoVm> {
-    const res = await fetch(`http://localhost:8087/authentication`);
-    return await res.json();
+    try {
+      const res = await fetch(`http://localhost:8087/authentication`);
+      if (!res.ok) throw new Error("Failed to fetch Authentication Info")
+      return await res.json();
+    } catch (error) {
+      return {
+        isAuthenticated: false,
+        authenticatedUser: { userName: '' },
+      };
+    }
+
   }
 
   useEffect(() => {
@@ -44,7 +53,7 @@ export default function AuthenticationInfo() {
           {dropdownOpen && (
             <div className="absolute mt-1  bg-gray-800 text-white rounded-md shadow-lg ">
               <div className="block text-lg px-4 py-2">
-               Xin chào: {authenticatedInfoVm.authenticatedUser.userName.split('@')[0]}
+                Xin chào: {authenticatedInfoVm.authenticatedUser.userName.split('@')[0]}
 
               </div>
               <Link href="/profile" className="block px-4 py-2 hover:bg-gray-700">
@@ -60,7 +69,9 @@ export default function AuthenticationInfo() {
           )}
         </div>
       ) : (
-        <Link href="http://localhost:8087/oauth2/authorization/keycloak" className="text-gray-300 hover:text-white">
+        <Link href="http://localhost:8087/oauth2/authorization/keycloak" className="
+        bg-slate-800 px-4 py-2 rounded-lg  focus:outline-none 
+        text-gray-300 hover:text-white">
           Login
         </Link>
       )}

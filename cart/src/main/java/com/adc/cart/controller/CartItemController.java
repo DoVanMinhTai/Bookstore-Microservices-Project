@@ -41,7 +41,7 @@ public class CartItemController {
     }
 
     @PutMapping("/storefront/cart/items")
-    public ResponseEntity<List<CartItemGetVm>> delelteOrAddAdjustCartItem(@RequestBody List<CartItemDeteleVms> cartItemDeteleVms) {
+    public ResponseEntity<List<CartItemGetVm>> deleteOrAddAdjustCartItem(@RequestBody List<CartItemDeteleVms> cartItemDeteleVms) {
         return ResponseEntity.ok(cartItemService.deleteOrAdjustCartItem(cartItemDeteleVms));
     }
 
