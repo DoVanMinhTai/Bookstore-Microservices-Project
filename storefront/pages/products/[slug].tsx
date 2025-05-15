@@ -3,21 +3,17 @@ import { getProductDetail } from "@/modules/productdetail/services/ProductServic
 import { ProductDetail } from "@/modules/productdetail/model/ProductDetail";
 import ProductDetails from "@/modules/productdetail/components/ProductDetails";
 import Head from "next/head";
- type Props = {
+type Props = {
     product: ProductDetail;
     pvid: string | null;
-
 }
-
-
 
 export const getServerSideProps: GetServerSideProps = async (
     context: GetServerSidePropsContext
 ) => {
-    const {slug} = context.query;
+    const { slug } = context.query;
 
-    
-    const product =  await getProductDetail(slug as string);
+    const product = await getProductDetail(slug as string);
     return {
         props: {
             product
@@ -25,14 +21,13 @@ export const getServerSideProps: GetServerSideProps = async (
     }
 }
 
-const ProductDetailsPage = ({product} : Props) => {
+const ProductDetailsPage = ({ product }: Props) => {
     return (
         <div >
             <Head>{product.name}</Head>
 
             <ProductDetails product={product} />
 
-            
         </div>
     )
 }

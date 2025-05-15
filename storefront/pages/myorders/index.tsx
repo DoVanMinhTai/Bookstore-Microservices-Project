@@ -1,184 +1,132 @@
-import { Address } from '@/modules/address/model/Address';
-import { AddressDetailVm } from '@/modules/address/model/AddressDetail';
-import { CountryVm } from '@/modules/country/model/CountryVm';
-import { getAllCoutries, getDistricts, getStateOrProvinces } from '@/modules/country/service/CountryService';
-import { Districts } from '@/modules/districts/model/Districts';
 import { OrderItemVm } from '@/modules/orders/model/OrderItemVm';
 import { OrderVm } from '@/modules/orders/model/OrderVm'
-import { getListOrderByCreatedBy, getOrderById } from '@/modules/orders/services/OrdersService'
-import { StateOrProvince } from '@/modules/stateorprovince/model/StateOrProvince';
-import { error } from 'console';
+import { getOrdersByOrderState } from '@/modules/orders/services/OrdersService'
 import React, { useEffect, useState } from 'react'
-import { CheckCircle, Loader, Truck, XCircle } from 'lucide-react'
-
-type DeliveryStatusType = "PREPARING" | "DELIVERING" | "DELIVERED" | "CANCELLED";
-
-
-const deliveryStatusTranslations: Record<DeliveryStatusType, string> = {
-  PREPARING: "Đang chuẩn bị",
-  DELIVERING: "Đang giao hàng",
-  DELIVERED: "Đã giao hàng",
-  CANCELLED: "Đã hủy đơn",
-};
-
-const deliveryStatusIcon = {
-  PREPARING: <Loader className="w-5 h-5 animate-spin text-yellow-500" />,
-  DELIVERING: <Truck className="w-5 h-5 text-blue-500" />,
-  DELIVERED: <CheckCircle className="w-5 h-5 text-green-500" />,
-  CANCELLED: <XCircle className="w-5 h-5 text-red-500" />,
-
-}
 
 export default function myorders() {
   const [orderVm, setOrderVm] = useState<OrderVm[]>();
-  const [listCoutries, setListCountries] = useState<CountryVm[]>();
-  const [listStateOrProvince, setListStateOrProvince] = useState<StateOrProvince[]>();
-  const [listDistricts, setListDistricts] = useState<Districts[]>();
-  const [shippingAddressVm, setShippingAddressVm] = useState<AddressDetailVm>();
-  const [billingAddressVm, seBillingAddressVm] = useState<AddressDetailVm>();
-  const [isDisplay, setisDisplay] = useState<Boolean>(false);
-  const [orderModalVm, setOrderModalVm] = useState<OrderVm>();
-  const [orderItemModalVm, setOrderItemModalVm] = useState<OrderItemVm[]>();
-  const [renderedStatuses, SetRenderedStatuses] = useState<React.ReactNode[]>();
-
+  const [orderStatus, setOrderStatus] = useState("pending");
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedOrderItems, setSelectedOrderItems] = useState<OrderItemVm[] | null>(null);
+  
   useEffect(() => {
-    getListOrderByCreatedBy()
-      .then((res) => {
-        setOrderVm(res)
-      })
+    getOrdersByOrderState(orderStatus).then((res) => setOrderVm(res))
       .catch((error) => console.error(error));
-  }, [orderVm])
+  }, [orderStatus]);
+
+  const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setOrderStatus(event.target.value);
+  }
 
   useEffect(() => {
-    if (orderVm) {
-      getAllCoutries().then((res) =>
-        setListCountries(res)
-      );
+    const filter = orderVm ? orderVm.filter((cartStatus) => cartStatus.orderStatus === orderStatus) : null;
+    if (filter !== null) {
+      setOrderVm(filter)
     }
-  }, [])
+  }, [orderStatus])
 
-  useEffect(() => {
-    if (orderVm) {
-      orderVm.map((item) => {
-
-        getStateOrProvinces(item.billingAddressVm.countryId).then((res) => {
-          setListStateOrProvince(res);
-        });
-        getDistricts(item.billingAddressVm.stateOrProvinceId).then((res) => {
-          setListDistricts(res);
-        });
-      })
-    }
-  }, []);
-
-  const getStateOrProvincesName = (countryId: number) => {
-    const name = listStateOrProvince?.find((item) => item.countryId === countryId);
-    return name ? name.name : "Unknow Name State";
-
-  }
-  const getDistrictsName = (stateOrProvinceId: number) => {
-    const name = listDistricts?.find((item) => item.stateProvinceId === stateOrProvinceId);
-    return name ? name.name : "Unknow Name District";
-
-  }
-  const handleModalOrderDetail = (id: number) => {
-    getOrderById(id).then((res) => {
-      setOrderModalVm(res);
-    }).catch((error) => console.error(error));
-  }
-  // Define the steps => Render Steps with active Check => use it inside the order render
-
-
-  useEffect(() => {
-    if (orderModalVm?.orderStatus) {
-      const statusArray: DeliveryStatusType[] = ["PREPARING", "DELIVERING", "DELIVERED", "CANCELLED"];
-      const rendered = statusArray.map((status, index) => {
-        console.log('chekc',status);
-        console.log('checkMODALvM',orderModalVm.orderStatus)
-        
-        const isActive = status === orderModalVm.deliveryStatus;
-        return (
-          <div key={index} className=" items-center mb-3">
-            <div className={`${isActive ? "text-blue-500" : "text-gray-500"} mr-2`}>
-              {deliveryStatusIcon[status]}
-            </div>
-            <span className={`${isActive ? "font-bold text-blue-500" : "text-gray-500"}`}>
-              {deliveryStatusTranslations[status]}
-            </span>
-          </div>
-        )
-      });
-      SetRenderedStatuses(rendered);
-    }
-  }, [orderModalVm?.orderStatus])
   return (
     <>
-      <div className="container flex w-full mx-auto">
-        <div className="w-[80%]">
-          <h2 className="text-center font-bold">Danh sách đơn hàng</h2>
-          {orderVm && orderVm.map((item, index) => (
-            <div key={index}>
-              <div className="flex flex-col w-[70%] mx-auto mt-5 gap-3" onClick={() => setisDisplay(!isDisplay)}>
-
-                <>
-                  <div className="mx-auto"
-                    onClick={() => handleModalOrderDetail(item.id)}
-                  >
-                    <div className="flex justify-between">
-                      <div>
-                        ID Đơn hàng: {item.id}
-                      </div>
-                      <div>Trạng thái đơn hàng : {deliveryStatusTranslations[item.deliveryStatus]}</div>
-                    </div>
-                    <div>Địa chỉ giao hàng : {item.shippingAddressVm.addressLine1}, {item.shippingAddressVm.addressLine2},
-                      {getStateOrProvincesName(item.shippingAddressVm.stateOrProvinceId)},
-                      {getDistrictsName(item.shippingAddressVm.districtId)}
-
-                    </div>
-                    <div>Địa chỉ thanh toán : {item.billingAddressVm.addressLine1}, {item.billingAddressVm.addressLine2},
-                      {getStateOrProvincesName(item.billingAddressVm.stateOrProvinceId)},
-                      {getDistrictsName(item.billingAddressVm.districtId)}
-
-                    </div>
-                    {Array.from(item.orderItemVms).map((item, index) => (
-                      <div key={index}>
-                        <>
-                          {item.productId}
-                        </>
-                      </div>
-                    ))}
-                  </div>
-                  <div>
-                  </div >
-                </>
-
-
-              </div>
-
-            </div>
-          ))}
+      <div className="container mx-auto px-5 gap-3 ">
+        <div className="flex w-[100%] mb-5">
+          <div className="w-[70%] m-auto">
+            <h2 className="text-center font-bold  mx-3 ">Đơn hàng của bạn</h2>
+          </div>
+          <form className="max-w-sm mx-auto">
+            <select className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 
+                focus:border-blue-500 block w-full p-2.5
+                 dark:bg-gray-700 dark:border-gray-600
+                  dark:placeholder-gray-400 dark:text-white
+                   dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              id="ordersStatus"
+              value={orderStatus}
+              onChange={handleStatusChange}
+            >
+              <option value="pending">Chờ xác nhận</option>
+              <option value="accepted">Đã xác nhận</option>
+              <option value="pending_payment">Chờ thanh toán</option>
+              <option value="paid">Đã thanh toán</option>
+              <option value="shipping">Đang giao</option>
+              <option value="completed">Hoàn thành</option>
+              <option value="refund">Hoàn tiền</option>
+              <option value="cancelled">Đã Hủy</option>
+              <option value="reject">Từ chối</option>
+            </select>
+          </form>
         </div>
-        <div className="w-[20%]">
-          123
-        </div>
-
-        {isDisplay && (
-          <>
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center" onClick={() => setisDisplay(!isDisplay)}>
-              <div className="bg-white w-auto p-6 rounded-lg shadow-lg relative">
-                <div className="text-center">
-                  <h3 className="font-bold mb-4 ">Chi tiết đơn hàng</h3>
-                  <div className="flex gap-3">
-                    {renderedStatuses}
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </>
+        {orderVm && orderVm.length === 0 ? (
+          <div className="text-gray-500">Không có đơn hàng ở trạng thái này.</div>
+        ) : (
+          <table className="min-w-full table-auto border border-gray-200">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="border px-4 py-2">ID</th>
+                <th className="border px-4 py-2">Tổng giá</th>
+                <th className="border px-4 py-2">Trạng thái</th>
+                <th className="border px-4 py-2"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {orderVm && orderVm.map((item) => (
+                <tr key={item.id}>
+                  <td className="border px-4 py-2">{item.id}</td>
+                  <td className="border px-4 py-2">{item.totalPrice.toLocaleString()}</td>
+                  <td className="border px-4 py-2">{item.orderStatus}</td>
+                  <td className="border px-4 py-2">
+                    <button
+                      className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                      onClick={() => {
+                        setSelectedOrderItems(Array.from(item.orderItemVms || []));
+                        setIsModalOpen(!isModalOpen);
+                      }}
+                    >
+                      Xem chi tiết
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
 
       </div>
+      {isModalOpen && selectedOrderItems && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded shadow-md w-[90%] max-w-2xl">
+            <h2 className="text-lg font-bold mb-4">Chi tiết sản phẩm</h2>
+            <table className="min-w-full table-auto border border-gray-200">
+              <thead>
+                <tr>
+                  <th className="border px-4 py-2">Tên sản phẩm</th>
+                  <th className="border px-4 py-2">Số lượng</th>
+                  <th className="border px-4 py-2">Giá</th>
+                  <th className="border px-4 py-2">Giảm giá</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedOrderItems.map((item) => (
+                  <tr key={item.id}>
+                    <td className="border px-4 py-2">{item.productName}</td>
+                    <td className="border px-4 py-2">{item.quantity}</td>
+                    <td className="border px-4 py-2">{item.productPrice.toLocaleString()} đ</td>
+                    <td className="border px-4 py-2">{item.discountAmount?.toLocaleString()} đ</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </>
   )
 }

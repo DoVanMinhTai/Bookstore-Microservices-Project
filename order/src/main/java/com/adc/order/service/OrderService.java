@@ -22,10 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -161,5 +158,30 @@ public class OrderService {
                 .orderStatus(String.valueOf(result.getOrderStatus()))
                 .paymentId(result.getPaymentId())
                 .paymentStatus(String.valueOf(result.getPaymentStatus())).build();
+    }
+
+    public List<OrderVm> getOrdersByOrderState(String orderState) throws AccessDeniedException {
+        OrderStatus orderStatus;
+        String userId = AuthenticationUtils.extractUserId();
+        if (userId == null || userId.isBlank()) {
+            throw new AccessDeniedException("User not authenticated.");
+        }
+        try {
+            orderStatus = OrderStatus.valueOf(orderState);
+        } catch (IllegalArgumentException e) {
+            return List.of();
+        }
+
+        List<Order> order = orderRepository.findAllByOrderStatus(orderStatus);
+        List<OrderVm> orderVms = new ArrayList<>();
+
+        if (order == null) {
+            return List.of();
+        }
+
+        return order.stream().map(item -> {
+            List<OrderItem> orderItems = orderItemRepository.findAllByIdAndCreatedBy(item.getId(),userId);
+            return OrderVm.fromModel(item, new HashSet<>(orderItems));
+        }).toList();
     }
 }

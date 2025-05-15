@@ -4,6 +4,7 @@ import Header from './common/Header'
 import AuthenticationInfo from './AuthenticationInfo'
 import Footer from './common/Footer'
 import { useRouter } from 'next/router'
+import BreadCrumb from './BreadCrumb'
 type Props = {
     children: React.ReactNode;
 }
@@ -19,6 +20,7 @@ const Layout = ({ children }: Props) => {
             </Head>
             <Header>
             </Header>
+
             <div className="body">{children}</div>
             {!hiddenFooterPages.includes(router.pathname) && <Footer />}
         </>

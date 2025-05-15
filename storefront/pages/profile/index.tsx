@@ -181,67 +181,17 @@ const Profile: NextPage = () => {
                 <h3 className="w-[70%] font-bold text-sm text-gray-700">{selectedCountryVm?.name}</h3>
               </div>
             </div>
+            <div>
+              <button>1</button>
+              <button>2</button>
+              <button>3</button>
+            </div>
           </div>
         )}
 
         {activeTab === Tabs.Tab2 && (
           <div className="col-span-8 px-5 gap-3">
             <h2 className="text-center font-bold mx-3">Sản phẩm đã xem gần đây</h2>
-          </div>
-        )}
-
-        {activeTab === Tabs.Tab3 && (
-          <div className="col-span-8 px-5 gap-3 ">
-            <div className="flex w-[100%]">
-              <h2 className="text-center font-bold mx-3 w-[70%]">Đơn đã mua</h2>
-
-              <form className="max-w-sm mx-auto">
-                <select className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 
-                focus:border-blue-500 block w-full p-2.5
-                 dark:bg-gray-700 dark:border-gray-600
-                  dark:placeholder-gray-400 dark:text-white
-                   dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  id="ordersStatus"
-                  value={orderStatus}
-                  onChange={handleStatusChange}
-                >
-                  <option value="peding" selected>Chờ xác nhận</option>
-                  <option value="picking">Chờ lấy hàng</option>
-                  <option value="shipping">Đang giao</option>
-                  <option value="delivered">Đã giao</option>
-                  <option value="returned">Trả hàng</option>
-                  <option value="cancelled">Đã Hủy</option>
-                </select>
-              </form>
-            </div>
-            {carts && carts.length === 0 ? (
-              <div className="text-gray-500">Không có đơn hàng ở trạng thái này.</div>
-            ) : (
-              <table className="min-w-full table-auto border border-gray-200">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="border px-4 py-2">ID</th>
-                    <th className="border px-4 py-2">Tên sản phẩm</th>
-                    <th className="border px-4 py-2">Số lượng</th>
-                    <th className="border px-4 py-2">Tổng giá</th>
-                    <th className="border px-4 py-2">Trạng thái</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {carts &&  carts.map((cart) => (
-                    <tr key={cart.id}>
-                      <td className="border px-4 py-2">{cart.id}</td>
-                      <td className="border px-4 py-2">{cart.productName}</td>
-                      <td className="border px-4 py-2">{cart.quantity}</td>
-                      <td className="border px-4 py-2">{cart.totalPrice.toLocaleString()} đ</td>
-                      <td className="border px-4 py-2">{cart.status}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-
-            <div></div>
           </div>
         )}
 
@@ -257,12 +207,6 @@ const Profile: NextPage = () => {
             onClick={() => handleActiveTabs(Tabs.Tab2)}
           >
             Sản phẩm đã xem gần đây
-          </button>
-          <button
-            className={`font-bold p-2 rounded-md ${activeTab === Tabs.Tab3 ? 'bg-blue-500 text-white' : 'text-gray-700'}`}
-            onClick={() => handleActiveTabs(Tabs.Tab3)}
-          >
-            Đơn hàng
           </button>
         </div>
       </div>

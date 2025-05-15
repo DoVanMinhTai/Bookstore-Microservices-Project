@@ -1,6 +1,7 @@
 import apiClientService from "@/common/components/services/ApiClientService";
 import { OrdersPostVm } from "../model/OrdersPostVm";
 import { OrderVm } from "../model/OrderVm";
+import { OrderStatus } from "../model/enum/OrderStatus";
 
 const baseUrl = 'http://localhost:8087/api/order/storefront'
 
@@ -8,7 +9,7 @@ export async function createOrder(ordersPostVm: OrdersPostVm): Promise<{ status:
     const reponse = await apiClientService.post(`${baseUrl}/orders`, JSON.stringify(ordersPostVm));
     const data: OrderVm = await reponse.json();
     if (!reponse.ok) {
-        throw new Error("Lỗi rồi");
+        throw new Error("Không thể tạo đơn hàng");
     } else {
         return {
             status: reponse.status,
@@ -20,7 +21,7 @@ export async function createOrder(ordersPostVm: OrdersPostVm): Promise<{ status:
 export async function getOrderById(id: number): Promise<OrderVm> {
     const reponse = await apiClientService.get(`${baseUrl}/orders/${id}`);
     if (!reponse.ok) {
-        throw new Error("Co Looi")
+        throw new Error("Có lỗi với đơn hàng")
 
     } else {
         return reponse.json();
@@ -29,11 +30,21 @@ export async function getOrderById(id: number): Promise<OrderVm> {
 }
 
 export async function getListOrderByCreatedBy(): Promise<OrderVm[]> {
-    const reponse = await apiClientService.get(`${baseUrl}/orders/listOrders`)
-    if (!reponse.ok) {
-        throw new Error("Có Lỗi Rồi");
+    const response = await apiClientService.get(`${baseUrl}/orders/listOrders`)
+    if (!response.ok) {
+        throw new Error("Có lỗi với đơn hàng");
     } else {
-        return reponse.json();
+        return response.json();
 
     }
 }
+
+export async function getOrdersByOrderState(orderStatus: string) {
+    let stateUp = orderStatus.toUpperCase();
+    const response = await apiClientService.get(`${baseUrl}/orders/byOrderState/${stateUp}`)
+    if (!response.ok) {
+        throw new Error("Có lỗi với đơn hàng")
+    }
+    return response.json();
+}
+
