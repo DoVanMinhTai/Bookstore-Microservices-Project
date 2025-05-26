@@ -1,0 +1,82 @@
+
+spring:
+  application:
+    name: backoffice-bff
+  threads:
+    virtual:
+      enabled: on
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: backoffice-bff
+            client-secret: MIEZglr1WUkh3Lu87ttH0ANvjJyYos4q
+            provider: keycloak
+        provider:
+          keycloak:
+            issuer-uri: http://identity/realms/Identity
+            token-uri: http://identity/realms/Identity/protocol/openid-connect/token
+  cloud:
+    gateway:
+      routes:
+        - id: nginx
+          uri: http://api.adc.local
+          predicates:
+            - Path=/api/**
+          filters:
+            - TokenRelay=
+            - StripPrefix=1
+        - id: nginx
+          uri: http://localhost:3000
+          predicates:
+            - Path=/**
+          filters:
+            - TokenRelay=
+#            - StripPrefix=1
+        - id: product
+          uri: http://localhost:8080
+          predicates:
+            - Path=/api/product/**
+          filters:
+            - TokenRelay=
+            - StripPrefix=1
+        - id: cart
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/cart/**
+          filters:
+            - TokenRelay=
+            - StripPrefix=1
+        - id: customer
+          uri: http://localhost:8088
+          predicates:
+            - Path=/api/customer/**
+          filters:
+            - TokenRelay=
+            - StripPrefix=1
+        - id: Inventory
+          uri: http://localhost:8086
+          predicates:
+            - Path=/api/inventory/**
+          filters:
+            - TokenRelay=
+            - StripPrefix=1
+        - id: location
+          uri: http://localhost:8090
+          predicates:
+            - Path=/api/location/**
+          filters:
+            - TokenRelay=
+            - StripPrefix=1
+        - id: order
+          uri: http://localhost:8085
+          predicates:
+            - Path=/api/order/**
+          filters:
+            - TokenRelay=
+            - StripPrefix=1
+server:
+  port: 8089
+  servlet:
+    context-path: /backoffice-bff

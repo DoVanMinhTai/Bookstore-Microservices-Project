@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import PropTypes from 'prop-types'
 import clsx from 'clsx';
-// src, alt,width,height,className,fallback,styleinline
+
 type Props = {
     src: string;
     alt: string;

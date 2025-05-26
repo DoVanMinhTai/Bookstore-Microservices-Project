@@ -10,9 +10,9 @@ export interface Props {
 
 export default function ProductCard({ product, thumbnailId }: Props) {
 
-    const [thumbnailUrl,setThumbnailUrl] = useState<string>(thumbnailId ? '' : product.thumbnailUrl)
-    
+    const [thumbnailUrl, setThumbnailUrl] = useState<string>(thumbnailId ? '' : product.thumbnailUrl)
+
     return (
-            <ProductCardBase product={product} thumbnailUrl={thumbnailUrl} />
+        <ProductCardBase product={product} thumbnailUrl={thumbnailUrl} />
     )
 }

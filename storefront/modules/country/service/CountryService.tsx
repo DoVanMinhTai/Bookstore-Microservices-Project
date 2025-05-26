@@ -6,7 +6,7 @@ import { Districts } from "@/modules/districts/model/Districts";
 
 const baseUrl = 'http://localhost:8087/api/location';
 
-export async function getAllCoutries() : Promise<CountryVm[]> {
+export async function getAllCountries() : Promise<CountryVm[]> {
     const reponse = await apiClientService.get(`${baseUrl}/storefront/countries`);
     console.log("checktype",Array.isArray(reponse));
     if(!reponse.ok) {

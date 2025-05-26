@@ -21,7 +21,7 @@ public class ProductService {
     public List<ProductThumbnailVm> getProducts(List<Long> ids) {
         final URI url = UriComponentsBuilder.fromHttpUrl(serviceUrlConfig.product())
                 .path("/storefront/products/list-products")
-                .queryParam("productIds",ids)
+                .queryParam("productIds", ids)
                 .build().toUri();
         return restClient.get()
                 .uri(url)
@@ -30,8 +30,14 @@ public class ProductService {
                 }).getBody();
     }
 
-    public boolean exitstProduct(Long idProduct) {
-        return false;
-
+    public boolean existsProduct(Long idProduct) {
+        final URI url = UriComponentsBuilder.fromHttpUrl(serviceUrlConfig.product())
+                .path("/storefront/product/checkExistsByProductId")
+                .queryParam("productId", idProduct)
+                .build().toUri();
+        return Boolean.TRUE.equals(restClient.get().uri(url)
+                .retrieve()
+                .toEntity(Boolean.class)
+                .getBody());
     }
 }

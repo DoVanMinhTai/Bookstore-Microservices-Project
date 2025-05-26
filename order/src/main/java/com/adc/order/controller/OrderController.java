@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -21,14 +22,14 @@ public class OrderController {
     public ResponseEntity<List<Long>> getCompletedProducts() {
         return ResponseEntity.ok(orderService.findProductIdsByCompletedOrders());
     }
-    
+
     @PostMapping("/storefront/orders")
     public ResponseEntity<OrderVm> createOrder(@RequestBody OrderPostVm orderPostVm) {
         return ResponseEntity.ok(orderService.createOrder(orderPostVm));
     }
 
     @GetMapping("/storefront/orders/{id}")
-    public ResponseEntity<OrderVm> getOrderById(@PathVariable Long id) {
+    public ResponseEntity<OrderVm> getOrderById(@PathVariable Long id) throws AccessDeniedException {
         return ResponseEntity.ok(orderService.getOrderById(id));
     }
 
@@ -43,4 +44,10 @@ public class OrderController {
     ) {
         PaymentOrderStatusVm orderStatusVm = orderService.updateOrderPaymentStatus(paymentOrderStatusVm);
         return ResponseEntity.ok(orderStatusVm);
-    }}
+    }
+
+    @GetMapping("/storefront/orders/byOrderState/{orderState}")
+    public ResponseEntity<List<OrderVm>> getOrdersByOrderState(@PathVariable String orderState) throws AccessDeniedException {
+        return ResponseEntity.ok(orderService.getOrdersByOrderState(orderState));
+    }
+}

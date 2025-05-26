@@ -58,9 +58,9 @@ public class LocationService {
                 .path("/storefront/addresses/{id}")
                 .buildAndExpand(addressId)
                 .toUri();
-         restClient.put()
+        restClient.put()
                 .uri(uri)
                 .headers(httpHeaders -> httpHeaders.setBearerAuth(jwt))
-                 .body(wareHousePostVm);
+                .body(wareHousePostVm);
     }
 }

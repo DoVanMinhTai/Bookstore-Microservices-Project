@@ -4,10 +4,10 @@ import AddressForm from '@/modules/address/components/AddressForm'
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Address } from '@/modules/address/model/Address';
 import { createAddress, getAddressById, updateAddress } from '@/modules/address/service/Address';
-import { AddressDetail } from '@/modules/address/model/AddressDetail';
+import { AddressDetailVm } from '@/modules/address/model/AddressDetail';
 import { getAddressBillingList, getAddressDefault, getUserAddressList } from '@/modules/profile/service/ProfileService';
 import { error } from 'console';
-import { getAllCoutries, getDistricts } from '@/modules/country/service/CountryService';
+import { getAllCountries, getDistricts } from '@/modules/country/service/CountryService';
 import { Districts } from '@/modules/districts/model/Districts';
 import { StateOrProvince } from '@/modules/stateorprovince/model/StateOrProvince';
 import { getStateOrProvinces } from '@/modules/stateorprovince/services/StateOrProvince';
@@ -16,7 +16,7 @@ import { CountryVm } from '@/modules/country/model/CountryVm';
 import { AddressPostVm } from '@/modules/address/model/AddressPostVm';
 type Props = {
     checkout: Checkout;
-    handleAddress: (shipping: AddressDetail, billing: AddressDetail) => void
+    handleAddress: (shipping: AddressDetailVm, billing: AddressDetailVm) => void
 }
 
 
@@ -30,10 +30,10 @@ export default function CheckoutShippingInfo({ checkout, handleAddress }: Props)
 
     const [address, setAddress] = useState<Address>();
     const [addressPostVm, setAddressPostVm] = useState<AddressPostVm>();
-    const [selectedAddress, setSelectedAddress] = useState<AddressDetail>();
-    const [selectedAddressBilling, setSelectedAddressBilling] = useState<AddressDetail | null>(null);
-    const [listAddress, setListAddress] = useState<AddressDetail[]>([]);
-    const [listAddressBilling, setListAddressBilling] = useState<AddressDetail[]>([])
+    const [selectedAddress, setSelectedAddress] = useState<AddressDetailVm>();
+    const [selectedAddressBilling, setSelectedAddressBilling] = useState<AddressDetailVm | null>(null);
+    const [listAddress, setListAddress] = useState<AddressDetailVm[]>([]);
+    const [listAddressBilling, setListAddressBilling] = useState<AddressDetailVm[]>([])
     const [listDistricts, setListDistricts] = useState<Districts[]>([]);
     const [liststateOrProvince, setListStateOrProvince] = useState<StateOrProvince[]>([]);
     const [listCountry, setCountry] = useState<CountryVm[]>([]);
@@ -45,8 +45,6 @@ export default function CheckoutShippingInfo({ checkout, handleAddress }: Props)
 
 
     const onHandleSubmitShippingAddress: SubmitHandler<Address> = async (data) => {
-
-
         const newAddress = await performAndFetch(data);
         let address;
         address = newAddress;
@@ -57,19 +55,15 @@ export default function CheckoutShippingInfo({ checkout, handleAddress }: Props)
     }
 
     const performAndFetch = async (data: Address) => {
-        console.log('data', data);
         const reponse = await createAddress(data);
         return reponse;
     }
 
     const onShowModalShippingAddress = () => {
-        console.log(showModalShippingAddress);
-
         setShowModalShippingAddress(!showModalShippingAddress);
         setShowModalList(!showModalList)
     }
     const showModalListAddress = () => {
-
         setShowModalList(!showModalList);
     }
 
@@ -96,7 +90,7 @@ export default function CheckoutShippingInfo({ checkout, handleAddress }: Props)
     }, []);
 
     useEffect(() => {
-        getAllCoutries()
+        getAllCountries()
             .then((res) => setCountry(res))
             .catch((error) => console.error(error));
 
@@ -130,12 +124,12 @@ export default function CheckoutShippingInfo({ checkout, handleAddress }: Props)
         return country;
     }
 
-    const selectedAddressInList = (addressInList: AddressDetail) => {
+    const selectedAddressInList = (addressInList: AddressDetailVm) => {
         setSelectedAddress(addressInList);
 
     }
 
-    const selectedAddressBillingInList = (item: AddressDetail) => {
+    const selectedAddressBillingInList = (item: AddressDetailVm) => {
         setSelectedAddressBilling(item);
 
     }
@@ -159,8 +153,6 @@ export default function CheckoutShippingInfo({ checkout, handleAddress }: Props)
         setValueRegisterShippingAddress("zipCode", address.zipCode)
         setValueRegisterShippingAddress("addressLine1", address.addressLine1);
         setValueRegisterShippingAddress("addressLine2", address.addressLine2)
-
-
     }
 
     const onClickHandleUpdateAddress: SubmitHandler<Address> = (data) => {
@@ -175,8 +167,6 @@ export default function CheckoutShippingInfo({ checkout, handleAddress }: Props)
             stateOrProvinceId: data.stateOrProvinceId,
             countryId: data.countryId
         }
-        console.log('test data update id', data.id);
-
         const reponse = updateAddress(Number(data.id), addressPostVm);
         setShowModalUpdateShippingAddress(!showModalUpdateShippingAddress);
         return reponse;

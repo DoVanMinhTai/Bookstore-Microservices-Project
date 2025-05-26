@@ -111,7 +111,6 @@ public class StockService {
         stockRepository.saveAll(stocks);
         stockHistoryService.createStockHistories(stocks,stockQuantityVms);
 
-//      cat nhat quantity product
         List<ProductQuantityPostVm> productQuantityPostVms = stocks.parallelStream()
                 .map(ProductQuantityPostVm::fromModel)
                 .toList();

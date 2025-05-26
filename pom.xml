@@ -15,8 +15,9 @@
 	<name>adc</name>
 	<modules>
 		<module>common-library</module>
-		<module>media</module>
 		<module>storefrontbff</module>
+		<module>backoffice-bff</module>
+		<module>media</module>
 		<module>order</module>
 		<module>product</module>
 		<module>customer</module>
@@ -31,8 +32,6 @@
 		<maven.compiler.target>21</maven.compiler.target>
 		<adc.version>1.0-SNAPSHOT</adc.version>
 		<revision>1.0-SNAPSHOT</revision>
-
-
 		<org.lombok.version>1.18.34</org.lombok.version>
 		<org.mapstruct.version>1.6.2</org.mapstruct.version>
 		<springdoc-openapi-starter-webmvc-ui.version>2.6.0</springdoc-openapi-starter-webmvc-ui.version>
@@ -101,7 +100,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/io.github.resilience4j/resilience4j-spring-boot3 -->
 		<dependency>
 			<groupId>io.github.resilience4j</groupId>
 			<artifactId>resilience4j-spring-boot3</artifactId>

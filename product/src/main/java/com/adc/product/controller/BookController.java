@@ -21,7 +21,7 @@ public class BookController {
     }
 
 
-    @GetMapping("/getBooks")
+    @GetMapping("/storefront/product/getBooks")
     public ResponseEntity<PaginatedItems<Book>> getBooks(
             @RequestParam(defaultValue = "0") int pageIndex
             , @RequestParam(defaultValue = "10") int pageSize
@@ -30,13 +30,13 @@ public class BookController {
         return ResponseEntity.ok(paginaredBooks);
     }
 
-    @GetMapping("/search")
+    @GetMapping("/storefront/product/search")
     public ResponseEntity<PaginatedItems<Book>> search(@RequestParam(defaultValue = "word") String word, @RequestParam(defaultValue = "0") int pageIndex, @RequestParam(defaultValue = "10") int pageSize) {
         PaginatedItems<Book> paginatedItems = productService.searchBooksByWord(word, pageIndex, pageSize);
         return ResponseEntity.ok(paginatedItems);
     }
 
-    @GetMapping("/books")
+    @GetMapping("/storefront/products/books")
     public ResponseEntity<BookListGetVM> listBooks(
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "5", required = false) int pageSize,
@@ -46,7 +46,7 @@ public class BookController {
         return ResponseEntity.ok(productService.getBooksWithFilter(pageNo, pageSize, bookName, brandName));
     }
 
-    @GetMapping("/book/brand")
+    @GetMapping("/storefront/products/brand")
     public ResponseEntity<List<Book>> getBookBrand(
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "5", required = false) int pageSize,
@@ -55,7 +55,7 @@ public class BookController {
         return ResponseEntity.ok(productService.getBooksByBrand(brandName));
     }
 
-    @GetMapping("/products")
+    @GetMapping("/storefront/products")
     public ResponseEntity<ProductGetCheckoutListVm> getProductCheckoutList(
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "20", required = false) int pageSize,
@@ -76,7 +76,7 @@ public class BookController {
         return ResponseEntity.ok(productService.getFeaturedProduct(pageNo, pageSize));
     }
 
-    @GetMapping("/storefront/productdetail/{slug}")
+    @GetMapping("/storefront/product/{slug}")
     public ResponseEntity<ProductDetailGetVm> getProductDetail(
             @PathVariable String slug
     ) {
@@ -96,5 +96,10 @@ public class BookController {
     @GetMapping("/storefront/product/productSimilar/{slug}")
     public ResponseEntity<List<ProductThumbnailGetVm>> getProductSimilar(@PathVariable String slug) {
         return ResponseEntity.ok(productService.getProductSimilarBySlug(slug));
+    }
+
+    @GetMapping("/storefront/product/checkExistsByProductId")
+    public ResponseEntity<Boolean> checkProductExists(@RequestParam Long productId) {
+        return ResponseEntity.ok(productService.checkProductExists(productId));
     }
 }

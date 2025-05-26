@@ -18,4 +18,6 @@ public interface OrderItemRepository  extends JpaRepository<OrderItem, Long> {
     List<Long> findProductIdsByCompletedOrders();
 
     List<OrderItem> findByOrderId(Long orderId);
+
+    List<OrderItem> findAllByIdAndCreatedBy(Long id, String createdBy);
 }

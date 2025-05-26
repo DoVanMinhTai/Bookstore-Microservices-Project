@@ -51,10 +51,11 @@ public class ProductService {
         List<Book> bookList = bookPage.getContent();
         List<BookListVM> bookListVMS = bookList.stream().map(BookListVM::fromModel).toList();
 
-        return new BookListGetVM(bookListVMS,bookPage.getNumber(),bookPage.getSize(),
-                (int)   bookPage.getTotalElements(),bookPage.getTotalPages()
-                   ,bookPage.isLast() );
+        return new BookListGetVM(bookListVMS, bookPage.getNumber(), bookPage.getSize(),
+                (int) bookPage.getTotalElements(), bookPage.getTotalPages()
+                , bookPage.isLast());
     }
+
     public List<Book> getBooksByBrand(String brandSlug) {
         List<Book> result = new ArrayList<>();
         Brand brand = brandRepository.findBySlug(brandSlug).orElseThrow(() -> new NotFoundException("Not Found For" + brandSlug));
@@ -70,11 +71,7 @@ public class ProductService {
 
         List<ProductCheckoutListVm> productCheckoutListVms = productPage.getContent()
                 .stream().map(product -> {
-//                    String thumbnailUrl = mediaService.getMedia(product.getThumbnailMediaId()).url();
                     ProductCheckoutListVm productCheckoutListVm = ProductCheckoutListVm.fromModel(product);
-//                    if (StringUtils.isNotEmpty(thumbnailUrl)) {
-//                        return productCheckoutListVm.toBuilder().thumbnailUrl(thumbnailUrl).build();
-//                    }
                     return productCheckoutListVm;
                 }).toList();
         return new ProductGetCheckoutListVm(
@@ -86,20 +83,20 @@ public class ProductService {
                 productPage.isLast()
         );
     }
+
     public List<ProductThumbnailGetVm> getProductBestSelling() {
         List<Long> productIds = orderService.getProductByIdAndCompleted();
         List<Book> result = bookRepository.findAllById(productIds);
         return result.stream().map(
                 product -> {
                     String thumbnail = mediaService.getMedia(product.getThumbnailMediaId()).url();
-                    System.out.println("here" +thumbnail);
                     return new ProductThumbnailGetVm(
-                                product.getId(),
-                                product.getName(),
-                                product.getSlug(),
-                                thumbnail,
-                                product.getPrice()
-                        );
+                            product.getId(),
+                            product.getName(),
+                            product.getSlug(),
+                            thumbnail,
+                            product.getPrice()
+                    );
 
                 }
         ).toList();
@@ -113,23 +110,22 @@ public class ProductService {
         for (Book book : productList) {
             productThumbnailGetVms.add(
                     new ProductThumbnailGetVm(
-                            book.getId(),book.getName(),book.getSlug()
-                            ,mediaService.getMedia(book.getThumbnailMediaId()).url(),book.getPrice()
+                            book.getId(), book.getName(), book.getSlug()
+                            , mediaService.getMedia(book.getThumbnailMediaId()).url(), book.getPrice()
                     )
             );
         }
-        System.out.println();
-        return new ProductFeaturedGetVm(productThumbnailGetVms,productPage.getTotalPages() );
+        return new ProductFeaturedGetVm(productThumbnailGetVms, productPage.getTotalPages());
 
     }
 
     public ProductDetailGetVm getProductDetail(String slug) {
         Book product = bookRepository.findBySlugAndIsPublishedTrue(slug).orElseThrow(
-                () -> new NotFoundException("Not Found For" ,slug)
+                () -> new NotFoundException("Product Not Found", slug)
         );
         String thumbnailMediaUrl = mediaService.getMedia(product.getThumbnailMediaId()).url();
         List<String> productImageMediaUrl = new ArrayList<>();
-        if(CollectionUtils.isNotEmpty(product.getBookImages())) {
+        if (CollectionUtils.isNotEmpty(product.getBookImages())) {
             for (BookImage image : product.getBookImages()) {
                 productImageMediaUrl.add(mediaService.getMedia(image.getImageId()).url());
             }
@@ -168,26 +164,26 @@ public class ProductService {
     public List<ProductThumbnailGetVm> getProductByIds(@Valid List<Long> productIds) {
         List<Book> books = bookRepository.findAllById(productIds);
         List<ProductThumbnailGetVm> result = books.stream().map(
-              product -> new ProductThumbnailGetVm(
-                      product.getId(),
-                      product.getName(),
-                      product.getSlug(),
-                      mediaService.getMedia(product.getThumbnailMediaId()).url()
-                      ,product.getPrice()
-                      )
+                product -> new ProductThumbnailGetVm(
+                        product.getId(),
+                        product.getName(),
+                        product.getSlug(),
+                        getThumbnailUrl(product.getThumbnailMediaId()),
+                        product.getPrice()
+                )
         ).toList();
 
         return result;
     }
 
     public ProductThumbnailGetVm getProductById(Long id) {
-        Book book =  bookRepository.findById(id).orElseThrow();
+        Book book = bookRepository.findById(id).orElseThrow();
         ProductThumbnailGetVm productThumbnailGetVm = new ProductThumbnailGetVm(
                 book.getId(),
                 book.getName()
-        ,book.getSlug(),
-                mediaService.getMedia(book.getThumbnailMediaId()).url()
-                ,book.getPrice());
+                , book.getSlug()
+                , getThumbnailUrl(book.getThumbnailMediaId())
+                , book.getPrice());
 
         return productThumbnailGetVm;
     }
@@ -195,14 +191,22 @@ public class ProductService {
     public List<ProductThumbnailGetVm> getProductSimilarBySlug(String slug) {
         Book book = bookRepository.findBySlugAndIsPublishedTrue(slug).orElseThrow();
 
-        List<Book> productThumbnailGetVms = bookRepository.findAllByIdAndBrand_Id(book.getId(), book.getBrand().getId());
+        List<Book> books = bookRepository.findAllByIdAndBrand_Id(book.getId(), book.getBrand().getId());
 
-        return productThumbnailGetVms.stream().map(product ->
+        return books.stream().map(product ->
                 new ProductThumbnailGetVm(product.getId()
-                ,product.getName()
-                ,product.getSlug()
-                ,mediaService.getMedia(product.getThumbnailMediaId()).url()
-                ,product.getPrice()
+                        , product.getName()
+                        , product.getSlug()
+                        , getThumbnailUrl(product.getThumbnailMediaId())
+                        , product.getPrice()
                 )).toList();
+    }
+
+    public Boolean checkProductExists(Long productId) {
+        return bookRepository.existsById(productId);
+    }
+
+    public String getThumbnailUrl(Long mediaId) {
+        return mediaService.getMedia(mediaId).url();
     }
 }

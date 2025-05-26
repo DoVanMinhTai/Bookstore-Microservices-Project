@@ -10,9 +10,6 @@ export async function getProductById(ids: number[]): Promise<ProductThumbnail[]>
     if (!reponse.ok) {
         throw new Error("Fetch api error")
     }
-    console.log('====================================');
-    console.log("product reponse", reponse);
-    console.log('====================================');
     return reponse.json();
 
 }

@@ -20,8 +20,6 @@ public class StockHistoryService {
     public void createStockHistories(final List<Stock> stockList, final List<StockQuantityVm> stockQuantityVmList) {
         List<StockHistory> stockHistories = new ArrayList<>();
         for (final Stock stock : stockList) {
-//            List<StockQuantityVm> stockQuantityVms = stockQuantityVmList.parallelStream()
-//                    .filter(item -> item.stockId().equals(stock.getId())).toList();
             StockQuantityVm stockQuantityVm = stockQuantityVmList
                     .parallelStream()
                     .filter(item -> item.stockId().equals(stock.getId())).findFirst().orElse(null);
