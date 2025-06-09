@@ -1,0 +1,13 @@
+backend:
+  image:
+    repository: ghcr.io/?/yas-book
+    tag: latest
+
+  nameOverride: book
+  fullnameOverride: book
+  databaseName: book
+
+  ingress:
+    enabled: true
+    host: api.?
+    path: /book

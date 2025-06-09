@@ -1,7 +1,7 @@
 import { ProductThumbnail } from '@/modules/homepage/models/ProductThumbnail'
 import React, { useState } from 'react'
 import { CheckoutItem } from '../model/CheckoutItem'
-import { AddressDetail } from '@/modules/address/model/AddressDetail'
+import { AddressDetailVm } from '@/modules/address/model/AddressDetail'
 import { OptionSelect } from '@/common/OptionSelect'
 import { useForm, UseFormRegister, UseFormSetValue } from 'react-hook-form'
 import { PaymentMethod } from '@/modules/orders/model/enum/PaymentMethod'

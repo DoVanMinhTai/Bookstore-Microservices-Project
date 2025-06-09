@@ -7,7 +7,7 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
-const edit: NextPage = () => {
+const Edit: NextPage = () => {
     const router = useRouter();
     const id = router.query;
 
@@ -29,8 +29,8 @@ const edit: NextPage = () => {
     }, [id]);
 
     const onSubmitUpdateAddress: SubmitHandler<Address> = async (data) => {
-        let addressUpdate: AddressPostVm = {
-            contactName: 'data',
+        const addressUpdate: AddressPostVm = {
+            contactName: data.contactName,
             phone: 'data',
             addressLine1: 'data',
             addressLine2: 'data',
@@ -42,8 +42,8 @@ const edit: NextPage = () => {
         }
 
         if (id) {
-            const reponse = await updateAddress(Number(id), addressUpdate);
-            if (reponse.status === 204) {
+            const response = await updateAddress(Number(id), addressUpdate);
+            if (response.status === 204) {
                 /*
                     - Create Components Toast 
                     - router.push('profile/create.tsx')
@@ -53,7 +53,7 @@ const edit: NextPage = () => {
     }
 
     return (
-        <div>
+        <div onClick={() => setIsDisplayModalUpdateAddress(!isDisplayModalUpdateAddress)}>
             {address ? <AddressForm
                 handleSubmit={handleSubmitUpdateAddress(onSubmitUpdateAddress)}
                 register={register}
@@ -71,4 +71,4 @@ const edit: NextPage = () => {
     )
 }
 
-export default edit
+export default Edit
