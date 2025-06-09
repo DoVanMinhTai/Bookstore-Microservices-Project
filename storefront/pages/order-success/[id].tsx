@@ -1,23 +1,20 @@
 import ImageWithFallBack from '@/common/components/ImageWithFallBack';
-import { CartItem } from '@/modules/cart/components/CartItem';
 import { CartItemGetDetailVms } from '@/modules/cart/model/CartItemGetVm';
 import { getProductById } from '@/modules/catalog/services/ProductServices';
 import { ProductThumbnail } from '@/modules/homepage/models/ProductThumbnail';
 import { OrderVm } from '@/modules/orders/model/OrderVm';
 import { getOrderById } from '@/modules/orders/services/OrdersService';
-import { flightRouterStateSchema } from 'next/dist/server/app-render/types';
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 
-type Props = {}
 
-const index = (props: Props) => {
+const Index = () => {
     const router = useRouter();
     const { id } = router.query;
     const [order, setOrder] = useState<OrderVm | undefined>();
     const [products, setProducts] = useState<ProductThumbnail[]>();
-    const [src, setSrc] = useState<string>();
     const [cartItems, setCartItem] = useState<CartItemGetDetailVms[]>([]);
+
     useEffect(() => {
         if (id) {
             getOrderById(Number(id)).then((res) => setOrder(res)).catch((error) => console.error(error));
@@ -34,35 +31,21 @@ const index = (props: Props) => {
         }
     }, [order]);
 
-    // const mergeOrderWithProduct = order?.orderItemVms
-    //     ? Array.from(order.orderItemVm).map((orderItem) => ({
-    //         ...order,
-    //         ...orderItem,
-    //         thumbnailUrl: products?.find((product) => product.id === orderItem.productId)?.thumbnailUrl
-    //     }))
-    //     : [];
-
     useEffect(() => {
         const updatedCartItems: CartItemGetDetailVms[] = [];
         if (order) {
             if (products) {
-                console.log(products);
-
                     if (order?.orderItemVms) {
-                        console.log(order.orderItemVms);
 
                         [...order?.orderItemVms].map((order) => {
                             const product = products.find((item) => item.id === order.productId);
                             updatedCartItems.push({
                                 productId: product ? product.id : 0,
                                 quantity: order.quantity,
-                                productName: product ?  product.name : '',
-                                thumbnailUrl: product ?  product.thumbnailUrl : '',
+                                productName: product ?  product.name : "",
+                                thumbnailUrl: product ?  product.thumbnailUrl : "",
                                 price: order.productPrice
                             });
-                            // setCartItem(cartItem);
-                            console.log(cartItems);
-
                         });
                     }
                 setCartItem(updatedCartItems);
@@ -70,18 +53,7 @@ const index = (props: Props) => {
             }
         }
     }, [products, order])
-    const handleSelectedCartItemChange = () => {
-
-    }
-    const handleDecreaseQuantity = () => {
-
-    }
-    const handleIncreaseQuantity = () => {
-
-    }
-    const handleDialogDeleteCartItem = () => {
-
-    }
+  
     return (
         order && (<>
             <div className="container  mx-auto ">
@@ -146,4 +118,4 @@ const index = (props: Props) => {
     )
 }
 
-export default index;
+export default Index;

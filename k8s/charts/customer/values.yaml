@@ -1,0 +1,13 @@
+backend:
+  image:
+    repository: ghcr.io/?/yas-customer
+    tag: latest
+
+  nameOverride: customer
+  fullnameOverride: customer
+  databaseName: customer
+
+  ingress:
+    enabled: true
+    host: api.?
+    path: /customer

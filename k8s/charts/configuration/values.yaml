@@ -1,0 +1,52 @@
+credentials:
+  postgresql:
+    username: admin
+    password: admin
+applicationConfig:
+  server:
+    shutdown: graceful
+    port: 80
+  spring:
+    lifecycle:
+      timeout-per-shutdown-phase: 30s
+    security:
+      oauth2:
+        resourceserver:
+          jwt:
+            issuer-uri: http://localhost:8080/realms/master
+  datasource:
+    url:
+      username: ${POSTGRESQL_USERNAME}
+      password: ${POSTGRESQL_PASSWORD}
+  springdoc:
+    oauthflow:
+      authorization-url: http://localhost:8080/realms/master/protocol/openid-connect/auth
+      token-url: http://localhost:8080/realms/master/protocol/openid-connect/token
+  microservices:
+    services:
+      customer: http://customer/customer
+      book: http://book/book
+  gatewayRoutesConfig:
+    spring:
+      cloud:
+        gateway:
+          - id: book_api
+            uri: https://book
+            predicates:
+              - Path=/api/book/**
+            filters:
+              - RewritePath=/api/(?<segment>.*), /$\{segment}
+              - TokenRelay=
+
+          - id: customer_api
+            uri: http://customer
+            predicates:
+                - Path=/api/customer/**
+            filters:
+                - RewritePath=/api/(?<segment>.*), /$\{segment}
+                - TokenRelay=
+reloader:
+  nameOverride: "adc-reloader"
+  fullnameOverride: "adc-reloader"
+  reloader:
+      watchGlobally: false

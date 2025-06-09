@@ -3,7 +3,7 @@ import { OrderVm } from '@/modules/orders/model/OrderVm'
 import { getOrdersByOrderState } from '@/modules/orders/services/OrdersService'
 import React, { useEffect, useState } from 'react'
 
-export default function myorders() {
+export default function Myorders() {
   const [orderVm, setOrderVm] = useState<OrderVm[]>();
   const [orderStatus, setOrderStatus] = useState("pending");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -23,7 +23,7 @@ export default function myorders() {
     if (filter !== null) {
       setOrderVm(filter)
     }
-  }, [orderStatus])
+  }, [orderStatus, orderVm])
 
   return (
     <>

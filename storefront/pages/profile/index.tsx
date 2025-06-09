@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import ImageWithFallBack from '@/common/components/ImageWithFallBack';
-import { UserInfoContext, useUserInfoContext } from '@/context/UserInforProvider';
+import { useUserInfoContext } from '@/context/UserInforProvider';
 import AddressForm from '@/modules/address/components/AddressForm';
 import { Address } from '@/modules/address/model/Address';
 import { AddressDetailVm } from '@/modules/address/model/AddressDetail';
@@ -12,7 +12,6 @@ import { getDistrictsList } from '@/modules/districts/services/Districts';
 import { getAddressDefault } from '@/modules/profile/service/ProfileService';
 import { StateOrProvince } from '@/modules/stateorprovince/model/StateOrProvince';
 import { NextPage } from 'next';
-import { useRouter } from 'next/router';
 
 enum Tabs {
   Tab1 = 'Tab1',
@@ -29,7 +28,6 @@ type Cart = {
 };
 
 const Profile: NextPage = () => {
-  const router = useRouter();
 
   const { firstname, email, lastname } = useUserInfoContext();
 
@@ -51,7 +49,7 @@ const Profile: NextPage = () => {
 
   const [activeTab, setActiveTab] = useState<Tabs.Tab1 | Tabs.Tab2 | Tabs.Tab3>(Tabs.Tab1);
 
-  const [orderStatus, setOrderStatus] = useState("pending");
+  const [orderStatus] = useState("PENDING");
 
   const [carts, setCarts] = useState<Cart[]>();
 
@@ -59,16 +57,13 @@ const Profile: NextPage = () => {
     setActiveTab(tab);
   }
 
-  const onSubmitUpdateAddress: SubmitHandler<Address> = async (data) => {
-    let addressUpdate = {
-
-    }
+  const onSubmitUpdateAddress: SubmitHandler<Address> = async () => {
   }
 
-  const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(event.target.value)
-    setOrderStatus(event.target.value);
-  }
+  /* const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+     console.log(event.target.value)
+     setOrderStatus(event.target.value);
+   } */
 
   /*Example Data to Show */
   const dummyCarts: Cart[] = [
@@ -117,7 +112,7 @@ const Profile: NextPage = () => {
   useEffect(() => {
     const filter = dummyCarts.filter((cartStatus) => cartStatus.status === orderStatus);
     setCarts(filter)
-  })
+  }, [dummyCarts, orderStatus])
 
   return (
     <div className="container mx-auto">
@@ -192,8 +187,16 @@ const Profile: NextPage = () => {
         {activeTab === Tabs.Tab2 && (
           <div className="col-span-8 px-5 gap-3">
             <h2 className="text-center font-bold mx-3">Sản phẩm đã xem gần đây</h2>
+            {carts?.map(cart => (
+              <div key={cart.id} className="flex justify-between border-b py-2">
+                <span>{cart.productName}</span>
+                <span>{cart.quantity} x {cart.totalPrice}</span>
+                <span>{cart.status}</span>
+              </div>
+            ))}
           </div>
         )}
+
 
         <div className="col-span-2 py-3 gap-3 flex flex-col">
           <button

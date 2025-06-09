@@ -1,0 +1,8 @@
+hostname: identity.adc.com
+postgresql:
+  username: yasadminuser
+  password: admin
+
+bootstrapAdmin:
+  username: admin
+  password: admin

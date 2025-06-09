@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.example.Customer.CustomerApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 10.41 s -- in com.example.Customer.CustomerApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 14.74 s -- in com.example.Customer.CustomerApplicationTests

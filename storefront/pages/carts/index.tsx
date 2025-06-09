@@ -1,7 +1,7 @@
 import { useCartContext } from '@/context/CartContext';
 import { CartItemGetDetailVms } from '@/modules/cart/model/CartItemGetVm'
 import { getCartItemDetailVms, updateCartItem } from '@/modules/cart/services/CartServices';
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link';
 import { deleteCartItemByProductId } from '@/modules/cart/services/CartServices';
 import { formatPrice } from '@/utils/formatPrice';
@@ -14,45 +14,44 @@ import { Checkout } from '@/modules/checkout/model/Checkout';
 import { useUserInfoContext } from '@/context/UserInforProvider';
 import { createCheckout } from '@/modules/checkout/service/CheckoutService';
 
-const index = () => {
+const Index = () => {
   const [cartItems, setCartItem] = useState<CartItemGetDetailVms[]>([]);
   const [isDropdown, setIsDropdown] = useState(false);
   const [productIdToRemove, setProductIdToRemove] = useState<number>(0);
   const [isShowDialog, setIsShowDialog] = useState(false);
   const { fetchNumberCartItems, numberCartItems } = useCartContext();
-  const [quantity, setQuantity] = useState(0);
   const [selectedCartItem, setSelectedCartItem] = useState<Set<number>>(new Set());
   const [isLoading, setIsLoading] = useState(false);
-  const { firstname, lastname, email, fetchUserInfo } = useUserInfoContext();
+  const { email } = useUserInfoContext();
   const router = useRouter();
 
+  const loadCartDetail = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const newCartItems = await getCartItemDetailVms()
+      setCartItem(newCartItems);
+      fetchNumberCartItems();
+    } finally {
+      setIsLoading(false);
+    }
+  }, [fetchNumberCartItems]);
 
   useEffect(() => {
     loadCartDetail()
-  }, [])
+  }, [loadCartDetail])
 
-  const loadCartDetail = async () => {
-    try {
-      const newCartItems = await getCartItemDetailVms()
-      console.log(newCartItems);
+  
 
-      setCartItem(newCartItems);
-      fetchNumberCartItems();
-    } catch (error) {
-      return [];
-    }
-  }
+  // const deleteCartItem = async (productId: number) => {
+  //   try {
+  //     await deleteCartItemByProductId(productId);
+  //     setCartItem((prevItem) => prevItem.filter((item) => item.productId !== productId));
 
-  const deleteCartItem = async (productId: number) => {
-    try {
-      await deleteCartItemByProductId(productId);
-      setCartItem((prevItem) => prevItem.filter((item) => item.productId !== productId));
-
-      fetchNumberCartItems();
-    } catch (error) {
-      throw new Error("error server")
-    }
-  }
+  //     fetchNumberCartItems();
+  //   } catch (error) {
+  //     throw new Error("error server")
+  //   }
+  // }
 
   const handleDecreaseQuantity = async (productId: number) => {
     const cartItem = cartItems.find((item) => item.productId === productId);
@@ -140,7 +139,7 @@ const index = () => {
 
     const checkoutItem = cartItems.map((item) => convertItemToCheckoutItem(item))
 
-    let checkOut: Checkout = {
+    const checkOut: Checkout = {
       email: email,
       note: '',
       promotionCode: 'JAHFKHLD',
@@ -167,9 +166,6 @@ const index = () => {
 
   }
 
-
-
-
   return (
     <>
       <div className="container mx-auto my-5 px-4">
@@ -195,6 +191,7 @@ const index = () => {
                   </thead>
                   {cartItems.map((cartItem) => {
                     return <CartItem
+                      key={cartItem.productId}
                       item={cartItem}
                       isLoading={isLoading}
                       isSelected={selectedCartItem.has(cartItem.productId)}
@@ -300,4 +297,4 @@ const index = () => {
     </>
   )
 }
-export default index
+export default Index
