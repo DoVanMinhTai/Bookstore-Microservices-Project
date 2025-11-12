@@ -1,26 +1,42 @@
-server {
-    server_name api.adc.local;
+# Resolver for local development
+resolver 127.0.0.11;
 
-    resolver 127.0.0.11;
-    location /media/ {
-        proxy_pass http://media;
-    }
-    location /customer/ {
-        proxy_pass http://host.docker.internal:8088;
-    }
-    location /product/ {
-        proxy_pass http://host.docker.internal:8080;
-    }
-    location /order/ {
-        proxy_pass http://host.docker.internal:8085;
-    }
+upstream media {
+    server media:1337;
+}
 
+upstream pgadmin {
+    server pgadmin:80;
+}
 
+upstream identity {
+    server identity:5000;
+}
 
-
+upstream storefront_bff {
+    server storefront_bff:8087;
 }
 
 
+server {
+    listen 80;
+    server_name api.adc.local;
+
+    location /api/ {
+        proxy_pass http://storefront_bff;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    location /media/ {
+        proxy_pass http://media;
+    }
+
+    location /swagger-ui/ {
+        proxy_pass http://swagger_ui;
+    }
+}
 
 server {
   server_name pgadmin.adc.local;
@@ -29,10 +45,8 @@ server {
   }
 }
 
-
-
 server {
-  server_name identity;
+  server_name identity.adc.local;
   large_client_header_buffers 8 32k;
   location / {
     proxy_pass http://identity;
