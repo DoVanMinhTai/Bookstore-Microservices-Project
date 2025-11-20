@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class CartItemMapper {
-    public  CartItem toCartItem(CartItemPost cartItemPostVm,String currentUser) {
-        return  CartItem.builder()
+    public CartItem toCartItem(CartItemPost cartItemPostVm, String currentUser) {
+        return CartItem.builder()
                 .customerId(currentUser)
                 .productId(cartItemPostVm.productId())
                 .quantity(cartItemPostVm.quantity()).build();
@@ -29,6 +29,7 @@ public class CartItemMapper {
                 .quantity(cartItem.getQuantity())
                 .build();
     }
+
     public List<CartItemGetVm> toGetVms(List<CartItem> cartItems) {
         return cartItems.stream().map(this::toGetVm).toList();
     }

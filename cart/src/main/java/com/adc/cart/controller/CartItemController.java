@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class CartItemController {
     private final CartItemService cartItemService;
 
@@ -44,8 +43,6 @@ public class CartItemController {
     public ResponseEntity<List<CartItemGetVm>> deleteOrAddAdjustCartItem(@RequestBody List<CartItemDeteleVms> cartItemDeteleVms) {
         return ResponseEntity.ok(cartItemService.deleteOrAdjustCartItem(cartItemDeteleVms));
     }
-
-    
 
 
 }

@@ -18,20 +18,15 @@ spring:
             client-id: storefront-bff
             client-secret: ZrU9I0q2uXBglBnmvyJdkl1lf0ncr8tn
             scope: openid, profile, email, roles
-#  session:
-#    store-type: redis
-#  data:
-#    redis:
-#      host: localhost
-#      port: 6379
+---
 logging:
   pattern:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
 ---
 spring:
-#  config:
-#    activate:
-#      on-profile: "dev"
+  config:
+    activate:
+      on-profile: "dev"
   cloud:
     gateway:
       routes:
@@ -93,25 +88,7 @@ spring:
       default-filters:
         - SaveSession
 ---
-#spring:
-#  config:
-#    activate:
-#      on-profile: "prod"
-#  cloud:
-#    gateway:
-#      routes:
-#        - id: api
-#          uri: http://nginx
-#          predicates:
-#            - Path=/api/**
-#          filters:
-#            - DedupeResponseHeader=Origin Access-Control-Request-Method Access-Control-Request-Headers
-#            - TokenRelay=
-#            - StripPrefix=1
-#        - id: nextjs
-#          uri: http://localhost:3000
-#          predicates:
-#            - Path=/**
+
 ---
 adc:
   services:

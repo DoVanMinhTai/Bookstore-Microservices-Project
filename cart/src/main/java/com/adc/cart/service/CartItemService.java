@@ -28,39 +28,34 @@ public class CartItemService {
     private final ProductService productService;
     private final CartItemMapper cartItemMapper;
 
-
-    //    Kiểm tra sản phẩm có tồn tại không (validateProduct).
-//    Lấy userId từ SecurityContext bằng AuthenticationUtils.extractUserId().
-//    Gọi performAddCartItem để xử lý thêm sản phẩm vào giỏ hàng (nếu sản phẩm đã có thì tăng số lượng, nếu chưa có thì thêm mới).
-//    lưu lại
-//    Trả về đối tượng CartItemGetVm (View Model chứa thông tin giỏ hàng).
+    /*    Kiểm tra sản phẩm có tồn tại không (validateProduct).
+Lấy userId từ SecurityContext bằng AuthenticationUtils.extractUserId().
+Gọi performAddCartItem để xử lý thêm sản phẩm vào giỏ hàng (nếu sản phẩm đã có thì tăng số lượng, nếu chưa có thì thêm mới).
+lưu lại
+Trả về đối tượng CartItemGetVm (View Model chứa thông tin giỏ hàng). */
     @Transactional
     public CartItemGetVm addCartItem(CartItemPost cartItemPostVm) {
 //        validateProduct(cartItemPostVm.productId());
-
         String currentUser = AuthenticationUtils.extractUserId();
-        System.out.println(currentUser);
         CartItem cartItem = performAddCartItem(cartItemPostVm, currentUser);
-
         return cartItemMapper.toGetVm(cartItem);
     }
 
     @Transactional
     public CartItemGetVm updateCartItem(Long productId, CartItemPutVm cartItemPutVm) {
 //        validateProduct(productId);
-
         String currentUser = AuthenticationUtils.extractUserId();
-        CartItem cartItem = cartItemMapper.toCartItem(currentUser, productId, cartItemPutVm.quantity());
-
+        CartItem cartItem = cartItemRepository.findByCustomerIdAndProductId(currentUser, productId)
+                .orElse(null);
+        int quantity = cartItemPutVm.quantity();
+        cartItem.setQuantity(quantity);
         cartItemRepository.save(cartItem);
         return cartItemMapper.toGetVm(cartItem);
-
     }
 
     @Transactional
     public List<CartItemGetVm> getCartItems() {
         String currentUserId = AuthenticationUtils.extractUserId();
-
         List<CartItem> listCartItemByIdUser = cartItemRepository.findByCustomerIdOrderByCreatedOnDesc(currentUserId);
         System.out.println(listCartItemByIdUser);
         return cartItemMapper.toGetVms(listCartItemByIdUser);
@@ -77,23 +72,21 @@ public class CartItemService {
 //    ham nhan vao id product va quantity
 //      se có 2 luồng xày ra có thể là giảm hoac  xóa
 //          lấy số lượng trong database và kiểm tra
-//
-
     @Transactional
-    public List<CartItemGetVm> deleteOrAdjustCartItem(List<CartItemDeteleVms> cartItemDeteleVms) {
+    public List<CartItemGetVm> deleteOrAdjustCartItem(List<CartItemDeteleVms> cartItemDeleteVms) {
 //        validate cartitem
 
         List<CartItem> updateAdjust = new ArrayList<>();
         List<CartItem> deleteItems = new ArrayList<>();
-        Map<Long, CartItem> cartGetById = mapCartItemToProductId(cartItemDeteleVms);
+        Map<Long, CartItem> cartGetById = mapCartItemToProductId(cartItemDeleteVms);
 
-        for (CartItemDeteleVms cartItemDetele : cartItemDeteleVms) {
-            Optional<CartItem> optionalCartItem = Optional.of(cartGetById.get(cartItemDetele.productId()));
+        for (CartItemDeteleVms cartItemDelete : cartItemDeleteVms) {
+            Optional<CartItem> optionalCartItem = Optional.ofNullable(cartGetById.get(cartItemDelete.productId()));
             optionalCartItem.ifPresent(cartItem -> {
-                if (cartItemDetele.quantity() >= cartItem.getQuantity()) {
+                if (cartItemDelete.quantity() >= cartItem.getQuantity()) {
                     deleteItems.add(cartItem);
                 } else {
-                    cartItem.setQuantity(cartItem.getQuantity() - cartItemDetele.quantity());
+                    cartItem.setQuantity(cartItem.getQuantity() - cartItemDelete.quantity());
                     updateAdjust.add(cartItem);
                 }
             });
@@ -102,25 +95,17 @@ public class CartItemService {
         cartItemRepository.deleteAll(deleteItems);
         List<CartItem> updateCartItem = cartItemRepository.saveAll(updateAdjust);
         return cartItemMapper.toGetVms(updateCartItem);
-
-
     }
 
     private Map<Long, CartItem> mapCartItemToProductId(List<CartItemDeteleVms> cartItemDeteleVms) {
         String currentUserId = AuthenticationUtils.extractUserId();
         List<Long> productIds = cartItemDeteleVms.stream().map(CartItemDeteleVms::productId).toList();
-        System.out.println("productId" + productIds);
         List<CartItem> cartItems = cartItemRepository.findByCustomerIdAndProductIdIn(currentUserId, productIds);
-        System.out.println(cartItems);
         return cartItems.stream().collect(Collectors.toMap(CartItem::getProductId, Function.identity()));
-
-
     }
-
 
     //check database xem da co ban ghi chua, chua thi minh tao , con rooi thi se tang quantity
     private CartItem performAddCartItem(CartItemPost cartItemPostVm, String currentUser) {
-
         return (CartItem) cartItemRepository.findByCustomerIdAndProductId(currentUser, cartItemPostVm.productId())
                 .map(existCartItem -> updateExisttingCartItem(cartItemPostVm, existCartItem))
                 .orElseGet(() -> createNewCartItem(cartItemPostVm, currentUser));

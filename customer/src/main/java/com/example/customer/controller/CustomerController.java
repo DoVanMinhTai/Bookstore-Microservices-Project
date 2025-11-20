@@ -1,23 +1,12 @@
 package com.example.customer.controller;
 
-import com.example.customer.model.UserAddress;
 import com.example.customer.service.CustomerService;
-import com.example.customer.viewmodel.ErrorVm;
-import com.example.customer.viewmodel.customer.CustomerPostVm;
 import com.example.customer.viewmodel.customer.CustomerVm;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@CrossOrigin(origins = "*")
 public class CustomerController {
     private final CustomerService customerService;
 
@@ -30,6 +19,5 @@ public class CustomerController {
         return ResponseEntity.ok(
                 customerService.getCustomerProfile(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
-
 
 }
