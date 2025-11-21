@@ -6,14 +6,38 @@ upstream pgadmin {
     server pgadmin:80;
 }
 
+upstream cart {
+    server cart:80;
+}
 
+upstream location {
+    server location:80;
+}
 
-
+upstream identity {
+    server identity:80;
+}
 
 server {
     listen 80;
     server_name api.adc.local;
 
+    location /cart {
+        proxy_pass http://cart;
+    }
+
+    location /location {
+        proxy_pass http://location;
+    }
+
+    location / {
+        proxy_pass http://identity;
+    }
+    error_page 404 = @404;
+    location @404 {
+        rewrite ^(.*)$ /index.html last;
+    }
+    return 404;
 
 }
 
@@ -25,14 +49,15 @@ server {
 }
 
 server {
-    server_name identity.adc.local;
-    location / {
-    proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+    server_name identity.local;
+    large_client_header_buffers 8 32k;
+      location / {
         proxy_pass http://identity;
-    }
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+}
 }
 
 

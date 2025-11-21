@@ -28,63 +28,56 @@ services:
       - ./identity/themes/uithemes:/opt/keycloak/themes
     networks:
       - adc-network
-#  storefront:
-#    build: ./storefrontbff
-#    container_name: storefrontbff
-#    image: adc/storefront-bff:latest
-#    entrypoint: ["./wait-for-it.sh", "identity:80", "--timeout=300", "--", "java", "-jar", "/app.jar"]
-#    environment:
-#      - SPRING_PROFILES_ACTIVE=dev
-#      - SERVER_PORT
-#      - ADC_SERVICES_BOOK
-#      - ADC_SERVICES_CART
-#      - ADC_SERVICES_CUSTOMER
-#      - ADC_SERVICES_INVENTORY
-#      - ADC_SERVICES_LOCATION
-#      - ADC_SERVICES_MEDIA
-#      - ADC_SERVICES_ORDER
-#    networks:
-#      - adc-network
-#  storefront-nextjs:
-#    build: ./storefront
-#    image: adc/storefront:latest
-#    networks:
-#      - adc-network
-
-#  product:
-#    build: ./product
-#    container_name: product
-#    image: adc/product:latest
-#    environment:
-#      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/book
-#      - SERVER_SERVLET_CONTEXT_PATH=/product
-#      - SERVER_PORT
-#      - ADC_PUBLIC_URL=${ADC_PUBLIC_API_URL}/product
-#    networks:
-#      - adc-network
-#
-#  customer:
-#    container_name: customer
-#    build: ./customer
-#    image: adc/customer:latest
-#    environment:
-#      - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/customer
-#      - SERVER_SERVLET_CONTEXT_PATH= /customer
-#      - SERVER_PORT
-#      - ADC_PUBLIC_URL=${ADC_PUBLIC_API_URL}/customer
-#    networks:
-#      - adc-network
-#  cart:
-#    container_name: cart
-#    build: ./cart
-#    image: adc/cart:latest
-#    environment:
-#      - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/cart
-#      - SERVER_SERVLET_CONTEXT_PATH= /cart
-#      - SERVER_PORT
-#      - ADC_PUBLIC_URL=${ADC_PUBLIC_API_URL}/cart
-#    networks:
-#      - adc-network
+  customer:
+    image: maven:3.9.5-amazoncorretto-21
+    container_name: customer
+    environment:
+      - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/customer
+      - SERVER_SERVLET_CONTEXT_PATH= /customer
+      - SERVER_PORT
+      - ADC_PUBLIC_URL=${ADC_PUBLIC_API_URL}/customer
+      - SPRING_PROFILES_ACTIVE=dev
+    volumes:
+      # Map the local source code into the container
+      - ./customer:/usr/src/app
+      - ~/.m2:/root/.m2
+    working_dir: /usr/src/app
+    # Run the application directly using Maven, enabling live reload
+    command: mvn spring-boot:run -Dspring-boot.run.fork=false
+    networks:
+      - adc-network
+  cart:
+    image: maven:3.9.5-amazoncorretto-21
+    container_name: cart
+    environment:
+      - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/cart
+      - SERVER_SERVLET_CONTEXT_PATH= /cart
+      - SERVER_PORT
+      - ADC_PUBLIC_URL=${ADC_PUBLIC_API_URL}/cart
+      - SPRING_PROFILES_ACTIVE=dev
+    volumes:
+      - ./cart:/usr/src/app
+      - ~/.m2:/root/.m2
+    working_dir: /usr/src/app
+    command: mvn spring-boot:run -Dspring-boot.run.fork=false
+    networks:
+      - adc-network
+  location:
+    image: maven:3.9.5-amazoncorretto-21
+    container_name: location
+    environment:
+      - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/location
+      - SERVER_SERVLET_CONTEXT_PATH= /location
+      - SERVER_PORT
+      - ADC_PUBLIC_URL= ${ADC_PUBLIC_API_URL}/location
+      - SPRING_PROFILES_ACTIVE=dev
+    volumes:
+      - ./location:/usr/src/app
+      - ~/.m2:/root/.m2
+    working_dir: /usr/src/app
+    command: mvn spring-boot:run -Dspring-boot.run.fork=false
+    networks:
+      - adc-network
 #  inventory:
 #    container_name: inventory
 #    build: ./inventory
@@ -96,43 +89,65 @@ services:
 #      - SERVER_PORT
 #    networks:
 #      - adc-network
-#  location:
-#    container_name: location
-#    build: ./location
-#    image: adc/location:latest
-#    environment:
-#      - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/location
-#      - SERVER_SERVLET_CONTEXT_PATH= /location
-#      - SERVER_PORT
-#      - ADC_PUBLIC_URL= ${ADC_PUBLIC_API_URL}/location
-#    networks:
-#      - adc-network
-#  media:
-#    container_name: media
-#    build: ./media
-#    image: adc/media:latest
-#    environment:
-#      - SPRING_DATASOURCE_URL= jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/media
-#      - SERVER_SERVLET_CONTEXT_PATH=/media
-#      - SERVER_PORT=${SERVER_PORT}
-#      - ADC_PUBLIC_URL= ${ADC_PUBLIC_API_URL}/media
-#    volumes:
-#      - ./data/images:/images
-#    networks:
-#      - adc-network
-#
-#  order:
-#    container_name: order
-#    build: ./order
-#    image: adc/order:latest
-#    environment:
-#      - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/order
-#      - SERVER_SERVLET_CONTEXT_PATH= /order
-#      - SERVER_PORT
-#      - ADC_PUBLIC_URL= ${ADC_PUBLIC_API_URL}/order
-#    volumes:
-#      - ./data/images:/images
+  #  media:
+  #    container_name: media
+  #    build: ./media
+  #    image: adc/media:latest
+  #    environment:
+  #      - SPRING_DATASOURCE_URL= jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/media
+  #      - SERVER_SERVLET_CONTEXT_PATH=/media
+  #      - SERVER_PORT=${SERVER_PORT}
+  #      - ADC_PUBLIC_URL= ${ADC_PUBLIC_API_URL}/media
+  #    volumes:
+  #      - ./data/images:/images
+  #    networks:
+  #      - adc-network
+  #
+  #  order:
+  #    container_name: order
+  #    build: ./order
+  #    image: adc/order:latest
+  #    environment:
+  #      - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/order
+  #      - SERVER_SERVLET_CONTEXT_PATH= /order
+  #      - SERVER_PORT
+  #      - ADC_PUBLIC_URL= ${ADC_PUBLIC_API_URL}/order
+  #    volumes:
+  #      - ./data/images:/images
+  #  storefront:
+  #    build: ./storefrontbff
+  #    container_name: storefrontbff
+  #    image: adc/storefront-bff:latest
+  #    entrypoint: ["./wait-for-it.sh", "identity:80", "--timeout=300", "--", "java", "-jar", "/app.jar"]
+  #    environment:
+  #      - SPRING_PROFILES_ACTIVE=dev
+  #      - SERVER_PORT
+  #      - ADC_SERVICES_BOOK
+  #      - ADC_SERVICES_CART
+  #      - ADC_SERVICES_CUSTOMER
+  #      - ADC_SERVICES_INVENTORY
+  #      - ADC_SERVICES_LOCATION
+  #      - ADC_SERVICES_MEDIA
+  #      - ADC_SERVICES_ORDER
+  #    networks:
+  #      - adc-network
+  #  storefront-nextjs:
+  #    build: ./storefront
+  #    image: adc/storefront:latest
+  #    networks:
+  #      - adc-network
 
+  #  product:
+  #    build: ./product
+  #    container_name: product
+  #    image: adc/product:latest
+  #    environment:
+  #      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/book
+  #      - SERVER_SERVLET_CONTEXT_PATH=/product
+  #      - SERVER_PORT
+  #      - ADC_PUBLIC_URL=${ADC_PUBLIC_API_URL}/product
+  #    networks:
+  #      - adc-network
   swagger-ui:
     container_name: swagger-ui
     image: swaggerapi/swagger-ui:v5.17.14
