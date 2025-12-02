@@ -16,8 +16,8 @@ public class DistrictService {
     private final DistrictMapper districtMapper;
 
     public List<DistrictVm> getAllByStateOrProvinceId(Long stateOrProvinceId) {
-       return  districtRepository.
-               findAllByStateProvinceId(stateOrProvinceId).stream().map(districtMapper::ToDistrictVmFromDistrict).toList();
+        return districtRepository.
+                findAllByStateProvinceId(stateOrProvinceId).stream().map(districtMapper::ToDistrictVmFromDistrict).toList();
     }
 
     public List<DistrictVm> getAllDistrict() {

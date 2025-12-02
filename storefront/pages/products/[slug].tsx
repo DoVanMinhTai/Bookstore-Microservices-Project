@@ -25,9 +25,7 @@ const ProductDetailsPage = ({ product }: Props) => {
     return (
         <div >
             <Head>{product.name}</Head>
-
             <ProductDetails product={product} />
-
         </div>
     )
 }

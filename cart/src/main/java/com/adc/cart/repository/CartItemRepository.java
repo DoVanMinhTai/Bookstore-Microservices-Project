@@ -19,10 +19,8 @@ public interface CartItemRepository extends JpaRepository<CartItem, CartItemId> 
     @Query("select c from CartItem c where c.customerId = :customerId and c.productId = :productId")
     Optional<CartItem> findByCustomerIdAndProductId(String customerId, Long productId);
 
-//    List<CartItem> findByCustomerId(String currentUserId);
+    //    List<CartItem> findByCustomerId(String currentUserId);
     List<CartItem> findByCustomerIdOrderByCreatedOnDesc(String currentUserId);
-
-
 
     void deleteByCustomerIdAndProductId(String customerId, Long productId);
 

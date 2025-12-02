@@ -57,13 +57,13 @@ export default function AuthenticationInfo() {
 
               </div>
               <Link href="/profile" className="block px-4 py-2 hover:bg-gray-700">
-                Profile
+                Hồ sơ
               </Link>
               <Link href="/myorders" className="block px-4 py-2 hover:bg-gray-700">
-                My Orders
+                Danh sách đơn hàng
               </Link>
               <Link href="/logout" className="block px-4 py-2 hover:bg-gray-700">
-                Logout
+                Đăng xuất
               </Link>
             </div>
           )}
@@ -72,7 +72,7 @@ export default function AuthenticationInfo() {
         <Link href="http://localhost:8087/oauth2/authorization/keycloak" className="
         bg-slate-800 px-4 py-2 rounded-lg  focus:outline-none 
         text-gray-300 hover:text-white">
-          Login
+          Đăng nhập
         </Link>
       )}
     </div>

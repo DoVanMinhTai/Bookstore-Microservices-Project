@@ -1,7 +1,4 @@
-import React, { useState } from 'react'
-import { Container, Carousel } from 'react-bootstrap'
-import ImageWithFallBack from '@/common/components/ImageWithFallBack'
-
+import React from 'react'
 import mainBanner1 from '../../../assets/images/main-banner-1.jpg'
 import mainBanner2 from '../../../assets/images/main-banner-2.jpg'
 import mainBanner3 from '../../../assets/images/main-banner-3.jpg'
@@ -10,10 +7,8 @@ import { Navigation } from 'swiper/modules'
 import "swiper/css";
 import "swiper/css/navigation";
 
-
 const listMainBanner = [mainBanner1.src, mainBanner2.src, mainBanner3.src]
 const Banner = () => {
-    const [current, setCurrent] = useState(0);
     return (
         <div className='max-w-full px-4 mt-3 h-full '>
             <div className='grid grid-cols-3 gap-4 p-1  border-2 border-gray-600 rounded-lg h-full'>
@@ -42,5 +37,4 @@ const Banner = () => {
         </div>
     )
 }
-
 export default Banner

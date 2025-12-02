@@ -32,7 +32,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/configmap-env-vars: {{ include (print $.Template.BasePath "/configmap-env-vars.yaml") . | sha256sum }}
+        checksum/configmap-env-vars: {{ include (print $.Template.BasePath "/configmap-.env-vars.yaml") . | sha256sum }}
         {{- if not .Values.auth.existingSecret  }}
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
         {{- end }}
@@ -227,7 +227,7 @@ spec:
             {{- end }}
           envFrom:
             - configMapRef:
-                name: {{ printf "%s-env-vars" (include "common.names.fullname" .) }}
+                name: {{ printf "%s-.env-vars" (include "common.names.fullname" .) }}
             {{- if .Values.extraEnvVarsCM }}
             - configMapRef:
                 name: {{ include "common.tplvalues.render" (dict "value" .Values.extraEnvVarsCM "context" $) }}

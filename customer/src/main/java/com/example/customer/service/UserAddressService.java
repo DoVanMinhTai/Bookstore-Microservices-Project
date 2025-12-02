@@ -21,15 +21,6 @@ public class UserAddressService {
     private final UserAddressRespository userAddressRespository;
     private final LocationService locationService;
 
-//    public List<UserAddress> findAllByUserId(String userID) {
-//        List<UserAddress> userAddressList = new ArrayList<>();
-//            for (UserAddress userAddress : userAddressRespository.findAllByUserId(userID)) {
-//                userAddress.getUserId();
-//                userAddressList.add(userAddress);
-//            }
-//            return userAddressList;
-//    }
-
     public UserAddressVm createUserAddress(AddressPostVm addressPostVm) {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -50,25 +41,20 @@ public class UserAddressService {
 
         List<Long> listAddressIds = userAddressList.stream().map(UserAddress::getAddressId).collect(Collectors.toList());
 
-        List<AddressDetailVm> result = locationService.getAddressDetailByIds(listAddressIds);
-        return result;
+        return locationService.getAddressDetailByIds(listAddressIds);
     }
 
     public AddressDetailVm getAddressIsActive() {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        Optional<UserAddress> userAddress = userAddressRespository.findByUserIdAndIsActiveTrue(userId);
-
-        AddressDetailVm addressDetailVm = locationService.getAddressById(userAddress.get().getAddressId());
-        System.out.println(addressDetailVm);
-        return addressDetailVm;
+        UserAddress userAddress = userAddressRespository.findByUserIdAndIsActiveTrue(userId)
+                .orElseThrow(() -> new RuntimeException("No Active Address found for user"));
+        return locationService.getAddressById(userAddress.getAddressId());
     }
 
     public List<AddressDetailVm> getAddressBillingIsActive() {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
-
         Optional<UserAddress> userAddress = userAddressRespository.findByUserIdAndIsActiveTrue(userId);
-        List<AddressDetailVm> addressDetailVm = locationService.getAddressBillingById(userAddress.get().getAddressId());
-        return addressDetailVm;
+        return locationService.getAddressBillingById(userAddress.get().getAddressId());
     }
 }

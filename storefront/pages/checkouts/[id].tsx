@@ -1,26 +1,25 @@
-import { Checkout } from '@/modules/checkout/model/Checkout'
-import { getCheckoutById } from '@/modules/checkout/service/CheckoutService';
-import CheckoutComponents from '@/modules/checkout/components/CheckoutProductList';
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router';
+import { useForm } from 'react-hook-form';
+import { deleteCartItemByProductId } from '@/modules/cart/services/CartServices';
 import { getProductById } from '@/modules/catalog/services/ProductServices';
 import { ProductThumbnail } from '@/modules/homepage/models/ProductThumbnail';
-import CheckoutPaymentMethod from '@/modules/checkout/components/CheckoutPaymentMethod';
-import CheckoutShippingInfo from '@/modules/checkout/components/CheckoutShippingInfo';
 import { AddressDetailVm } from '@/modules/address/model/AddressDetail';
-import { useForm } from 'react-hook-form';
+import { createOrder } from '@/modules/orders/services/OrdersService';
+import { OrdersPostVm } from '@/modules/orders/model/OrdersPostVm';
+import { Checkout } from '@/modules/checkout/model/Checkout'
+import { getCheckoutById } from '@/modules/checkout/service/CheckoutService';
+import CheckoutShippingInfo from '@/modules/checkout/components/CheckoutShippingInfo';
+import CheckoutPaymentMethod from '@/modules/checkout/components/CheckoutPaymentMethod';
+import CheckoutComponents from '@/modules/checkout/components/CheckoutProductList';
 import { PaymentMethod } from '@/modules/orders/model/enum/PaymentMethod';
 import { DeliveryMethod } from '@/modules/orders/model/enum/DeliveryMethod';
-import { OrdersPostVm } from '@/modules/orders/model/OrdersPostVm';
 import { PaymentStatus } from '@/modules/orders/model/enum/PaymentStatus';
-import { createOrder } from '@/modules/orders/services/OrdersService';
-import { deleteCartItemByProductId } from '@/modules/cart/services/CartServices';
 
 interface CheckoutFormData {
     paymentMethod?: PaymentMethod;
     deliveryMethod?: DeliveryMethod;
 }
-
 
 const CheckoutPage = () => {
     const router = useRouter();
@@ -70,7 +69,6 @@ const CheckoutPage = () => {
                     }
                     console.error(error)
                 })
-
         }
     }
 

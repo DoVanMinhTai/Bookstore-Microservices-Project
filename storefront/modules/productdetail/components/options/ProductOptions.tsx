@@ -12,7 +12,6 @@ export default function ProductOptions({onQuantityChange} : Props) {
         onQuantityChange(newQuantity);
     }
 
-
     const increaseQuantity = () =>{
         const newQuantity = quantity + 1 
         setQuantity(newQuantity);
