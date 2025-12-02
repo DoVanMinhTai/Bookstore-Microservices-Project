@@ -10,8 +10,7 @@ import { CartItemGetVm } from '@/modules/cart/model/CartItemGetVm';
 import { addToCartItem } from '@/modules/cart/services/CartServices';
 import { useCartContext } from '@/context/CartContext';
 import { createCheckout } from '@/modules/checkout/service/CheckoutService';
-import { Checkout } from '@/modules/checkout/model/Checkout';
-import { UserInfoProvider, useUserInfoContext } from '@/context/UserInforProvider';
+import {useUserInfoContext } from '@/context/UserInforProvider';
 import { useRouter } from 'next/router';
 import { CheckoutItem } from '@/modules/checkout/model/CheckoutItem';
 
@@ -27,14 +26,11 @@ export default function ProductDetails({ product }: ProductDetailProps) {
     const [showNotification, setShowNotification] = useState<boolean>(false);
     const router = useRouter();
     const handleQuantityChange = (quantity: number) => {
-        console.log("Updating quantity to:", quantity);
         setQuantity(quantity)
-
     }
 
     const onClickHandleAddToCart = async () => {
         if (quantity < 1) {
-            console.error("Quantity must be at least 1");
             return;
         }
         let payload = {
@@ -44,7 +40,6 @@ export default function ProductDetails({ product }: ProductDetailProps) {
 
         const res = await addToCartItem(payload);
         setCartItem(res);
-        console.log('test', res);
         fetchNumberCartItems();
         setShowNotification(true);
         setTimeout(() => setShowNotification(false), 3000);
@@ -55,11 +50,8 @@ export default function ProductDetails({ product }: ProductDetailProps) {
     const onClickHandleSubmit = async () => {
         const checkOutItemPostVms  = {
             productId: product.id,
-            // productName: product.name,
             description: "",
             quantity: quantity,
-            // productPrice: product.price,
-            // discountAmount: 0
         }
 
         const newArray : CheckoutItem[]= [];
@@ -73,8 +65,6 @@ export default function ProductDetails({ product }: ProductDetailProps) {
             shippingAddressId: 1,
             checkOutItemPostVms: newArray
         }
-        console.log('test checkout' , checkout);
-        console.log('test is array', Array.isArray(checkout.checkOutItemPostVms))
         if (quantity > 0) {
             const res = await createCheckout(checkout);
             router.push(`/checkouts/${res?.id}`)
@@ -92,21 +82,16 @@ export default function ProductDetails({ product }: ProductDetailProps) {
                 <div className="grid grid-cols-2 container mx-auto gap-10 ">
                     {/* <ProductImage thumbnail={product.thumbnailMediaUrl} listImages={product.productImageMediaUrl} productName={product.name} /> */}
                     <div className="border-2  m-4 my-auto h-auto mx-auto">
-
                         <ImageWithFallBack src={product.thumbnailMediaUrl} className=" rounded-md" alt={product.name} />
                         <ProductImageGarelly listImage={product.productImageMediaUrl} />
                     </div>
-
                     <div className="h-full flex flex-col border-2 bg-[#f0f0f0]">
                         <ProductInfo product={product} handleQuantityChange={handleQuantityChange} />
                         <div className=" flex-col flex-grow flex-1 my-5 ">
                             <ProductActions product={product} handleAddToCart={onClickHandleAddToCart} handleSubmitBuyNow={onClickHandleSubmit} />
                         </div>
                     </div>
-
-
                 </div>
-
             </div>
             <div className="product-infor grid grid-cols-[70%_25%] container mx-auto mt-5 gap-5">
                 <ProductTabs />

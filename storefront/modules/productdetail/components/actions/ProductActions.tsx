@@ -7,7 +7,6 @@ type Props = {
 }
 
 export default function ProductActions({handleAddToCart,handleSubmitBuyNow, product} : Props) {
-    // const handle
     return (
         <div className="px-10 flex flex-1 gap-5 w-full ">
             <button className="flex-1 bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition"

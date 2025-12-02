@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { formatPrice } from "@/utils/formatPrice";
-import ConfimationDialog from "@/common/dialog/ConfirmationDialog";
 import { CartItemGetDetailVms } from "../model/CartItemGetVm";
 import ImageWithFallBack from "@/common/components/ImageWithFallBack";
 interface itemProps {
@@ -13,20 +12,15 @@ interface itemProps {
     handleDialogDeleteCartItem: (productId: number) => void;
 }
 
-
-
 export const calculateTotalPrice = (items : CartItemGetDetailVms[], selecteditem: number[]) => {
     return items.filter((item) => selecteditem.includes(item.productId))
             .reduce((totalPrice,index) => totalPrice + index.price *index.quantity,0);
 }
 
-
 export const CartItem: FC<itemProps> = ({ item, isLoading, isSelected, handleSelectedCartItemChange
     , handleDecreaseQuantity, handleIncreaseQuantity, handleDialogDeleteCartItem
 }) => {
     return (
- 
-
         <tbody>
                 <tr key={item.productId} className="border">
                     <td className="border p-2 text-center">
@@ -65,11 +59,6 @@ export const CartItem: FC<itemProps> = ({ item, isLoading, isSelected, handleSel
                     </td>
                 </tr>
         </tbody>
-
-
-
-
-
     )
 
 }

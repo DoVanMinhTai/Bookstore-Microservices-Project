@@ -11,22 +11,20 @@ spring:
       client:
         provider:
           keycloak:
-            issuer-uri: http://identity/realms/Identity
+            issuer-uri: http://identity.local/realms/Identity
         registration:
           keycloak:
             provider: keycloak
             client-id: storefront-bff
-            client-secret: ZrU9I0q2uXBglBnmvyJdkl1lf0ncr8tn
+            client-secret: 9g8Hyka2XXIOU6rKlMLqbZnMcroxhbx2
             scope: openid, profile, email, roles
 ---
 logging:
   pattern:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+
 ---
 spring:
-  config:
-    activate:
-      on-profile: "dev"
   cloud:
     gateway:
       routes:
@@ -34,6 +32,20 @@ spring:
           uri: http://localhost:8080
           predicates:
             - Path=/api/product/**
+          filters:
+            - TokenRelay=
+            - StripPrefix=1
+        - id: api_location_local
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/location/**
+          filters:
+            - TokenRelay=
+            - StripPrefix=1
+        - id: api_media_local
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/media/**
           filters:
             - TokenRelay=
             - StripPrefix=1
@@ -51,20 +63,6 @@ spring:
           filters:
             - TokenRelay=
             - StripPrefix=1
-        - id: api_customer_local
-          uri: http://localhost:8088
-          predicates:
-            - Path=/api/customer/**
-          filters:
-            - TokenRelay=
-            - StripPrefix=1
-        - id: api_location_local
-          uri: http://localhost:8090
-          predicates:
-            - Path=/api/location/**
-          filters:
-            - TokenRelay=
-            - StripPrefix=1
         - id: api_cart_local
           uri: http://localhost:8084
           predicates:
@@ -72,26 +70,32 @@ spring:
           filters:
             - TokenRelay=
             - StripPrefix=1
-
-
-        - id: api
-          uri: http://api.adc.local
+        - id: api_inventory_local
+          uri: http://localhost:8086
           predicates:
-              - Path=/api/**
+            - Path=/api/inventory/**
           filters:
-              - TokenRelay=
-              - StripPrefix=1
-        - id: nextjs
+            - TokenRelay=
+            - StripPrefix=1
+        - id: api_customer_local
+          uri: http://localhost:8088
+          predicates:
+            - Path=/api/customer/**
+          filters:
+            - TokenRelay=
+            - StripPrefix=1
+        - id: nextJs
           uri: http://localhost:3000
           predicates:
             - Path=/**
       default-filters:
         - SaveSession
----
-
+  #  config:
+  #    activate:
+  #      on-profile: "dev"
 ---
 adc:
   services:
-    token-identity: http://identity/realms/Identity/protocol/openid-connect/token
-    cart: http://api.adc.local/cart
-    customer: http://api.adc.local/customer
+    token-identity: http://identity.local/realms/Identity/protocol/openid-connect/token
+#    cart: http://api.adc.local/cart
+#    customer: http://api.adc.local/customer

@@ -1,24 +1,19 @@
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useState } from "react";
 import { CartItemGetDetailVms, CartItemGetVm } from "../model/CartItemGetVm";
-import { getCartItems } from "../services/CartServices";
-import { error } from "console";
 import { getCartItemDetailVms } from "../services/CartServices";
 import { formatPrice } from "@/utils/formatPrice";
 import ImageWithFallBack from "@/common/components/ImageWithFallBack";
-import { useCartContext } from "@/context/CartContext";
-import Link from "next/link";
+
 const CartModal = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [cartItems, setCartItem] = useState<CartItemGetDetailVms[]>([]);
-    const { fetchNumberCartItems } = useCartContext();
     useEffect(() => {
         getCartItemDetailVms()
             .then((res) => {
                 setCartItem(res);
-                console.log(res);
-
             })
             .catch((error) =>
                 setCartItem([]))
@@ -26,7 +21,6 @@ const CartModal = () => {
 
     return (
         <div>
-            {/* Nút mở modal */}
             <button
                 onClick={() => {
 
@@ -42,7 +36,6 @@ const CartModal = () => {
                 <FontAwesomeIcon icon={faShoppingCart} className="px-1" />
             </button>
 
-            {/* Modal */}
             {isOpen && (
                 <div
                     className="fixed inset-0 z-[999] flex items-center justify-center  bg-opacity-60 backdrop-blur-sm transition-opacity duration-300"

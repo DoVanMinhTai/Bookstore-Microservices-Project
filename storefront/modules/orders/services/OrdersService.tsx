@@ -1,7 +1,6 @@
 import apiClientService from "@/common/components/services/ApiClientService";
 import { OrdersPostVm } from "../model/OrdersPostVm";
 import { OrderVm } from "../model/OrderVm";
-import { OrderStatus } from "../model/enum/OrderStatus";
 
 const baseUrl = 'http://localhost:8087/api/order/storefront'
 
@@ -22,7 +21,6 @@ export async function getOrderById(id: number): Promise<OrderVm> {
     const reponse = await apiClientService.get(`${baseUrl}/orders/${id}`);
     if (!reponse.ok) {
         throw new Error("Có lỗi với đơn hàng")
-
     } else {
         return reponse.json();
     }

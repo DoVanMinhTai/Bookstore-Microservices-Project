@@ -49,13 +49,11 @@ public class UserAddressService {
 
         UserAddress userAddress = userAddressRespository.findByUserIdAndIsActiveTrue(userId)
                 .orElseThrow(() -> new RuntimeException("No Active Address found for user"));
-
         return locationService.getAddressById(userAddress.getAddressId());
     }
 
     public List<AddressDetailVm> getAddressBillingIsActive() {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
-
         Optional<UserAddress> userAddress = userAddressRespository.findByUserIdAndIsActiveTrue(userId);
         return locationService.getAddressBillingById(userAddress.get().getAddressId());
     }

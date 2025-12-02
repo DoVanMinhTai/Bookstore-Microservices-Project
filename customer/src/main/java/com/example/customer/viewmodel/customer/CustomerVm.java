@@ -7,4 +7,8 @@ public record CustomerVm(String id, String username, String email, String firstN
         return new CustomerVm(userRepresentation.getId(), userRepresentation.getUsername(),
                 userRepresentation.getEmail(), userRepresentation.getFirstName(), userRepresentation.getLastName());
     }
+
+    public static CustomerVm createAnonymous() {
+        return new CustomerVm(null, null, null, null, null);
+    }
 }

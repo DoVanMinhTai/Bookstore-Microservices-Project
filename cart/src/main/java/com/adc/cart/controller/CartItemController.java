@@ -1,7 +1,7 @@
 package com.adc.cart.controller;
 
 import com.adc.cart.service.CartItemService;
-import com.adc.cart.viewmodel.CartItemDeteleVms;
+import com.adc.cart.viewmodel.CartItemDeleteVms;
 import com.adc.cart.viewmodel.CartItemGetVm;
 import com.adc.cart.viewmodel.CartItemPost;
 import com.adc.cart.viewmodel.CartItemPutVm;
@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class CartItemController {
     private final CartItemService cartItemService;
 
@@ -40,10 +41,9 @@ public class CartItemController {
     }
 
     @PutMapping("/storefront/cart/items")
-    public ResponseEntity<List<CartItemGetVm>> deleteOrAddAdjustCartItem(@RequestBody List<CartItemDeteleVms> cartItemDeteleVms) {
-        return ResponseEntity.ok(cartItemService.deleteOrAdjustCartItem(cartItemDeteleVms));
+    public ResponseEntity<List<CartItemGetVm>> deleteOrAddAdjustCartItem(@RequestBody List<CartItemDeleteVms> cartItemDeleteVms) {
+        return ResponseEntity.ok(cartItemService.deleteOrAdjustCartItem(cartItemDeleteVms));
     }
-
 
 }
 

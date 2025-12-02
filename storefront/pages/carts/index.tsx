@@ -16,13 +16,13 @@ import { createCheckout } from '@/modules/checkout/service/CheckoutService';
 
 const Index = () => {
   const [cartItems, setCartItem] = useState<CartItemGetDetailVms[]>([]);
-  const [isDropdown, setIsDropdown] = useState(false);
   const [productIdToRemove, setProductIdToRemove] = useState<number>(0);
-  const [isShowDialog, setIsShowDialog] = useState(false);
   const { fetchNumberCartItems, numberCartItems } = useCartContext();
   const [selectedCartItem, setSelectedCartItem] = useState<Set<number>>(new Set());
-  const [isLoading, setIsLoading] = useState(false);
   const { email } = useUserInfoContext();
+  const [isDropdown, setIsDropdown] = useState(false);
+  const [isShowDialog, setIsShowDialog] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const loadCartDetail = useCallback(async () => {
@@ -40,18 +40,16 @@ const Index = () => {
     loadCartDetail()
   }, [loadCartDetail])
 
-  
+  const deleteCartItem = async (productId: number) => {
+    try {
+      await deleteCartItemByProductId(productId);
+      setCartItem((prevItem) => prevItem.filter((item) => item.productId !== productId));
 
-  // const deleteCartItem = async (productId: number) => {
-  //   try {
-  //     await deleteCartItemByProductId(productId);
-  //     setCartItem((prevItem) => prevItem.filter((item) => item.productId !== productId));
-
-  //     fetchNumberCartItems();
-  //   } catch (error) {
-  //     throw new Error("error server")
-  //   }
-  // }
+      fetchNumberCartItems();
+    } catch (error) {
+      throw new Error("error server")
+    }
+  }
 
   const handleDecreaseQuantity = async (productId: number) => {
     const cartItem = cartItems.find((item) => item.productId === productId);
@@ -162,8 +160,6 @@ const Index = () => {
       description: "a1",
       quantity: cartItems.quantity,
     };
-
-
   }
 
   return (

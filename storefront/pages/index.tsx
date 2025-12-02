@@ -13,11 +13,8 @@ export default function Home() {
         ]}
         className=""
       />
-
       <Banner />
-
       <BestSellerList />
-
       <FeturedProduct />
     </>
   );

@@ -1,5 +1,4 @@
 import React from 'react'
-import { Checkout } from '../model/Checkout'
 import { ProductThumbnail } from '@/modules/homepage/models/ProductThumbnail'
 import ImageWithFallBack from '@/common/components/ImageWithFallBack'
 import { CheckoutItem } from '../model/CheckoutItem';
@@ -44,7 +43,6 @@ export default function CheckoutComponents({products,checkoutItems} : Props) {
                                 </tbody>
                             </table>
                         </div>
-                        {/* <CartItem  */}
                     </div>
                 </div>              
         </>

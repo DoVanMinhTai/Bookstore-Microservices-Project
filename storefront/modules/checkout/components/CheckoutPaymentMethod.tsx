@@ -1,9 +1,6 @@
-import { ProductThumbnail } from '@/modules/homepage/models/ProductThumbnail'
 import React, { useState } from 'react'
-import { CheckoutItem } from '../model/CheckoutItem'
-import { AddressDetailVm } from '@/modules/address/model/AddressDetail'
 import { OptionSelect } from '@/common/OptionSelect'
-import { useForm, UseFormRegister, UseFormSetValue } from 'react-hook-form'
+import { UseFormRegister, UseFormSetValue } from 'react-hook-form'
 import { PaymentMethod } from '@/modules/orders/model/enum/PaymentMethod'
 import { DeliveryMethod } from '@/modules/orders/model/enum/DeliveryMethod'
 
@@ -27,15 +24,10 @@ export default function CheckoutPaymentMethod({ onUpdate, register, model, displ
     const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>();
     const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>();
 
-    // const handleChangeDeliveryMethod = (checkoutFormData: CheckoutFormData) => {
-    //     if(checkoutFormData)  setCheckoutFormData(checkoutFormData);
-    //     setValue("paymentMethod",checkoutFormData.paymentMethod)
-    //     setValue("deliveryMethod",checkoutFormData.deliveryMethod)
-    //     console.log('132',checkoutFormData?.deliveryMethod);
-    //     console.log('1323',checkoutFormData?.paymentMethod);
-
-
-    // }
+    /*const handleChangeDeliveryMethod = (checkoutFormData: CheckoutFormData) => {
+        if(checkoutFormData)  setCheckoutFormData(checkoutFormData);
+        setValue("paymentMethod",checkoutFormData.paymentMethod)
+        setValue("deliveryMethod",checkoutFormData.deliveryMethod) */
 
     const onPaymentMethod = (event: any) => {
         console.log('last', event.target.selectedOptions[0].text);

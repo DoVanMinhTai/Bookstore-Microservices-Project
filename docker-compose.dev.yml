@@ -1,0 +1,222 @@
+version: "3.9"
+
+services:
+
+  nginx:
+    image: nginx:1.27.2
+    container_name: nginx
+    restart: unless-stopped
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates
+      - ./nginx/configuration/custom_proxy_settings.conf:/etc/nginx/conf.d/custom_proxy_settings.conf
+    ports:
+      - "80:80"
+    networks:
+      - adc-network
+
+  identity:
+    image: quay.io/keycloak/keycloak:26.0.2
+    container_name: identity
+    command: 'start-dev --import-realm'
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: admin
+      KC_DB_PASSWORD: admin
+      KC_HTTP_PORT: 80
+    volumes:
+      - ./identity/realm-export.json:/opt/keycloak/data/import/realm-export.json
+      - ./identity/themes/uithemes:/opt/keycloak/themes
+    networks:
+      - adc-network
+
+  # --------------------------------------------
+  # FAST DEVELOPMENT JAVA SERVICES (NO DOCKERFILE)
+  # --------------------------------------------
+
+  customer:
+    image: maven:3.9.5-amazoncorretto-21
+    container_name: customer
+    working_dir: /app
+    command: mvn spring-boot:run -Dspring-boot.run.fork=false
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/customer
+      SERVER_SERVLET_CONTEXT_PATH: /customer
+      SPRING_PROFILES_ACTIVE: dev
+      ADC_PUBLIC_URL: ${ADC_PUBLIC_API_URL}/customer
+    volumes:
+      - ./:/app
+      - ~/.m2:/root/.m2
+    networks:
+      - adc-network
+
+  cart:
+    image: maven:3.9.5-amazoncorretto-21
+    container_name: cart
+    working_dir: /app
+    command: mvn spring-boot:run -Dspring-boot.run.fork=false
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/cart
+      SERVER_SERVLET_CONTEXT_PATH: /cart
+      SPRING_PROFILES_ACTIVE: dev
+      ADC_PUBLIC_URL: ${ADC_PUBLIC_API_URL}/cart
+    volumes:
+      - ./:/app
+      - ~/.m2:/root/.m2
+    networks:
+      - adc-network
+
+  location:
+    image: maven:3.9.5-amazoncorretto-21
+    container_name: location
+    working_dir: /app
+    command: mvn spring-boot:run -Dspring-boot.run.fork=false
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/location
+      SERVER_SERVLET_CONTEXT_PATH: /location
+      SPRING_PROFILES_ACTIVE: dev
+      ADC_PUBLIC_URL: ${ADC_PUBLIC_API_URL}/location
+    volumes:
+      - ./:/app
+      - ~/.m2:/root/.m2
+    networks:
+      - adc-network
+
+  inventory:
+    image: maven:3.9.5-amazoncorretto-21
+    container_name: inventory
+    working_dir: /app
+    command: mvn spring-boot:run -Dspring-boot.run.fork=false
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/inventory
+      SERVER_SERVLET_CONTEXT_PATH: /inventory
+      SPRING_PROFILES_ACTIVE: dev
+      ADC_PUBLIC_URL: ${ADC_PUBLIC_API_URL}/inventory
+    volumes:
+      - ./:/app
+      - ~/.m2:/root/.m2
+    networks:
+      - adc-network
+
+  media:
+    image: maven:3.9.5-amazoncorretto-21
+    container_name: media
+    working_dir: /app
+    command: mvn spring-boot:run -Dspring-boot.run.fork=false
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/media
+      SERVER_SERVLET_CONTEXT_PATH: /media
+      SERVER_PORT: ${SERVER_PORT}
+      ADC_PUBLIC_URL: ${ADC_PUBLIC_API_URL}/media
+    volumes:
+      - ./:/app
+      - ~/.m2:/root/.m2
+      - ./data/images:/images
+    networks:
+      - adc-network
+
+  order:
+    image: maven:3.9.5-amazoncorretto-21
+    container_name: order
+    working_dir: /app
+    command: mvn spring-boot:run -Dspring-boot.run.fork=false
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/order
+      SERVER_SERVLET_CONTEXT_PATH: /order
+      SPRING_PROFILES_ACTIVE: dev
+      ADC_PUBLIC_URL: ${ADC_PUBLIC_API_URL}/order
+    volumes:
+      - ./:/app
+      - ~/.m2:/root/.m2
+      - ./data/images:/images
+    networks:
+      - adc-network
+
+  product:
+    image: maven:3.9.5-amazoncorretto-21
+    container_name: product
+    working_dir: /app
+    command: mvn spring-boot:run -Dspring-boot.run.fork=false
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/book
+      SERVER_SERVLET_CONTEXT_PATH: /product
+      SPRING_PROFILES_ACTIVE: dev
+      ADC_PUBLIC_URL: ${ADC_PUBLIC_API_URL}/product
+    volumes:
+      - ./:/app
+      - ~/.m2:/root/.m2
+    networks:
+      - adc-network
+
+  storefront:
+    image: maven:3.9.5-amazoncorretto-21
+    container_name: storefrontbff
+    working_dir: /app
+    command: mvn -pl storefrontbff -am spring-boot:run -Dspring-boot.run.main-class=com.example.storefrontbff.StorefrontbffApplication
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      ADC_SERVICES_BOOK: ${ADC_SERVICES_BOOK}
+      ADC_SERVICES_CART: ${ADC_SERVICES_CART}
+      ADC_SERVICES_CUSTOMER: ${ADC_SERVICES_CUSTOMER}
+      ADC_SERVICES_INVENTORY: ${ADC_SERVICES_INVENTORY}
+      ADC_SERVICES_LOCATION: ${ADC_SERVICES_LOCATION}
+      ADC_SERVICES_MEDIA: ${ADC_SERVICES_MEDIA}
+      ADC_SERVICES_ORDER: ${ADC_SERVICES_ORDER}
+    volumes:
+      - ./:/app
+      - ~/.m2:/root/.m2
+    networks:
+      - adc-network
+
+  swagger-ui:
+    container_name: swagger-ui
+    image: swaggerapi/swagger-ui:v5.17.14
+    environment:
+      BASE_URL: /swagger-ui
+      URLS: ${API_DOCS}
+      OAUTH_CLIENT_ID: swagger-ui
+      OAUTH_USE_PKCE: true
+    networks:
+      - adc-network
+
+  postgres:
+    image: postgres:16-alpine
+    hostname: ${POSTGRES_HOST}
+    container_name: postgres
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - ./docker/postgres/postgresql.conf:/usr/share/postgresql/postgresql.conf
+      - ./postgres_init.sql:/docker-entrypoint-initdb.d/postgres_init.sql
+      - postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - adc-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:6.14
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@adc.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    networks:
+      - adc-network
+
+networks:
+  adc-network:
+    driver: bridge
+    name: adc-network
+
+volumes:
+  postgres:
+  pgadmin:

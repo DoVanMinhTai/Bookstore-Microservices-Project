@@ -1,5 +1,6 @@
 package com.example.customer.service;
 
+import com.adc.commonlibrary.exception.NotFoundException;
 import com.example.customer.config.KeyCloakPropsConfig;
 import com.example.customer.viewmodel.customer.CustomerPostVm;
 import com.example.customer.viewmodel.customer.CustomerVm;
@@ -22,7 +23,6 @@ public class CustomerService {
     private static final int USER_PAGE =2;
     private final Keycloak keycloak;
     private final KeyCloakPropsConfig keyCloakPropsConfig;
-
 
     public CustomerService(Keycloak keycloak, KeyCloakPropsConfig keyCloakPropsConfig) {
         this.keycloak = keycloak;
@@ -47,10 +47,11 @@ public class CustomerService {
 
     public CustomerVm create(CustomerPostVm customerPostVm) {
         RealmResource realmResource = keycloak.realm(keyCloakPropsConfig.getRealm());
-//        if(checkUsernameExists(realmResource, customerPostVm.userName())) {
-//            throw new RuntimeException();
-//        }
-//        define user
+/*
+        if(checkUsernameExists(realmResource, customerPostVm.userName())) {
+            throw new RuntimeException();
+        }
+*/
         UserRepresentation user  = new UserRepresentation();
         user.setUsername(customerPostVm.userName());
         user.setFirstName(customerPostVm.firstName());
@@ -61,11 +62,9 @@ public class CustomerService {
         user.setEnabled(true);
         Response response = realmResource.users().create(user);
 
-//        get new user
         String userId = CreatedResponseUtil.getCreatedId(response);
         UserResource userResource = realmResource.users().get(userId);
 
-//        asgin role
         RoleRepresentation realmRole = realmResource.roles().get(customerPostVm.role()).toRepresentation();
         userResource.roles().realmLevel().add(Collections.singletonList(realmRole));
 
@@ -73,8 +72,15 @@ public class CustomerService {
     }
 
     public CustomerVm getCustomerProfile(String userId) {
-        return CustomerVm.fromUserRepresentation(keycloak.realm(keyCloakPropsConfig.getRealm()).users().get(userId).toRepresentation());
+
+        if (userId == null || userId.isEmpty() || userId.equalsIgnoreCase("anonymousUser")) {
+            return CustomerVm.createAnonymous();
+        } else {
+            try {
+                return CustomerVm.fromUserRepresentation(keycloak.realm(keyCloakPropsConfig.getRealm()).users().get(userId).toRepresentation());
+            } catch (NotFoundException e) {
+                throw new NotFoundException(String.format(ERROR, "User not found", userId));
+            }
+        }
     }
-
-
 }

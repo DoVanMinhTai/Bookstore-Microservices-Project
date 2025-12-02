@@ -111,7 +111,7 @@ const Profile: NextPage = () => {
 
   useEffect(() => {
     const filter = dummyCarts.filter((cartStatus) => cartStatus.status === orderStatus);
-    setCarts(filter)
+    // setCarts(filter)
   }, [dummyCarts, orderStatus])
 
   return (

@@ -18,12 +18,12 @@
         <module>cart</module>
         <module>location</module>
         <module>customer</module>
+        <module>media</module>
+        <module>order</module>
+        <module>product</module>
+        <module>inventory</module>
         <module>storefrontbff</module>
-        <!--		<module>backoffice-bff</module>-->
-        <!--		<module>media</module>-->
-        <!--		<module>order</module>-->
-        <!--		<module>product</module>-->
-        <!--		<module>inventory</module>-->
+        <!--        		<module>backoffice-bff</module>-->
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
