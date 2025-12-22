@@ -3,11 +3,10 @@ import { Checkout } from '../model/Checkout'
 import AddressForm from '@/modules/address/components/AddressForm'
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Address } from '@/modules/address/model/Address';
-import { createAddress, getAddressById, updateAddress } from '@/modules/address/service/Address';
+import { createAddress, updateAddress } from '@/modules/address/service/Address';
 import { AddressDetailVm } from '@/modules/address/model/AddressDetail';
 import { getAddressBillingList, getAddressDefault, getUserAddressList } from '@/modules/profile/service/ProfileService';
-import { error } from 'console';
-import { getAllCountries, getDistricts } from '@/modules/country/service/CountryService';
+import { getAllCountries } from '@/modules/country/service/CountryService';
 import { Districts } from '@/modules/districts/model/Districts';
 import { StateOrProvince } from '@/modules/stateorprovince/model/StateOrProvince';
 import { getStateOrProvinces } from '@/modules/stateorprovince/services/StateOrProvince';
@@ -29,7 +28,6 @@ export default function CheckoutShippingInfo({ checkout, handleAddress }: Props)
     } = useForm<Address>();
 
     const [address, setAddress] = useState<Address>();
-    const [addressPostVm, setAddressPostVm] = useState<AddressPostVm>();
     const [selectedAddress, setSelectedAddress] = useState<AddressDetailVm>();
     const [selectedAddressBilling, setSelectedAddressBilling] = useState<AddressDetailVm | null>(null);
     const [listAddress, setListAddress] = useState<AddressDetailVm[]>([]);
@@ -41,8 +39,6 @@ export default function CheckoutShippingInfo({ checkout, handleAddress }: Props)
     const [showModalUpdateShippingAddress, setShowModalUpdateShippingAddress] = useState<boolean>(false);
     const [showModalList, setShowModalList] = useState<boolean>(false);
     const [showModalListBilling, setShowModalListBilling] = useState<boolean>(false);
-
-
 
     const onHandleSubmitShippingAddress: SubmitHandler<Address> = async (data) => {
         const newAddress = await performAndFetch(data);

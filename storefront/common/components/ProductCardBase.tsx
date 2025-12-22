@@ -23,7 +23,6 @@ const ProductCardBase: React.FC<ProductCardBase> = ({ product, thumbnailUrl }) =
         try {
             await addToCartItem(payload);
             fetchNumberCartItems();
-
         } catch (error) {
 
         }

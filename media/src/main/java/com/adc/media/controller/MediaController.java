@@ -24,10 +24,11 @@ public class MediaController {
     public ResponseEntity<MediaVm> getMediaById(@PathVariable Long id) {
         return ResponseEntity.ok(mediaService.getMediaById(id)  );
     }
-//http://api.adc.local/media/media/1/file/me_lam_gi_co_uoc_mo_3.webp
-//    http://api.adc.local/media/1/file/me_lam_gi_co_uoc_mo_3.webp
+//  http://api.adc.local/media/media/1/file/me_lam_gi_co_uoc_mo_3.webp
+//  http://api.adc.local/media/1/file/me_lam_gi_co_uoc_mo_3.webp
     @GetMapping("/media/{id}/file/{fileName}")
-    public ResponseEntity<InputStreamResource> getFile(@Validated @org.springframework.web.bind.annotation.PathVariable("id") Long id, @org.springframework.web.bind.annotation.PathVariable("fileName") String fileName) {
+    public ResponseEntity<InputStreamResource> getFile(@Validated @org.springframework.web.bind.annotation.PathVariable("id") Long id,
+                                                       @org.springframework.web.bind.annotation.PathVariable("fileName") String fileName) {
         MediaDto mediaDto = mediaService.getFile(id, fileName);
         System.out.println(mediaDto);
             return ResponseEntity.ok()

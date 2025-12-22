@@ -25,7 +25,6 @@ public class StateOrProvinceService {
         return stateOrProvinceRepository.findAll().stream().map(stateOrProvinceMapper::toStateOrProvinceViewModelFromStateOrProvince).toList();
     }
 
-
     public StateOrProvinceVm findById(Long id) {
         return stateOrProvinceRepository.findById(id).stream().map(stateOrProvinceMapper::toStateOrProvinceViewModelFromStateOrProvince).toList().get(0);
     }

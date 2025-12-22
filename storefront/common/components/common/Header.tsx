@@ -7,7 +7,7 @@ import logo from '../../../assets/images/logo.webp'
 import Image from 'next/image';
 import CartModal from '@/modules/cart/components/CartModal';
 import AuthenticationInfo from '../AuthenticationInfo';
-import { CartContext, useCartContext } from '@/context/CartContext';
+import { useCartContext } from '@/context/CartContext';
 
 const Header = () => {
     const { numberCartItems } = useCartContext();
@@ -19,7 +19,7 @@ const Header = () => {
                     <div className="container mx-auto flex  justify-between items-center ">
                         <div className="flex  items-center justify-center h-full p-1">
                             <ul className="p-0 m-0 gap-3 flex items-center justify-center text-sm h-full ">
-                                <li className="">Đặt bánh lấy ngay tại Thành phố Hồ Chí Minh</li>
+                                <li className="">Đặt sach lấy ngay tại Thành phố Hồ Chí Minh</li>
                                 <li className="">Hệ thống sách chính hãng</li>
                                 <li className="">Hotline: 01234576789</li>
                             </ul>

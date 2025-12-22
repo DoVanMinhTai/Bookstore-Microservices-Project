@@ -20,49 +20,32 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String shorTDescription;
 
+    private String name;
+    private String shortDescription;
     private String description;
     private String specification;
-
     private Long numPages;
-
     private boolean isPublished;
-
     private boolean isVisibleIndividually;
-
     private boolean isFeatured;
-
     private boolean isAllowedToOrder;
-
     private Date publishDate;
-
     private String slug;
-
     private String isbn13;
-
     private Long ratingsCount;
-
     private String title;
-
     private String titleWithoutSeries;
-
     private Double price;
-
     private Double availability;
-
     private String dimensions;
-
     private Float discountPercentage;
-
     private Double itemWeight;
-
     private String authorName;
     private Long thumbnailMediaId;
+
     @OneToMany(mappedBy = "book", cascade = CascadeType.PERSIST)
     private List<BookCate> bookCate;
-
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "publisherId", referencedColumnName = "id")
@@ -85,6 +68,8 @@ public class Book {
     private String metaTitle;
     private String metaKeyword;
     private String metaDescription;
+    private String sku;
+
     @Column(name = "packageDimensions")
     private String packageDimensions;
 }

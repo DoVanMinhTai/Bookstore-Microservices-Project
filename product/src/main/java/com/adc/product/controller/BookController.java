@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 public class BookController {
     private ProductService productService;
 
@@ -76,7 +76,7 @@ public class BookController {
         return ResponseEntity.ok(productService.getFeaturedProduct(pageNo, pageSize));
     }
 
-    @GetMapping("/storefront/product/{slug}")
+    @GetMapping("/storefront/product/slug/{slug}")
     public ResponseEntity<ProductDetailGetVm> getProductDetail(
             @PathVariable String slug
     ) {

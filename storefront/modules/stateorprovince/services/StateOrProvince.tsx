@@ -8,7 +8,6 @@ export async function getStateOrProvinces(): Promise<StateOrProvince[]> {
     if (!reponse.ok) {
         console.log("Error StateOrProvinceList")
         return [];
-
     } else {
         return reponse.json();
     }

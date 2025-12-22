@@ -12,7 +12,6 @@ export const getServerSideProps: GetServerSideProps = async (
     context: GetServerSidePropsContext
 ) => {
     const { slug } = context.query;
-
     const product = await getProductDetail(slug as string);
     return {
         props: {
@@ -25,9 +24,7 @@ const ProductDetailsPage = ({ product }: Props) => {
     return (
         <div >
             <Head>{product.name}</Head>
-
             <ProductDetails product={product} />
-
         </div>
     )
 }

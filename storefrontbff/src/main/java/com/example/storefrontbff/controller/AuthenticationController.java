@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 public class AuthenticationController {
     @GetMapping("/authentication")
     public ResponseEntity<AuthenticatedInforVm> user(@AuthenticationPrincipal OAuth2User principal) {
@@ -24,9 +24,7 @@ public class AuthenticationController {
             return ResponseEntity.ok(new AuthenticatedInforVm(false, null));
         }
 
-        System.out.println(Optional.ofNullable(principal.getAttribute("preferred_username")));
         AuthenticatedIUserVm authenticatedUser = new AuthenticatedIUserVm(principal.getAttribute("preferred_username"));
-        System.out.println(authenticatedUser);
         return ResponseEntity.ok(new AuthenticatedInforVm(true, authenticatedUser));
     }
 

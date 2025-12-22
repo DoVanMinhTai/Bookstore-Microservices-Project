@@ -102,12 +102,8 @@ const Index = () => {
                                     <p>Loading...</p>
                                 )}
                             </div>
-
-
                         </div>
-
                     </div>
-
                 <div>Tiếp tục mua hàng</div>
                 <div>Xem lịch sử đơn hàng</div>
                 <div>In Hóa Đơn</div>

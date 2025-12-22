@@ -1,6 +1,5 @@
 package com.example.customer.controller;
 
-import com.example.customer.model.UserAddress;
 import com.example.customer.service.UserAddressService;
 import com.example.customer.viewmodel.address.AddressDetailVm;
 import com.example.customer.viewmodel.address.AddressPostVm;

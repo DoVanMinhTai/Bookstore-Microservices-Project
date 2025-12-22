@@ -3,7 +3,6 @@ import BestSellerList from "@/modules/homepage/components/BestSellerList";
 import FeturedProduct from "@/modules/homepage/components/FeturedProduct";
 import BreadCrumb from "@/common/components/BreadCrumb";
 
-
 export default function Home() {
   return (
     <>
@@ -13,11 +12,8 @@ export default function Home() {
         ]}
         className=""
       />
-
       <Banner />
-
       <BestSellerList />
-
       <FeturedProduct />
     </>
   );
