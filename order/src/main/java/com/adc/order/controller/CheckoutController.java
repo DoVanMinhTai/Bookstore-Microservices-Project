@@ -1,6 +1,5 @@
 package com.adc.order.controller;
 
-import com.adc.order.model.Checkout;
 import com.adc.order.service.CheckoutService;
 import com.adc.order.viewmodel.checkout.CheckoutPaymentMethodPutVm;
 import com.adc.order.viewmodel.checkout.CheckoutPostVm;

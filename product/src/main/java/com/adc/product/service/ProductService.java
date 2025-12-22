@@ -5,8 +5,6 @@ import com.adc.product.model.*;
 import com.adc.product.respository.*;
 
 import com.adc.product.viewmodel.*;
-import io.micrometer.common.util.StringUtils;
-//import jakarta.ws.rs.NotFoundException;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,9 +20,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductService {
     private final BookRepository bookRepository;
-    private final BookCategoryRepository bookCategoryRepository;
-    private final BookPublisherRespository bookPublisherRespository;
-    private final GenreRespository genreRespository;
     private final BrandRepository brandRepository;
     private final OrderService orderService;
     private final MediaService mediaService;
@@ -71,6 +66,9 @@ public class ProductService {
 
         List<ProductCheckoutListVm> productCheckoutListVms = productPage.getContent()
                 .stream().map(product -> {
+                    if(product.getBrand() == null) {
+                        product.setBrand(new Brand());
+                    }
                     ProductCheckoutListVm productCheckoutListVm = ProductCheckoutListVm.fromModel(product);
                     return productCheckoutListVm;
                 }).toList();
@@ -131,12 +129,18 @@ public class ProductService {
             }
         }
 
+        if(product.getBrand() == null) {
+            product.setBrand(new Brand());
+        }
+        if(product.getBookCate() == null) {
+            product.setBookCate(new ArrayList<>());
+        }
         return new ProductDetailGetVm(
                 product.getId(),
                 product.getName(),
                 product.getBrand().getName(),
                 product.getBookCate().stream().map(category -> category.getCate().getName()).toList(),
-                product.getShorTDescription(),
+                product.getShortDescription(),
                 product.getDescription(),
                 product.getSpecification(),
                 product.isPublished(),
@@ -163,7 +167,8 @@ public class ProductService {
 
     public List<ProductThumbnailGetVm> getProductByIds(@Valid List<Long> productIds) {
         List<Book> books = bookRepository.findAllById(productIds);
-        List<ProductThumbnailGetVm> result = books.stream().map(
+
+        return books.stream().map(
                 product -> new ProductThumbnailGetVm(
                         product.getId(),
                         product.getName(),
@@ -172,8 +177,6 @@ public class ProductService {
                         product.getPrice()
                 )
         ).toList();
-
-        return result;
     }
 
     public ProductThumbnailGetVm getProductById(Long id) {
@@ -189,7 +192,9 @@ public class ProductService {
     }
 
     public List<ProductThumbnailGetVm> getProductSimilarBySlug(String slug) {
-        Book book = bookRepository.findBySlugAndIsPublishedTrue(slug).orElseThrow();
+        Book book = bookRepository.findBySlugAndIsPublishedTrue(slug).orElseThrow(
+                () -> new NotFoundException("Product Not Found", slug)
+        );
 
         List<Book> books = bookRepository.findAllByIdAndBrand_Id(book.getId(), book.getBrand().getId());
 

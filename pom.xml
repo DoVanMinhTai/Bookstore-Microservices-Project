@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.4.2</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/> 
     </parent>
     <groupId>com.adc</groupId>
     <artifactId>adc</artifactId>
@@ -15,15 +15,15 @@
     <name>adc</name>
     <modules>
         <module>common-library</module>
+        <module>product</module>
         <module>cart</module>
         <module>location</module>
         <module>customer</module>
         <module>media</module>
         <module>order</module>
-        <module>product</module>
         <module>inventory</module>
         <module>storefrontbff</module>
-        <!--        		<module>backoffice-bff</module>-->
+        <!--<module>backoffice-bff</module>-->
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

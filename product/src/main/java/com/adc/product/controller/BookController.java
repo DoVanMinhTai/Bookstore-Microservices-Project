@@ -76,7 +76,7 @@ public class BookController {
         return ResponseEntity.ok(productService.getFeaturedProduct(pageNo, pageSize));
     }
 
-    @GetMapping("/storefront/product/{slug}")
+    @GetMapping("/storefront/product/slug/{slug}")
     public ResponseEntity<ProductDetailGetVm> getProductDetail(
             @PathVariable String slug
     ) {
