@@ -1,12 +1,6 @@
 # Resolver for local development
-
-
 upstream pgadmin {
     server pgadmin:80;
-}
-
-upstream cart {
-    server cart:80;
 }
 
 upstream identity {
@@ -14,25 +8,40 @@ upstream identity {
 }
 
 server {
-    listen 80;
-    server_name api.local;
-    resolver 127.0.0.11;
+   server_name api.local;
+   resolver 127.0.0.11;
 
-
-    location /cart {
-        proxy_pass http://cart;
-    }
-
-   location /product {
-        proxy_pass http://product;
+   location /media {
+       proxy_pass http://media;
    }
 
-    error_page 404 = @404;
-    location @404 {
-        rewrite ^(.*)$ /index.html last;
-    }
-    return 404;
+   location /product {
+       proxy_pass http://product;
+   }
 
+   location /cart {
+       proxy_pass http://cart;
+   }
+
+   location /customer {
+       proxy_pass http://customer;
+   }
+
+    location /order {
+        proxy_pass http://order;
+    }
+
+    location /location {
+        proxy_pass http://location;
+    }
+
+    location /inventory {
+        proxy_pass http://inventory;
+    }
+
+    location /data {
+        proxy_pass http://data;
+    }
 }
 
 server {

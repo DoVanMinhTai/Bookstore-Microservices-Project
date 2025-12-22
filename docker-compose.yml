@@ -69,6 +69,7 @@ services:
     build: ./inventory
     image: inventory:latest
     environment:
+      - SPRING_PROFILES_ACTIVE=dev
       - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/inventory
       - SERVER_SERVLET_CONTEXT_PATH= /inventory
       - ADC_PUBLIC_URL=${ADC_PUBLIC_API_URL}/inventory
@@ -83,6 +84,7 @@ services:
         - SPRING_DATASOURCE_URL= jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/media
         - SERVER_SERVLET_CONTEXT_PATH=/media
         - SERVER_PORT=${SERVER_PORT}
+        - SPRING_PROFILES_ACTIVE=dev
         - ADC_PUBLIC_URL= ${ADC_PUBLIC_API_URL}/media
       volumes:
         - ./data/images:/images
@@ -94,6 +96,7 @@ services:
       build: ./order
       image: order:latest
       environment:
+        - SPRING_PROFILES_ACTIVE=dev
         - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/order
         - SERVER_SERVLET_CONTEXT_PATH= /order
         - SERVER_PORT
@@ -105,7 +108,6 @@ services:
       container_name: storefrontbff
       image: storefront-bff:latest
       entrypoint: ["./wait-for-it.sh", "identity:80", "--timeout=300", "--", "java", "-jar", "/app.jar"]
-#      entrypoint: ["identity:80", "--timeout=300", "--", "java", "-jar", "/app.jar"]
       environment:
         - SPRING_PROFILES_ACTIVE=dev
         - SERVER_PORT
@@ -118,12 +120,6 @@ services:
         - ADC_SERVICES_ORDER
       networks:
         - adc-network
-  #  storefront-nextjs:
-  #    build: ./storefront
-  #    image: adc/storefront:latest
-  #    networks:
-  #      - adc-network
-
   product:
       build: ./product
       container_name: product
@@ -133,6 +129,7 @@ services:
         - SERVER_SERVLET_CONTEXT_PATH=/product
         - SERVER_PORT
         - ADC_PUBLIC_URL=${ADC_PUBLIC_API_URL}/product
+        - SPRING_PROFILES_ACTIVE=dev
       networks:
         - adc-network
   swagger-ui:
@@ -144,6 +141,7 @@ services:
       - SWAGGER_URLS
       - OAUTH_CLIENT_ID=swagger-ui
       - OAUTH_USE_PKCE=true
+      - SPRING_PROFILES_ACTIVE=dev
     networks:
       - adc-network
   postgres:
@@ -157,6 +155,7 @@ services:
       - ./postgres_init.sql:/docker-entrypoint-initdb.d/postgres_init.sql
       - postgres:/var/lib/postgresql/data
     environment:
+      SPRING_PROFILES_ACTIVE: dev
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     networks:
@@ -172,6 +171,7 @@ services:
     container_name: pgadmin
     restart: always
     environment:
+      SPRING_PROFILES_ACTIVE: dev
       PGADMIN_DEFAULT_EMAIL: admin@adc.com
       PGADMIN_DEFAULT_PASSWORD: admin
       PGADMIN_SETUP_SERVER_JSON: |
