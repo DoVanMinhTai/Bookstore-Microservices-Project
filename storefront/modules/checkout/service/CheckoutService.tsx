@@ -1,18 +1,17 @@
 import apiClientService from "@/common/components/services/ApiClientService";
 import { Checkout } from "../model/Checkout";
-import { CheckoutVm } from "../model/CheckoutVm";
 
-
-const baseUrl = 'http://localhost:8087/api/orders/storefront'
+const baseUrl = 'http://localhost:8087/api/order/storefront'
 
 export async function createCheckout(checkout: Checkout): Promise<Checkout | null> {
     const reponse = await apiClientService.post(`${baseUrl}/checkouts`, JSON.stringify(checkout));
 
     if (reponse.status < 300 && reponse.status >= 200) {
         return await reponse.json();
-    } else {
+    } else if (reponse.status === 401) {
         throw new Error(reponse.statusText);
     }
+    return null;
 }
 
 export async function getCheckoutById(id: string): Promise<Checkout> {

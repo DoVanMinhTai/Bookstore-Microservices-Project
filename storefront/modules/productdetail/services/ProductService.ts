@@ -2,11 +2,10 @@ import apiClientService from "@/common/components/services/ApiClientService";
 import { ProductDetail } from "../model/ProductDetail";
 import { ProductThumbnail } from "@/modules/homepage/models/ProductThumbnail";
 
-
 const baseUrl = 'http://localhost:8087/api/product/storefront';
 
 export async function getProductDetail(slugs: string): Promise<ProductDetail> {
-    const response = await apiClientService.get(`${baseUrl}/productdetail/${slugs}`);
+    const response = await apiClientService.get(`${baseUrl}/product/slug/${slugs}`);
     return response.json();
 }
 
@@ -22,7 +21,7 @@ export async function getProductByIdSingle(id:number) :Promise<ProductThumbnail>
 export async function getProductSimilar(slugs :string) : Promise<ProductThumbnail[]> {
     const reponse = await apiClientService.get(`${baseUrl}/product/productSimilar/${slugs}`);
     if(!reponse.ok) {
-        throw new Error("Get Product Similar")
+        return [];
     } else {
         return reponse.json();
     }

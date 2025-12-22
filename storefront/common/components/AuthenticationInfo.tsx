@@ -49,12 +49,10 @@ export default function AuthenticationInfo() {
             Tài Khoản
           </button>
 
-          {/* Dropdown Menu */}
           {dropdownOpen && (
             <div className="absolute mt-1  bg-gray-800 text-white rounded-md shadow-lg ">
               <div className="block text-lg px-4 py-2">
                 Xin chào: {authenticatedInfoVm.authenticatedUser.userName.split('@')[0]}
-
               </div>
               <Link href="/profile" className="block px-4 py-2 hover:bg-gray-700">
                 Hồ sơ

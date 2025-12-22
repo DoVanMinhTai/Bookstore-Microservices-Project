@@ -18,9 +18,8 @@ const ImageWithFallBack = ({
     alt,
     className,
     style,
-    fallback: customFallBack = '/static/images/default-fallback-image.jpg', ...props
-
-}: Props) => {
+    fallback: customFallBack = '/static/images/default-fallback-image.jpg', ...props }: Props) => {
+    
     const [fallBack, setFallBack] = useState<string | null>(null);
     const [srcImg, setSrcImg] = useState<string>(src);
 
@@ -41,14 +40,10 @@ const ImageWithFallBack = ({
                 onError={(event) => {
                     event.currentTarget.onerror = null;
                     setFallBack(customFallBack)
-                }}
-            >
-
+                }}>
             </img>
         </>
     )
 }
 
-
 export default ImageWithFallBack
-

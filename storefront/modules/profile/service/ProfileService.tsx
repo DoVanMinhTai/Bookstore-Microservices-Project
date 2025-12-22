@@ -5,7 +5,6 @@ const baseUrl = 'http://localhost:8087/api/customer/storefront';
 
 export async function getMyProfile() {
     const response = await apiClientService.get(`${baseUrl}/customer/profile`)
-
     if(!response.ok) {
 
     } else {
@@ -25,11 +24,10 @@ export async function getUserAddressList() : Promise<AddressDetailVm[]> {
 export async function getAddressDefault() : Promise<AddressDetailVm| undefined> {
     const reponse = await apiClientService.get(`${baseUrl}/getAddressIsActive`);
     if(!reponse.ok) {
-        return reponse.json();
+        return undefined;
     } else {
         return reponse.json();
     }
-    
 }
 
 export async function getAddressBillingList() {

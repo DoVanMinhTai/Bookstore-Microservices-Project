@@ -9,5 +9,4 @@ export async function getProductById(ids: number[]): Promise<ProductThumbnail[]>
         throw new Error("Fetch api error")
     }
     return reponse.json();
-
 }

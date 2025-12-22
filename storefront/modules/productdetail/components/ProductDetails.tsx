@@ -82,7 +82,10 @@ export default function ProductDetails({ product }: ProductDetailProps) {
                 <div className="grid grid-cols-2 container mx-auto gap-10 ">
                     {/* <ProductImage thumbnail={product.thumbnailMediaUrl} listImages={product.productImageMediaUrl} productName={product.name} /> */}
                     <div className="border-2  m-4 my-auto h-auto mx-auto">
+                        {product.thumbnailMediaUrl &&
+                        
                         <ImageWithFallBack src={product.thumbnailMediaUrl} className=" rounded-md" alt={product.name} />
+                        }
                         <ProductImageGarelly listImage={product.productImageMediaUrl} />
                     </div>
                     <div className="h-full flex flex-col border-2 bg-[#f0f0f0]">
