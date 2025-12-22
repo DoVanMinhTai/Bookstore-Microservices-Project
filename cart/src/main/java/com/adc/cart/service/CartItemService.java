@@ -3,6 +3,7 @@ package com.adc.cart.service;
 import com.adc.cart.mapper.CartItemMapper;
 import com.adc.cart.model.CartItem;
 import com.adc.cart.repository.CartItemRepository;
+import com.adc.cart.utils.Constant;
 import com.adc.cart.viewmodel.CartItemDeleteVms;
 import com.adc.cart.viewmodel.CartItemGetVm;
 import com.adc.cart.viewmodel.CartItemPost;
@@ -28,7 +29,7 @@ public class CartItemService {
 
     @Transactional
     public CartItemGetVm addCartItem(CartItemPost cartItemPostVm) {
-//        validateProduct(cartItemPostVm.productId());
+        validateProduct(cartItemPostVm.productId());
         String currentUser = AuthenticationUtils.extractUserId();
         CartItem cartItem = performAddCartItem(cartItemPostVm, currentUser);
         return cartItemMapper.toGetVm(cartItem);
@@ -36,10 +37,9 @@ public class CartItemService {
 
     @Transactional
     public CartItemGetVm updateCartItem(Long productId, CartItemPutVm cartItemPutVm) {
-//        validateProduct(productId);
         String currentUser = AuthenticationUtils.extractUserId();
         CartItem cartItem = cartItemRepository.findByCustomerIdAndProductId(currentUser, productId)
-                .orElseThrow(() -> new NotFoundException("Cart Item Not Found For Product ID and User ID", productId));
+                .orElseThrow(() -> new NotFoundException(Constant.ErrorCode.CART_ITEM_NOT_FOUND + "FOR:", productId, currentUser));
         int quantity = cartItemPutVm.quantity();
         cartItem.setQuantity(quantity);
         cartItemRepository.save(cartItem);
@@ -61,7 +61,6 @@ public class CartItemService {
 
     @Transactional
     public List<CartItemGetVm> deleteOrAdjustCartItem(List<CartItemDeleteVms> cartItemDeleteVms) {
-//        validate cartitem
         List<CartItem> updateAdjust = new ArrayList<>();
         List<CartItem> deleteItems = new ArrayList<>();
         Map<Long, CartItem> cartGetById = mapCartItemToProductId(cartItemDeleteVms);
@@ -83,9 +82,9 @@ public class CartItemService {
         return cartItemMapper.toGetVms(updateCartItem);
     }
 
-    private Map<Long, CartItem> mapCartItemToProductId(List<CartItemDeleteVms> cartItemDeteleVms) {
+    private Map<Long, CartItem> mapCartItemToProductId(List<CartItemDeleteVms> cartItemDeleteVms) {
         String currentUserId = AuthenticationUtils.extractUserId();
-        List<Long> productIds = cartItemDeteleVms.stream().map(CartItemDeleteVms::productId).toList();
+        List<Long> productIds = cartItemDeleteVms.stream().map(CartItemDeleteVms::productId).toList();
         List<CartItem> cartItems = cartItemRepository.findByCustomerIdAndProductIdIn(currentUserId, productIds);
         return cartItems.stream().collect(Collectors.toMap(CartItem::getProductId, Function.identity()));
     }
@@ -106,10 +105,9 @@ public class CartItemService {
         return cartItemRepository.save(existCartItem);
     }
 
-
     private void validateProduct(Long idProduct) {
         if (!productService.existsProduct(idProduct)) {
-            throw new NotFoundException("NOT EXISTS PRODUCT", idProduct);
+            throw new NotFoundException(Constant.ErrorCode.PRODUCT_NOT_FOUND, idProduct);
         }
     }
 }

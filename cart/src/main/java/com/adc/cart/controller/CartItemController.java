@@ -7,11 +7,13 @@ import com.adc.cart.viewmodel.CartItemPost;
 import com.adc.cart.viewmodel.CartItemPutVm;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
@@ -20,7 +22,6 @@ public class CartItemController {
 
     @PostMapping("/storefront/cart/add")
     public ResponseEntity<CartItemGetVm> addCartItem(@RequestBody CartItemPost cartItemPost) {
-        System.out.println(cartItemPost);
         return ResponseEntity.ok(cartItemService.addCartItem(cartItemPost));
     }
 
