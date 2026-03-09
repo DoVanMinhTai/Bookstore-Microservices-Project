@@ -9,7 +9,7 @@ upstream identity {
 
 server {
    listen 80;
-   server_name nginx;
+   server_name api.local;
    resolver 127.0.0.11;
 
    location /media {
