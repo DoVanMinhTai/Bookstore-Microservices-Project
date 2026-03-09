@@ -9,10 +9,7 @@
 		<relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
 	</parent>
 	<artifactId>common-library</artifactId>
-	<version>${revision}</version>
 	<packaging>jar</packaging>
-
-
 	<name>common-library</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>

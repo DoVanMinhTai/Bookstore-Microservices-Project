@@ -39,9 +39,13 @@ server {
         proxy_pass http://inventory;
     }
 
-    location /data {
-        proxy_pass http://data;
-    }
+}
+
+server {
+  server_name storefront;
+  location / {
+    proxy_pass http://storefront;
+  }
 }
 
 server {

@@ -36,7 +36,7 @@ services:
       - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/customer
       - SERVER_SERVLET_CONTEXT_PATH= /customer
       - SERVER_PORT
-      - ADC_PUBLIC_URL=${ADC_PUBLIC_API_URL}/customer
+      - PUBLIC_API_URL=${PUBLIC_API_URL}/customer
       - SPRING_PROFILES_ACTIVE=dev
     networks:
       - adc-network
@@ -48,7 +48,7 @@ services:
       - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/cart
       - SERVER_SERVLET_CONTEXT_PATH= /cart
       - SERVER_PORT
-      - ADC_PUBLIC_URL=${ADC_PUBLIC_API_URL}/cart
+      - PUBLIC_API_URL=${PUBLIC_API_URL}/cart
       - SPRING_PROFILES_ACTIVE=dev
     networks:
       - adc-network
@@ -60,7 +60,7 @@ services:
       - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/location
       - SERVER_SERVLET_CONTEXT_PATH= /location
       - SERVER_PORT
-      - ADC_PUBLIC_URL= ${ADC_PUBLIC_API_URL}/location
+      - PUBLIC_API_URL= ${PUBLIC_API_URL}/location
       - SPRING_PROFILES_ACTIVE=dev
     networks:
       - adc-network
@@ -72,7 +72,7 @@ services:
       - SPRING_PROFILES_ACTIVE=dev
       - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/inventory
       - SERVER_SERVLET_CONTEXT_PATH= /inventory
-      - ADC_PUBLIC_URL=${ADC_PUBLIC_API_URL}/inventory
+      - PUBLIC_API_URL=${PUBLIC_API_URL}/inventory
       - SERVER_PORT
     networks:
       - adc-network
@@ -85,12 +85,11 @@ services:
         - SERVER_SERVLET_CONTEXT_PATH=/media
         - SERVER_PORT=${SERVER_PORT}
         - SPRING_PROFILES_ACTIVE=dev
-        - ADC_PUBLIC_URL= ${ADC_PUBLIC_API_URL}/media
+        - PUBLIC_API_URL= ${PUBLIC_API_URL}/media
       volumes:
         - ./data/images:/images
       networks:
         - adc-network
-
   order:
       container_name: order
       build: ./order
@@ -100,9 +99,11 @@ services:
         - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/order
         - SERVER_SERVLET_CONTEXT_PATH= /order
         - SERVER_PORT
-        - ADC_PUBLIC_URL= ${ADC_PUBLIC_API_URL}/order
+        - PUBLIC_API_URL= ${PUBLIC_API_URL}/order
       volumes:
         - ./data/images:/images
+      networks:
+        - adc-network
   storefront:
       build: ./storefrontbff
       container_name: storefrontbff
@@ -111,13 +112,13 @@ services:
       environment:
         - SPRING_PROFILES_ACTIVE=dev
         - SERVER_PORT
-        - ADC_SERVICES_BOOK
-        - ADC_SERVICES_CART
-        - ADC_SERVICES_CUSTOMER
-        - ADC_SERVICES_INVENTORY
-        - ADC_SERVICES_LOCATION
-        - ADC_SERVICES_MEDIA
-        - ADC_SERVICES_ORDER
+        - SERVICES_BOOK
+        - SERVICES_CART
+        - SERVICES_CUSTOMER
+        - SERVICES_INVENTORY
+        - SERVICES_LOCATION
+        - SERVICES_MEDIA
+        - SERVICES_ORDER
       networks:
         - adc-network
   product:
@@ -128,7 +129,7 @@ services:
         - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/book
         - SERVER_SERVLET_CONTEXT_PATH=/product
         - SERVER_PORT
-        - ADC_PUBLIC_URL=${ADC_PUBLIC_API_URL}/product
+        - PUBLIC_API_URL=${PUBLIC_API_URL}/product
         - SPRING_PROFILES_ACTIVE=dev
       networks:
         - adc-network
