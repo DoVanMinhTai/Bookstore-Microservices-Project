@@ -5,10 +5,12 @@ services:
     container_name: nginx
     restart: unless-stopped
     volumes:
-      - ./nginx/templates:/etc/nginx/templates
+      - ./nginx/templates/prod.conf.template:/etc/nginx/templates/prod.conf.template
       - ./nginx/configuration/custom_proxy_settings.conf:/etc/nginx/conf.d/custom_proxy_settings.conf
     ports:
       - "80:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - adc-network
   identity.local:
@@ -106,8 +108,8 @@ services:
         - adc-network
   storefront:
       build: ./storefrontbff
-      container_name: storefrontbff
-      image: storefront-bff:latest
+      container_name: storefront
+      image: storefrontbff:latest
       entrypoint: ["./wait-for-it.sh", "identity:80", "--timeout=300", "--", "java", "-jar", "/app.jar"]
       environment:
         - SPRING_PROFILES_ACTIVE=dev
@@ -119,6 +121,8 @@ services:
         - SERVICES_LOCATION
         - SERVICES_MEDIA
         - SERVICES_ORDER
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
       networks:
         - adc-network
   product:

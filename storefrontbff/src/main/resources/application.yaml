@@ -37,7 +37,7 @@ spring:
             - TokenRelay=
             - StripPrefix=1
         - id: nextJs
-          uri: http://localhost:3000
+          uri: http://host.docker.internal:3000
           predicates:
             - Path=/**
       default-filters:
