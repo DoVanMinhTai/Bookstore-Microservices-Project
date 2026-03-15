@@ -2,7 +2,7 @@ import apiClientService from "@/common/components/services/ApiClientService";
 import { OrdersPostVm } from "../model/OrdersPostVm";
 import { OrderVm } from "../model/OrderVm";
 
-const baseUrl = 'http://localhost:8087/api/order/storefront'
+const baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/order/storefront`;
 
 export async function createOrder(ordersPostVm: OrdersPostVm): Promise<{ status: number, data: OrderVm }> {
     const reponse = await apiClientService.post(`${baseUrl}/orders`, JSON.stringify(ordersPostVm));
@@ -38,7 +38,7 @@ export async function getListOrderByCreatedBy(): Promise<OrderVm[]> {
 }
 
 export async function getOrdersByOrderState(orderStatus: string) {
-    let stateUp = orderStatus.toUpperCase();
+    const stateUp = orderStatus.toUpperCase();
     const response = await apiClientService.get(`${baseUrl}/orders/byOrderState/${stateUp}`)
     if (!response.ok) {
         throw new Error("Có lỗi với đơn hàng")

@@ -17,6 +17,7 @@ public class FileSystemRepository {
     @SneakyThrows
     public InputStream getFile(String filePath)  {
         Path path = Paths.get(filePath);
+        System.out.println("Test" + path);
         if (!Files.exists(path)) {
             throw new IllegalStateException(String.format(DIRECTORY_DOES_NOT_EXIST, fileSystemConfig.getDirectory()));
         }

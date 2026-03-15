@@ -7,7 +7,7 @@ INSERT INTO book (
     title,
     title_without_series,
     slug,
-    shortdescription,
+    short_description,
     description,
     specification,
     num_pages,

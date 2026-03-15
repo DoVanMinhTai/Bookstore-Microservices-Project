@@ -1,7 +1,7 @@
 import apiClientService from "@/common/components/services/ApiClientService";
 import { Checkout } from "../model/Checkout";
 
-const baseUrl = 'http://localhost:8087/api/order/storefront'
+const baseUrl =  `${process.env.NEXT_PUBLIC_API_BASE_URL}/order/storefront`;
 
 export async function createCheckout(checkout: Checkout): Promise<Checkout | null> {
     const reponse = await apiClientService.post(`${baseUrl}/checkouts`, JSON.stringify(checkout));

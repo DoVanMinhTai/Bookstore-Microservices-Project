@@ -1,0 +1,224 @@
+services:
+  nginx:
+    image: nginx:1.27.2
+    container_name: nginx
+    restart: unless-stopped
+    volumes:
+      - ./nginx/templates/default.conf.template:/etc/nginx/conf.d/default.conf
+      - ./nginx/configuration/custom_proxy_settings.conf:/etc/nginx/conf.d/custom_proxy_settings.conf
+    ports:
+      - "80:80"
+    extra_hosts:
+      - "host.docker.internal:192.168.112.1"
+    networks:
+      - adc-network
+  identity.local:
+    image: quay.io/keycloak/keycloak:26.0.2
+    container_name: identity
+    command: 'start-dev --import-realm'
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: admin
+      KC_DB_PASSWORD: admin
+      KC_HTTP_PORT: 80
+    volumes:
+      - ./identity/realm-export.json:/opt/keycloak/data/import/realm-export.json
+      - ./identity/themes/uithemes:/opt/keycloak/themes
+    networks:
+      - adc-network
+  customer:
+    image: eclipse-temurin:21-jre-alpine
+    container_name: customer
+    volumes:
+      - ./customer/target:/app-bin
+    entrypoint: ["java", "-jar", "/app-bin/customer-0.0.1-SNAPSHOT.jar"]
+    environment:
+      - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/customer
+      - SERVER_SERVLET_CONTEXT_PATH= /customer
+      - SERVER_PORT
+      - PUBLIC_API_URL=${PUBLIC_API_URL}/customer
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - adc-network
+  cart:
+    image: eclipse-temurin:21-jre-alpine
+    container_name: cart
+    volumes:
+      - ./cart/target:/app-bin
+    entrypoint: [ "java", "-jar", "/app-bin/cart-0.0.1-SNAPSHOT.jar" ]
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/cart
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SERVER_SERVLET_CONTEXT_PATH= /cart
+      - SERVER_PORT
+      - PUBLIC_API_URL=${PUBLIC_API_URL}/cart
+    networks:
+      - adc-network
+  location:
+    image: eclipse-temurin:21-jre-alpine
+    container_name: location
+    volumes:
+      - ./location/target:/app-bin
+    entrypoint: [ "java", "-jar", "/app-bin/location-0.0.1-SNAPSHOT.jar" ]
+    environment:
+      - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/location
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SERVER_SERVLET_CONTEXT_PATH= /location
+      - SERVER_PORT
+      - PUBLIC_API_URL= ${PUBLIC_API_URL}/location
+      - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - adc-network
+  inventory:
+    image: eclipse-temurin:21-jre-alpine
+    container_name: inventory
+    volumes:
+      - ./inventory/target:/app-bin
+    entrypoint: [ "java", "-jar", "/app-bin/inventory-0.0.1-SNAPSHOT.jar" ]
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/inventory
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SERVER_SERVLET_CONTEXT_PATH= /inventory
+      - PUBLIC_API_URL=${PUBLIC_API_URL}/inventory
+      - SERVER_PORT
+    networks:
+      - adc-network
+  media:
+      image: eclipse-temurin:21-jre-alpine
+      container_name: media
+      environment:
+        - SPRING_DATASOURCE_URL= jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/media
+        - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+        - SERVER_SERVLET_CONTEXT_PATH=/media
+        - SERVER_PORT=${SERVER_PORT}
+        - SPRING_PROFILES_ACTIVE=dev
+        - PUBLIC_API_URL= ${PUBLIC_API_URL}/media
+      volumes:
+        - ./data/images:/images
+        - ./media/target:/app-bin
+      entrypoint: [ "java", "-jar", "/app-bin/media-1.0-SNAPSHOT.jar" ]
+      networks:
+        - adc-network
+  order:
+      image: eclipse-temurin:21-jre-alpine
+      container_name: order
+      environment:
+        - SPRING_PROFILES_ACTIVE=dev
+        - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/order
+        - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+        - SERVER_SERVLET_CONTEXT_PATH= /order
+        - SERVER_PORT
+        - PUBLIC_API_URL= ${PUBLIC_API_URL}/order
+      volumes:
+        - ./data/images:/images
+        - ./order/target:/app-bin
+      entrypoint: [ "java", "-jar", "/app-bin/order-1.0-SNAPSHOT.jar" ]
+      networks:
+        - adc-network
+  storefront:
+      image: eclipse-temurin:21-jre-alpine
+      container_name: storefront
+      entrypoint: ["./wait-for-it.sh", "identity:80", "--timeout=300", "--", "java", "-jar", "/app.jar"]
+      environment:
+        - SPRING_PROFILES_ACTIVE=dev
+        - SERVER_PORT
+        - SERVICES_BOOK
+        - SERVICES_CART
+        - SERVICES_CUSTOMER
+        - SERVICES_INVENTORY
+        - SERVICES_LOCATION
+        - SERVICES_MEDIA
+        - SERVICES_ORDER
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
+      networks:
+        - adc-network
+  product:
+      image: eclipse-temurin:21-jre-alpine
+      container_name: product
+      volumes:
+        - ./product/target:/app-bin
+      entrypoint: [ "java", "-jar", "/app-bin/product-1.0-SNAPSHOT.jar" ]
+      environment:
+        - SPRING_PROFILES_ACTIVE=dev
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/book
+        - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+        - SERVER_SERVLET_CONTEXT_PATH=/product
+        - SERVER_PORT
+        - PUBLIC_API_URL=${PUBLIC_API_URL}/product
+      networks:
+        - adc-network
+  swagger-ui:
+    container_name: swagger-ui
+    image: swaggerapi/swagger-ui:v5.17.14
+    environment:
+      - BASE_URL=/swagger-ui
+      - URLS
+      - OAUTH_CLIENT_ID=swagger-ui
+      - OAUTH_USE_PKCE=true
+      - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - adc-network
+  postgres:
+    image: postgres:16-alpine
+    hostname: ${POSTGRES_HOST}
+    container_name: postgres
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - ./docker/postgres/postgresql.conf:/usr/share/postgresql/postgresql.conf
+      - ./postgres_init.sql:/docker-entrypoint-initdb.d/postgres_init.sql
+      - postgres:/var/lib/postgresql/data
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - adc-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:6.14
+    container_name: pgadmin
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      PGADMIN_DEFAULT_EMAIL: admin@adc.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_SETUP_SERVER_JSON: |
+        {
+          "servers": [
+            {
+              "name": "PostgreSQL Server",
+              "description": "PostgreSQL Server",
+              "username": "admin",
+              "password": "admin",
+              "group_access": "admin",
+              "SSLMode": "prefer",
+              "port": 5432,
+              "host": "postgres",
+              "MaintenanceDB": "postgres"
+            }
+          ]
+        }
+    networks:
+      - adc-network
+
+networks:
+  adc-network:
+    driver: bridge
+    name: adc-network
+
+volumes:
+  postgres:
+  pgadmin:

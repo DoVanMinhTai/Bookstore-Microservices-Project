@@ -1385,7 +1385,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "http://storefront/*",
+        "http://storefront.local/*",
         "http://localhost:8087/*"
       ],
       "webOrigins": [

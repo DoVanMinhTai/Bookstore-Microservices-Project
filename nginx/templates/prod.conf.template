@@ -12,43 +12,60 @@ server {
    server_name api.local;
    resolver 127.0.0.11;
 
-   location /media {
+   location /media/ {
        proxy_pass http://media;
    }
 
-   location /product {
+   location /product/ {
        proxy_pass http://product;
    }
 
-   location /cart {
+   location /cart/ {
        proxy_pass http://cart;
    }
 
-   location /customer {
+   location /customer/ {
        proxy_pass http://customer;
    }
 
-    location /order {
+    location /order/ {
         proxy_pass http://order;
     }
 
-    location /location {
+    location /location/ {
         proxy_pass http://location;
     }
 
-    location /inventory {
+    location /inventory/ {
         proxy_pass http://inventory;
     }
-
 }
 
 server {
   listen 80;
   server_name storefront.local;
-  location / {
+  location /api/ {
     proxy_pass http://storefront;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
+  }
+
+  location / {
+        proxy_pass http://host.docker.internal:3000;
+        proxy_set_header Host $host;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+  }
+
+  location ~ ^/(authentication|oauth2|login) {
+    proxy_pass http://storefront;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_buffer_size          128k;
+    proxy_buffers              4 256k;
+    proxy_busy_buffers_size    256k;
   }
 }
 

@@ -10,40 +10,65 @@ upstream identity {
 server {
    server_name api.local;
 
-   location /media {
+   location /media/ {
        proxy_pass http://host.docker.internal:8083;
    }
 
-   location /product {
+   location /product/ {
        proxy_pass http://host.docker.internal:8080;
    }
 
-   location /cart {
+   location /cart/ {
        proxy_pass http://host.docker.internal:8084;
    }
 
-   location /customer {
+   location /customer/ {
        proxy_pass http://host.docker.internal:8088;
    }
 
-    location /order {
+    location /order/ {
         proxy_pass http://host.docker.internal:8085;
     }
 
-    location /location {
+    location /location/ {
         proxy_pass http://host.docker.internal:8081;
     }
 
-    location /inventory {
+    location /inventory/ {
         proxy_pass http://host.docker.internal:8086;
     }
 
 }
 
 server {
-  server_name storefront;
+  listen 80;
+  server_name storefront.local;
+
+  resolver 127.0.0.11 valid=30s;
+  set $storefront_backend http://host.docker.internal:8087;
+
+  location /api/ {
+    proxy_pass $storefront_backend;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+  }
+
   location / {
-    proxy_pass http://host.docker.internal:8087;
+        proxy_pass http://host.docker.internal:3000;
+        proxy_set_header Host $host;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+  }
+
+  location ~ ^/(authentication|oauth2|login) {
+    proxy_pass $storefront_backend;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_buffer_size          128k;
+    proxy_buffers              4 256k;
+    proxy_busy_buffers_size    256k;
   }
 }
 

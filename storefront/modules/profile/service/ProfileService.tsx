@@ -1,7 +1,7 @@
 import apiClientService from "@/common/components/services/ApiClientService";
 import { AddressDetailVm } from "@/modules/address/model/AddressDetail";
 
-const baseUrl = 'http://localhost:8087/api/customer/storefront';
+const baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/customer/storefront`;
 
 export async function getMyProfile() {
     const response = await apiClientService.get(`${baseUrl}/customer/profile`)

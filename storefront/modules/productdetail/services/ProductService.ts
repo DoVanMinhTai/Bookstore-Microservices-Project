@@ -2,7 +2,7 @@ import apiClientService from "@/common/components/services/ApiClientService";
 import { ProductDetail } from "../model/ProductDetail";
 import { ProductThumbnail } from "@/modules/homepage/models/ProductThumbnail";
 
-const baseUrl = 'http://localhost:8087/api/product/storefront';
+const baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/product/storefront`;
 
 export async function getProductDetail(slugs: string): Promise<ProductDetail> {
     const response = await apiClientService.get(`${baseUrl}/product/slug/${slugs}`);

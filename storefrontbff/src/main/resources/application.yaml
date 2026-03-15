@@ -16,12 +16,15 @@ spring:
           keycloak:
             provider: keycloak
             client-id: storefront-bff
-            client-secret: 9g8Hyka2XXIOU6rKlMLqbZnMcroxhbx2
+            client-secret: O4ZjxsbPLl1c7RxiUO26Y4BzBztGeV1F
             scope: openid, profile, email, roles
 ---
 logging:
-  pattern:
-    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+  level:
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.http.server.reactive: DEBUG
+    org.springframework.web.reactive: DEBUG
+    reactor.netty.http.server: DEBUG
 ---
 spring:
   profiles:
@@ -36,10 +39,10 @@ spring:
           filters:
             - TokenRelay=
             - StripPrefix=1
-        - id: nextJs
-          uri: http://host.docker.internal:3000
-          predicates:
-            - Path=/**
+#        - id: nextJs
+#          uri: http://host.docker.internal:3000
+#          predicates:
+#            - Path=/**
       default-filters:
         - SaveSession
 ---

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faInstagram, faPinterest } from '@fortawesome/free-brands-svg-icons';
-import { faEnvelope, faPhone, faCartShopping } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faPhone} from '@fortawesome/free-solid-svg-icons';
 import logo from '../../../assets/images/logo.webp'
 import Image from 'next/image';
 import CartModal from '@/modules/cart/components/CartModal';

@@ -3,7 +3,7 @@ import apiClientService from "@/common/components/services/ApiClientService";
 import { ProductFeature } from "../models/ProductFeature";
 
 
-const baseUrl = '/api/product/storefront';
+const baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/product/storefront`;
 
 export async function getProductBestSelling(): Promise<ProductBestSeller> {
     const response = await apiClientService.get(`${baseUrl}/products/productsBestSelling`);

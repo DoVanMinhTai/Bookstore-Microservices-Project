@@ -1,3 +1,11 @@
 .env
 
 .idea
+
+**/target/
+**/*.jar
+**/*.war
+**/surefire-reports/
+.idea/
+*.iml
+.mvn/wrapper/

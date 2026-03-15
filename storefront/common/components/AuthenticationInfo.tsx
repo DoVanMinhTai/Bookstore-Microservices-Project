@@ -20,7 +20,7 @@ export default function AuthenticationInfo() {
 
   async function getAuthenticationInfo(): Promise<AuthenticationInfoVm> {
     try {
-      const res = await fetch(`http://localhost:8087/authentication`);
+      const res = await fetch(`http://storefront.local/authentication`);
       if (!res.ok) throw new Error("Failed to fetch Authentication Info")
       return await res.json();
     } catch (error) {
@@ -29,7 +29,6 @@ export default function AuthenticationInfo() {
         authenticatedUser: { userName: '' },
       };
     }
-
   }
 
   useEffect(() => {
@@ -67,7 +66,7 @@ export default function AuthenticationInfo() {
           )}
         </div>
       ) : (
-        <Link href="http://localhost:8087/oauth2/authorization/keycloak" className="
+        <Link href="http://storefront.local/oauth2/authorization/keycloak" className="
         bg-slate-800 px-4 py-2 rounded-lg  focus:outline-none 
         text-gray-300 hover:text-white">
           Đăng nhập

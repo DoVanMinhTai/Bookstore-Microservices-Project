@@ -5,7 +5,7 @@ import { ProductThumbnail } from "@/modules/homepage/models/ProductThumbnail";
 import { getProductById } from "@/modules/catalog/services/ProductServices";
 import { CartItemPutVm } from "../model/CartItemPutVm";
 
-const baseUrl = 'http://localhost:8087/api/cart/storefront';
+const baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/cart/storefront`;
 
 async function handleError(response: Response) {
     let errorMessage = "Something went errors";

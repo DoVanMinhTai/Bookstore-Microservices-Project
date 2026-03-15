@@ -3,7 +3,7 @@ import { Address } from "../model/Address";
 import { AddressPostVm } from "../model/AddressPostVm";
 import { AddressDetailVm } from "../model/AddressDetail";
 
-const baseUrl = 'http://localhost:8087/api/location/storefront';
+const baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/location/storefront`;
 
 export async function createAddress(filterdata: Address) {
     const response = await apiClientService.post(`${baseUrl}/addresses`, JSON.stringify(filterdata));

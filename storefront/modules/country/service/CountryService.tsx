@@ -3,7 +3,7 @@ import { StateOrProvince } from "@/modules/stateorprovince/model/StateOrProvince
 import { CountryVm } from "../model/CountryVm";
 import { Districts } from "@/modules/districts/model/Districts";
 
-const baseUrl = 'http://localhost:8087/api/location';
+const baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/location`;
 
 export async function getAllCountries() : Promise<CountryVm[]> {
     const reponse = await apiClientService.get(`${baseUrl}/storefront/countries`);
