@@ -1,29 +1,34 @@
 import React, { useEffect, useState } from 'react'
-import { getProductFeature } from '../services/ProductService'
+import { useGetProductFeature } from '../services/ProductService'
 import { ProductThumbnail } from '../models/ProductThumbnail';
 import ProductCard from '@/common/components/ProductCard';
+import AsyncBoundary from '@/common/components/AsyncBoundary';
 
 const FeturedProduct = () => {
-  const [products, setProducts] = useState<ProductThumbnail[]>([]);
-  useEffect(() => {
-    getProductFeature().then((res) => {
-      setProducts(res.productThumbnailGetVms);
-    })
-      .catch(() => {
-        setProducts([]);
-      });
-  }, []);
+  const { data, isLoading, error } = useGetProductFeature();
   return (
-    <div className="container mx-auto w-full px-2 my-10">
-      <div className="text-center text-xl text-slate-800 mb-5">Sản phẩm tương tự</div>
-      <div className="flex flex-wrap">
-        {products && products.map((product) => (
-          <ProductCard product={product} key={product.id} />
-        )
-        )}
+    <div className="container mx-auto w-full px-2 my-4">
+      <div className="mb-5 text-center text-xl text-slate-800">Sản phẩm tương tự</div>
+      <div className="flex min-h-[150px] items-center justify-center">
+        <AsyncBoundary isLoading={isLoading} error={error} className="w-full">
+          {!isLoading && data && data.productThumbnailGetVms.length > 0 ? (
+            <div className="flex flex-wrap justify-center">
+              {data.productThumbnailGetVms.map((product: ProductThumbnail) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  thumbnailId={product.id}
+                />
+              ))}
+            </div>
+          ) : null}
+          {!isLoading && (!data || data.productThumbnailGetVms.length === 0) && (
+            <p className="text-center">Hiện tại chưa có sản phẩm</p>
+          )}
+        </AsyncBoundary>
       </div>
-    </div >
-  )
-}
+    </div>
+  );
+};
 
-export default FeturedProduct
+export default FeturedProduct;

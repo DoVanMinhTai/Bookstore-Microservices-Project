@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { formatPrice } from '@/utils/formatPrice';
 import ImageWithFallBack from './ImageWithFallBack';
 import Link from 'next/link';
@@ -14,8 +14,6 @@ interface ProductCardBase {
     thumbnailUrl: string;
 }
 
-
-
 const ProductCardBase: React.FC<ProductCardBase> = ({ product, thumbnailUrl }) => {
     const { fetchNumberCartItems } = useCartContext();
     const addToCart = async () => {
@@ -24,7 +22,7 @@ const ProductCardBase: React.FC<ProductCardBase> = ({ product, thumbnailUrl }) =
             await addToCartItem(payload);
             fetchNumberCartItems();
         } catch (error) {
-
+            console.error('Error adding to cart:', error);
         }
     }
     return (
