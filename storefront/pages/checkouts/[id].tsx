@@ -52,13 +52,11 @@ const CheckoutPage = () => {
         };
     }, [id, router]);
 
-      const productDetail = async () => {
+    const productDetail = async () => {
         if (checkout) {
-            const checkoutitemProduct = checkout.checkOutItemPostVms ? Array.from(checkout.checkOutItemPostVms) : [];
+            const checkoutitemProduct = checkout.checkoutItemVms ? Array.from(checkout.checkoutItemVms) : [];
+            console.log(checkout);
             const productIds = checkoutitemProduct.map((item) => item.productId);
-
-            productIds.forEach(() => {
-            });
 
             await getProductById(productIds)
                 .then((res) => {
@@ -76,7 +74,7 @@ const CheckoutPage = () => {
         if (checkout) {
             productDetail();
         }
-    }, [checkout, productDetail()]);
+    }, [id, checkout]);
 
     const handleUpdateCheckoutForm = (data: CheckoutFormData) => {
         setCheckoutFormData((prev) => ({
@@ -84,7 +82,6 @@ const CheckoutPage = () => {
             ...data
         }));
     };
-
 
     const handleAddress = (billing: AddressDetailVm, shipping: AddressDetailVm) => {
         setShippingAddress(shipping);
@@ -110,7 +107,7 @@ const CheckoutPage = () => {
             deliveryMethod: checkoutFormData?.deliveryMethod,
             paymentMethod: checkoutFormData?.paymentMethod,
             paymentStatus: PaymentStatus.PENDING,
-            orderItemPostVmList: checkout?.checkOutItemPostVms.map(item => {
+            orderItemPostVmList: checkout?.checkoutItemVms?.map(item => {
                 return {
                     productId: item.productId,
                     productName: item.productName,
@@ -123,7 +120,6 @@ const CheckoutPage = () => {
                 }
             }
             )
-
         }
 
         const reponse = await createOrder(ordersPostVm);
@@ -140,8 +136,8 @@ const CheckoutPage = () => {
     return (
         <>
             <div className="grid grid-cols-2 gap-10      container mx-auto">
-                <CheckoutShippingInfo checkout={checkout ?? { email: '', checkOutItemPostVms: [] }} handleAddress={handleAddress} />
-                <CheckoutComponents products={product} checkoutItems={checkout?.checkOutItemPostVms ?? []} />
+                <CheckoutShippingInfo checkout={checkout ?? { email: '', checkoutItemVms: [] }} handleAddress={handleAddress} />
+                <CheckoutComponents products={product} checkoutItems={checkout?.checkoutItemVms ?? []} />
 
                 <div className=" col-span-2 flex justify-end p-4">
                     <button className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-lg"
@@ -150,7 +146,8 @@ const CheckoutPage = () => {
 
                 <CheckoutPaymentMethod
                     display={modalPaymentMethod}
-                    handleSubmit={handleSubmitPostOrder}
+                    onClose={showModalPaymentMethod}
+                    onConfirm={handleSubmitPostOrder}
                     model={checkoutFormData}
                     register={register}
                     setValue={setValue}

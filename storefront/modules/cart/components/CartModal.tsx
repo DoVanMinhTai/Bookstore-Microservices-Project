@@ -38,111 +38,103 @@ const CartModal = () => {
 
             {isOpen && (
                 <div
-                    className="fixed inset-0 z-[999] flex items-center justify-center  bg-opacity-60 backdrop-blur-sm transition-opacity duration-300"
+                    className="fixed inset-0 z-[999] flex items-center justify-center bg-black/50 backdrop-blur-sm"
                     onClick={() => setIsOpen(false)}
                 >
                     <div
-                        className="relative m-4 p-4 w-2/5 min-w-[45%] max-w-[45%] rounded-lg bg-white shadow-sm"
+                        className="relative m-4 w-full max-w-xl rounded-xl bg-white shadow-xl"
                         onClick={(e) => e.stopPropagation()}
                     >
+                        <div className="flex items-center justify-between border-b px-5 py-4">
+                            <h2 className="text-base font-semibold text-slate-900">Giỏ hàng</h2>
+                            <button
+                                type="button"
+                                onClick={() => setIsOpen(false)}
+                                className="rounded-full p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-800"
+                            >
+                                ✖
+                            </button>
+                        </div>
 
-                        <div className="flex items-center w-full">
-                            <div className="w-full">
-                                <div className="w-full text-center items-center pb-4 text-xl font-medium text-slate-800">
-                                    Giỏ Hàng
-                                </div>
-                                <div className="border-t w-full border-slate-200 py-4 leading-normal text-slate-600 font-light">
-                                    <div className="flex gap-10 p-3 flex-grow items-center w-full">
-                                        <label className="block text-gray-700 text-sm font-bold  w-[50%]">
-                                            Tên sản phẩm
-                                        </label>
-                                        <label className="block text-gray-700 font-bold  text-sm w-[30%]">Số lượng</label>
-                                        <label className="block text-gray-700 font-bold  text-sm  w-[20%]  ml-[15%]">Giá tiền</label>
-
+                        <div className="max-h-80 overflow-y-auto px-5 py-3">
+                            {cartItems.length > 0 ? (
+                                <>
+                                    <div className="mb-2 grid grid-cols-[3fr,2fr,2fr] items-center gap-3 text-xs font-medium text-slate-500">
+                                        <span>Sản phẩm</span>
+                                        <span className="text-center">Số lượng</span>
+                                        <span className="text-right">Thành tiền</span>
                                     </div>
-                                    {cartItems.length > 0 ? (
-                                        cartItems.map((cartItem) => (
+
+                                    <div className="space-y-3">
+                                        {cartItems.map((cartItem) => (
                                             <div
-                                                className="flex gap-10 p-3 flex-grow items-center"
                                                 key={cartItem.productId}
+                                                className="grid grid-cols-[3fr,2fr,2fr] items-center gap-3 rounded-lg border border-slate-100 bg-slate-50/60 px-3 py-2"
                                             >
-                                                <div className="w-[50%] flex flex-row items-center gap-3">
-                                                    <div className="h-12 w-12">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="h-12 w-12 overflow-hidden rounded-md bg-slate-100">
                                                         <ImageWithFallBack
-                                                            className="h-full w-full object-cover rounded-md"
+                                                            className="h-full w-full object-cover"
                                                             src={cartItem.thumbnailUrl}
                                                             alt={cartItem.productName}
                                                         />
                                                     </div>
-                                                    <div>{cartItem.productName}</div>
-                                                </div>
-
-                                                <div className="w-[30%] flex flex-row items-center justify-between gap-2">
-                                                    <input
-                                                        id="amountInput"
-                                                        type="number"
-                                                        className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md pl-3 pr-20 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                                        value={cartItem.quantity}
-                                                  />
-                                                    <div className="h-12 w-12 items-center flex gap-2">
-                                                        <button
-                                                            id="decreaseButton"
-                                                            className="rounded bg-slate-800 p-1.5 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                                                            type="button"
-                                                        >
-                                                            <svg
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                viewBox="0 0 16 16"
-                                                                fill="currentColor"
-                                                                className="w-4 h-4"
-                                                            >
-                                                                <path d="M3.75 7.25a.75.75 0 0 0 0 1.5h8.5a.75.75 0 0 0 0-1.5h-8.5Z" />
-                                                            </svg>
-                                                        </button>
-                                                        <button
-                                                            id="increaseButton"
-                                                            className="rounded bg-slate-800 p-1.5 border border-transparent text-center text-sm text-white transition-all shadow-sm hover:shadow focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                                                            type="button"
-                                                        >
-                                                            <svg
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                viewBox="0 0 16 16"
-                                                                fill="currentColor"
-                                                                className="w-4 h-4"
-                                                            >
-                                                                <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
-                                                            </svg>
-                                                        </button>
+                                                    <div className="text-sm text-slate-800 line-clamp-2">
+                                                        {cartItem.productName}
                                                     </div>
                                                 </div>
 
-                                                <div className="w-[20%] ml-[15%] flex flex-row items-center gap-3">
-                                                    <div>{formatPrice(cartItem.quantity * cartItem.price)}</div>
+                                                <div className="flex items-center justify-center gap-2">
+                                                    <button
+                                                        type="button"
+                                                        className="rounded bg-slate-800 p-1.5 text-xs text-white hover:bg-slate-700"
+                                                    // TODO: thêm handler giảm số lượng
+                                                    >
+                                                        -
+                                                    </button>
+                                                    <input
+                                                        id="amountInput"
+                                                        type="number"
+                                                        className="w-14 rounded-md border border-slate-200 bg-white px-2 py-1 text-center text-sm text-slate-700 shadow-sm focus:border-slate-400 focus:outline-none"
+                                                        value={cartItem.quantity}
+                                                        readOnly
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        className="rounded bg-slate-800 p-1.5 text-xs text-white hover:bg-slate-700"
+                                                    // TODO: thêm handler tăng số lượng
+                                                    >
+                                                        +
+                                                    </button>
+                                                </div>
+
+                                                <div className="text-right text-sm font-semibold text-emerald-600">
+                                                    {formatPrice(cartItem.quantity * cartItem.price)}
                                                 </div>
                                             </div>
-                                        ))
-                                    ) : (
-                                        <div>Giỏ hàng đang trống nè</div>
-                                    )
-                                    }
-
-
-
+                                        ))}
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">
+                                    Giỏ hàng đang trống.
                                 </div>
-                            </div>
+                            )}
                         </div>
-                        <div className="flex items-center pt-4 justify-end">
+
+                        <div className="flex items-center justify-end gap-2 border-t px-5 py-3">
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-slate-600 hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100"
+                                className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
                                 type="button"
                             >
                                 Tiếp tục mua hàng
                             </button>
                             <Link
                                 onClick={() => setIsOpen(false)}
-                                className="rounded-md bg-green-600 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-green-700 active:bg-green-700 hover:bg-green-700 ml-2"
-                                href="/carts">
+                                className="rounded-md bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500"
+                                href="/carts"
+                            >
                                 Xem chi tiết giỏ hàng
                             </Link>
                         </div>

@@ -10,7 +10,7 @@ export default function ModalHeadersProps({ titleModal, onClose }: Props) {
         <div className="flex justify-between">
             <h2 className="text-lg font-bold shadow-sm ">{titleModal}</h2>
             <button
-                onClick={() => { onclose }}
+                onClick={() => { onClose() }}
                 className=" text-gray-600 hover:text-gray-900"
             >
                 ✖

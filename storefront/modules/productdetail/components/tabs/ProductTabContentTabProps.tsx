@@ -3,132 +3,118 @@ interface ProductTabContentProps {
 }
 
 export default function ProductTabContent({ activeTab }: ProductTabContentProps) {
-
     const productDescription = (
-        <div>
-            <h3 className="text-xl font-bold mb-2">Mô tả sản phẩm</h3>
-            <p className="text-gray-700">
-                Yêu Những Điều Không Hoàn Hảo
-            </p>
-            <p className="mt-2 text-gray-600">
-                Tên sản phẩm: Yêu Những Điều Không Hoàn Hảo
-                Tác giả: Đại Đức Hae Min
-                Nhà xuất bản: Nhà xuất bản Thế Giới
-                Số trang: 320 trang
-                Ngôn ngữ: Tiếng Việt
-                Hình thức: Bìa mềm
-                Kích thước: 14 x 20.5 cm
-                Trọng lượng: 350g
-                Giá bìa: 150.000 VNĐ
-                Thể loại: Sách kỹ năng sống, truyền cảm hứng
-                Mã ISBN: 978-604-77-9266-9
+        <div className="space-y-6 text-slate-700 leading-relaxed">
+            <div>
+                <h3 className="text-lg font-bold text-slate-900 mb-3">Mô tả sản phẩm</h3>
+                <p className="font-medium text-slate-800 mb-4 italic">Yêu Những Điều Không Hoàn Hảo</p>
 
-                📌 Giới thiệu về sản phẩm
-                "Yêu Những Điều Không Hoàn Hảo" là một cuốn sách chứa đựng những triết lý sâu sắc về cuộc sống, được viết bởi Đại Đức Hae Min – một nhà sư nổi tiếng đến từ Hàn Quốc. Cuốn sách này không chỉ là một cẩm nang hướng dẫn cách sống an nhiên giữa những bộn bề của cuộc đời mà còn là một lời động viên, an ủi dành cho những ai đang cảm thấy mệt mỏi, hoài nghi về bản thân.
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm bg-slate-50 p-4 rounded-lg">
+                    <p><span className="text-slate-500">Tác giả:</span> Đại Đức Hae Min</p>
+                    <p><span className="text-slate-500">Nhà xuất bản:</span> Thế Giới</p>
+                    <p><span className="text-slate-500">Số trang:</span> 320 trang</p>
+                    <p><span className="text-slate-500">Kích thước:</span> 14 x 20.5 cm</p>
+                    <p><span className="text-slate-500">Trọng lượng:</span> 350g</p>
+                    <p><span className="text-slate-500">Mã ISBN:</span> 978-604-77-9266-9</p>
+                </div>
+            </div>
 
-                Cuốn sách bao gồm nhiều câu chuyện gần gũi, thực tế về những điều tưởng chừng nhỏ nhặt trong cuộc sống nhưng lại ảnh hưởng rất lớn đến tâm hồn mỗi người. Đại Đức Hae Min đã dùng ngôn từ nhẹ nhàng, sâu sắc để truyền tải thông điệp về sự yêu thương, chấp nhận chính mình và những người xung quanh, bất chấp những khiếm khuyết mà họ có.
-
-                📌 Điểm đặc biệt của cuốn sách:
-                ✔️ Văn phong nhẹ nhàng, dễ hiểu, phù hợp với mọi đối tượng độc giả.
-                ✔️ Nội dung không chỉ là lý thuyết mà còn có nhiều ví dụ thực tế giúp người đọc dễ dàng áp dụng vào cuộc sống.
-                ✔️ Lời khuyên hữu ích để cân bằng cảm xúc, giảm stress và sống hạnh phúc hơn.
-
-                📌 Ai nên đọc cuốn sách này?
-                👉 Những ai đang cảm thấy mất phương hướng trong cuộc sống.
-                👉 Những người muốn tìm kiếm sự bình yên và an nhiên trong tâm hồn.
-                👉 Những ai muốn cải thiện các mối quan hệ xung quanh mình.            </p>
+            <div>
+                <h4 className="font-bold text-slate-900 mb-2 underline underline-offset-4">Giới thiệu về sản phẩm</h4>
+                <p className="mb-4">
+                    Yêu Những Điều Không Hoàn Hảo là một cuốn sách chứa đựng những triết lý sâu sắc về cuộc sống, được viết bởi Đại Đức Hae Min – một nhà sư nổi tiếng đến từ Hàn Quốc. Cuốn sách là lời động viên dành cho những ai đang cảm thấy mệt mỏi, hoài nghi về bản thân.
+                </p>
+                <p className="font-bold mb-2">Điểm đặc biệt của cuốn sách:</p>
+                <ul className="list-disc pl-5 space-y-1">
+                    <li>Văn phong nhẹ nhàng, dễ hiểu, phù hợp với mọi đối tượng độc giả.</li>
+                    <li>Nội dung có nhiều ví dụ thực tế giúp người đọc dễ dàng áp dụng.</li>
+                    <li>Lời khuyên hữu ích để cân bằng cảm xúc và sống hạnh phúc hơn.</li>
+                </ul>
+            </div>
         </div>
     );
 
+    // 2. Nội dung Bảo hành
     const warrantyInfo = (
-        <div>
-            <h3 className="text-xl font-bold mb-2">Thông tin bảo hành</h3>
-            <p className="text-gray-700">Chúng tôi cam kết mang đến cho khách hàng những sản phẩm chất lượng nhất. Tuy nhiên, nếu bạn nhận được sản phẩm bị lỗi, không đúng với mô tả hoặc có bất kỳ vấn đề nào khác, chúng tôi sẵn sàng hỗ trợ bạn đổi trả theo các điều kiện sau:
+        <div className="space-y-6 text-slate-700">
+            <h3 className="text-lg font-bold text-slate-900">Thông tin bảo hành và đổi trả</h3>
 
-                📌 1. Điều kiện áp dụng đổi trả
-                ✅ Sản phẩm còn nguyên tem, chưa qua sử dụng, không bị rách hoặc hư hỏng do lỗi của khách hàng.
-                ✅ Thời gian đổi trả trong vòng 7 ngày kể từ khi nhận hàng.
-                ✅ Có đầy đủ hóa đơn mua hàng hoặc thông tin đơn hàng để xác minh.
+            <div className="space-y-4">
+                <section>
+                    <p className="font-bold text-slate-800 mb-2">1. Điều kiện áp dụng đổi trả</p>
+                    <ul className="list-disc pl-5 space-y-1 text-sm">
+                        <li>Sản phẩm còn nguyên tem, chưa qua sử dụng, không hư hỏng do lỗi khách hàng.</li>
+                        <li>Thời gian đổi trả trong vòng 7 ngày kể từ khi nhận hàng.</li>
+                        <li>Có đầy đủ hóa đơn mua hàng hoặc thông tin đơn hàng xác minh.</li>
+                    </ul>
+                </section>
 
-                📌 2. Các trường hợp được đổi trả
-                🔹 Sản phẩm bị lỗi do nhà sản xuất (sai nội dung, thiếu trang, in ấn kém chất lượng).
-                🔹 Sản phẩm không đúng với đơn đặt hàng (sai tựa sách, sai số lượng).
-                🔹 Hàng bị hư hỏng do quá trình vận chuyển (bị ướt, gãy góc, rách bìa).
-
-                📌 3. Các trường hợp không được đổi trả
-                ❌ Sách bị hư hỏng do khách hàng bảo quản không đúng cách (bị ướt, rách, ghi chú lên sách).
-                ❌ Sách mua trong chương trình giảm giá đặc biệt hoặc các chương trình khuyến mãi không áp dụng đổi trả.
-                ❌ Khách hàng không cung cấp được bằng chứng về lỗi sản phẩm.
-
-                📌 4. Quy trình đổi trả
-                🔹 Bước 1: Liên hệ với bộ phận chăm sóc khách hàng qua email hoặc hotline để gửi yêu cầu đổi trả.
-                🔹 Bước 2: Gửi sản phẩm về kho hàng của chúng tôi theo địa chỉ được cung cấp.
-                🔹 Bước 3: Sau khi kiểm tra sản phẩm, chúng tôi sẽ tiến hành đổi hàng mới hoặc hoàn tiền theo thỏa thuận với khách hàng.
-
-                📌 5. Phương thức hoàn tiền
-                ✔️ Hoàn tiền qua tài khoản ngân hàng (tối đa 5 ngày làm việc).
-                ✔️ Hoàn tiền qua ví điện tử (ShopeePay, MoMo, ZaloPay).
-                ✔️ Mã giảm giá cho đơn hàng tiếp theo nếu khách hàng đồng ý.
-
-                📌 Liên hệ hỗ trợ:
-                📞 Hotline: 
-                📧 Email: </p>
+                <section>
+                    <p className="font-bold text-slate-800 mb-2">2. Quy trình đổi trả</p>
+                    <ol className="list-decimal pl-5 space-y-1 text-sm">
+                        <li>Liên hệ bộ phận chăm sóc khách hàng qua email hoặc hotline.</li>
+                        <li>Gửi sản phẩm về kho hàng theo địa chỉ được cung cấp.</li>
+                        <li>Chúng tôi kiểm tra và tiến hành đổi hàng mới hoặc hoàn tiền.</li>
+                    </ol>
+                </section>
+            </div>
         </div>
     );
 
+    // 3. Nội dung Giao hàng
     const shippingInfo = (
-        <div>
-            <h3 className="text-xl font-bold mb-2">Thông tin đóng gói, vận chuyển</h3>
-            <p className="text-gray-700">
-                Chúng tôi cam kết giao hàng nhanh chóng và đúng hẹn trên toàn quốc. Dưới đây là thông tin chi tiết về phương thức vận chuyển:
+        <div className="space-y-6 text-slate-700">
+            <h3 className="text-lg font-bold text-slate-900">Thông tin vận chuyển</h3>
 
-                📌 1. Thời gian giao hàng
-                🚛 Nội thành TP.HCM & Hà Nội: 1-2 ngày
-                🚛 Các tỉnh thành khác: 2-5 ngày
-                🚛 Huyện đảo xa: 5-7 ngày
+            <div className="overflow-hidden border border-slate-200 rounded-lg">
+                <table className="w-full text-sm text-left">
+                    <thead className="bg-slate-50 font-bold">
+                        <tr>
+                            <th className="px-4 py-2 border-b">Khu vực</th>
+                            <th className="px-4 py-2 border-b">Thời gian</th>
+                            <th className="px-4 py-2 border-b">Chi phí</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                        <tr>
+                            <td className="px-4 py-2">Nội thành (HCM & HN)</td>
+                            <td className="px-4 py-2">1-2 ngày</td>
+                            <td className="px-4 py-2">20.000 VNĐ</td>
+                        </tr>
+                        <tr>
+                            <td className="px-4 py-2">Tỉnh thành khác</td>
+                            <td className="px-4 py-2">2-5 ngày</td>
+                            <td className="px-4 py-2">32.000 VNĐ</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-                📌 2. Chi phí giao hàng
-                ✅ Nội thành TP.HCM & Hà Nội: 20.000 VNĐ (đối với đơn hàng dưới 2kg).
-                ✅ Tỉnh thành khác: 32.000 VNĐ (đối với đơn hàng dưới 2kg).
-                ✅ Phí phát sinh: Cộng thêm 2.000 - 3.000 VNĐ/kg nếu đơn hàng vượt quá 2kg.
-
-                📌 3. Phương thức giao hàng
-                ✔️ Giao hàng tiêu chuẩn (2-5 ngày).
-                ✔️ Giao hàng hỏa tốc (1 ngày, chỉ áp dụng tại TP.HCM & Hà Nội).
-                ✔️ Nhận hàng tại cửa hàng (miễn phí).
-
-                📌 4. Lưu ý quan trọng
-                🚨 Không giao hàng vào thứ 7, Chủ nhật và các ngày Lễ, Tết.
-                🚨 Trường hợp không nhận được hàng do sai địa chỉ, khách hàng cần thanh toán phí giao lại.            </p>
-            <ul className="list-disc pl-5 mt-2 text-gray-600">
-                <li><strong>Nội thành TP.HCM và Hà Nội:</strong> 1-2 ngày, 20.000đ/2kg đầu tiên, 2.000đ/kg tiếp theo.</li>
-                <li><strong>Các tỉnh thành khác:</strong> 2-3 ngày, 32.000đ/2kg đầu tiên, 3.000đ/kg tiếp theo.</li>
-            </ul>
+            <div className="bg-amber-50 p-4 rounded-lg border border-amber-100">
+                <p className="text-xs text-amber-800 font-medium italic">
+                    Lưu ý: Không giao hàng vào thứ 7, Chủ nhật và các ngày Lễ, Tết.
+                </p>
+            </div>
         </div>
     );
 
+    // 4. Nội dung Người bán
     const sellerInfo = (
-        <div>
-            <h3 className="text-xl font-bold mb-2">Thông tin người bán</h3>
-            <p className="text-gray-700">Nhà cung cấp: <strong>Đỗ Tài</strong></p>
-            <p className="text-gray-600">Hỗ trợ: 123456860</p>
+        <div className="p-6 bg-slate-50 rounded-xl border border-slate-100">
+            <h3 className="text-lg font-bold text-slate-900 mb-4">Thông tin nhà cung cấp</h3>
+            <div className="space-y-2 text-sm">
+                <p><span className="text-slate-500">Nhà cung cấp:</span> <span className="font-bold text-slate-900">Đỗ Tài</span></p>
+                <p><span className="text-slate-500">Số điện thoại hỗ trợ:</span> <span className="font-bold text-blue-600">123456860</span></p>
+                <p><span className="text-slate-500">Địa chỉ:</span> Việt Nam</p>
+            </div>
         </div>
     );
 
-    const renderContent = () => {
-        switch (activeTab) {
-            case "specification":
-                return productDescription;
-            case "warranty":
-                return warrantyInfo;
-            case "shipping":
-                return shippingInfo;
-            case "seller":
-                return sellerInfo;
-            default:
-                return <p className="text-gray-500">Chọn một tab để xem thông tin</p>;
-        }
-    };
-
-    return <div className="mt-5 p-4 border rounded-lg shadow-sm bg-white">{renderContent()}</div>;
+    switch (activeTab) {
+        case "specification": return productDescription;
+        case "warranty": return warrantyInfo;
+        case "shipping": return shippingInfo;
+        case "seller": return sellerInfo;
+        default: return null;
+    }
 }

@@ -5,34 +5,44 @@ const baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/customer/storefront`;
 
 export async function getMyProfile() {
     const response = await apiClientService.get(`${baseUrl}/customer/profile`)
-    if(!response.ok) {
+    if (!response.ok) {
 
     } else {
         return response.json();
     }
 }
 
-export async function getUserAddressList() : Promise<AddressDetailVm[]> {
+export async function getUserAddressList(): Promise<AddressDetailVm[]> {
     const reponse = await apiClientService.get(`${baseUrl}/getUserAddressList`)
-    if(!reponse.ok) {
+    if (!reponse.ok) {
         return [];
     } else {
         return reponse.json()
     }
 }
 
-export async function getAddressDefault() : Promise<AddressDetailVm| undefined> {
+export async function getAddressDefault(): Promise<AddressDetailVm | null> {
     const reponse = await apiClientService.get(`${baseUrl}/getAddressIsActive`);
-    if(!reponse.ok) {
-        return undefined;
-    } else {
-        return reponse.json();
+    if (!reponse.ok) {
+        return null;
+    }
+
+    const text = await reponse.text();
+    if (!text) {
+        return null;
+    }
+
+    try {
+        return JSON.parse(text) as AddressDetailVm;
+    } catch (err) {
+        console.warn('getAddressDefault: invalid JSON response', err);
+        return null;
     }
 }
 
-export async function getAddressBillingList() {
+export async function getAddressBillingList(): Promise<AddressDetailVm[]> {
     const reponse = await apiClientService.get(`${baseUrl}/getAddressBillingIsActive`);
-    if(!reponse.ok) {
+    if (!reponse.ok) {
         return [];
     } else {
         return reponse.json();

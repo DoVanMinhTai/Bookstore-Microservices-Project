@@ -11,9 +11,9 @@ const FeturedProduct = () => {
       <div className="mb-5 text-center text-xl text-slate-800">Sản phẩm tương tự</div>
       <div className="flex min-h-[150px] items-center justify-center">
         <AsyncBoundary isLoading={isLoading} error={error} className="w-full">
-          {!isLoading && data && data.productThumbnailGetVms.length > 0 ? (
+          {!isLoading && data && data.productThumbnailGetVms?.length > 0 ? (
             <div className="flex flex-wrap justify-center">
-              {data.productThumbnailGetVms.map((product: ProductThumbnail) => (
+              {data.productThumbnailGetVms?.map((product: ProductThumbnail) => (
                 <ProductCard
                   key={product.id}
                   product={product}
@@ -22,7 +22,7 @@ const FeturedProduct = () => {
               ))}
             </div>
           ) : null}
-          {!isLoading && (!data || data.productThumbnailGetVms.length === 0) && (
+          {!isLoading && (!data || data.productThumbnailGetVms?.length === 0) && (
             <p className="text-center">Hiện tại chưa có sản phẩm</p>
           )}
         </AsyncBoundary>

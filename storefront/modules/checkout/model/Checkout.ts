@@ -8,6 +8,6 @@ export type Checkout = {
     shipmentMethodId?: string;
     paymentMethodId?: string;
     shippingAddressId?: number;
-    checkOutItemPostVms: CheckoutItem[];
+    checkoutItemVms: CheckoutItem[];
 
 }

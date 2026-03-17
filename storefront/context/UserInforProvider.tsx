@@ -1,13 +1,12 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getMyProfile } from "@/modules/profile/service/ProfileService";
-import { error } from "console";
+
 export const UserInfoContext = createContext({
     firstname: '',
     lastname: '',
     email: '',
     fetchUserInfo: () => { }
 });
-
 
 export function UserInfoProvider({ children }: React.PropsWithChildren) {
     const [firstname, setfirstname] = useState('');

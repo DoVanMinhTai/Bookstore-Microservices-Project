@@ -12,5 +12,6 @@ export type Address = {
     stateOrProvinceName?: string;
     countryId: number;
     countryName?: string;
+    addressType: 'SHIPPING' | 'BILLING';
     isActive?: boolean;
 }

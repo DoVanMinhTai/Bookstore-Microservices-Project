@@ -4,111 +4,212 @@ import { FieldErrorsImpl, UseFormRegister, UseFormSetValue } from 'react-hook-fo
 import { CountryVm } from '@/modules/country/model/CountryVm';
 import { StateOrProvince } from '@/modules/stateorprovince/model/StateOrProvince';
 import { Districts } from '@/modules/districts/model/Districts';
-import { useRouter } from 'next/router';
 import { Input } from '@/common/Input';
 import { OptionSelect } from '@/common/OptionSelect';
 import { getAllCountries, getStateOrProvinces, getDistricts } from '@/modules/country/service/CountryService';
 import ModalHeadersProps from './ModalHeadersProps';
 
 type AddressFormProps = {
-    handleSubmit: () => void;
-    register: UseFormRegister<Address>;
-    setValue: UseFormSetValue<Address>;
-    errors: FieldErrorsImpl<Address>;
-    address: Address | undefined;
-    isDisplay?: boolean | true;
-    buttonText?: string;
-    onClose: () => void;
-    titleModal: string;
-}
+  handleSubmit: () => void;
+  register: UseFormRegister<Address>;
+  setValue: UseFormSetValue<Address>;
+  errors: FieldErrorsImpl<Address>;
+  address: Address | undefined;
+  isDisplay?: boolean | true;
+  buttonText?: string;
+  onClose: () => void;
+  titleModal: string;
+};
 
-export default function AddressForm({ titleModal, handleSubmit, register, setValue, errors, address, isDisplay, buttonText }: AddressFormProps) {
-    const [countries, setCountries] = useState<CountryVm[]>([]);
-    const [stateOrProvinces, setStateOrProvinces] = useState<StateOrProvince[]>()
-    const [districts, setDistricts] = useState<Districts[]>([]);
+export default function AddressForm({
+  titleModal,
+  handleSubmit,
+  register,
+  setValue,
+  errors,
+  address,
+  isDisplay,
+  buttonText,
+  onClose,
+}: AddressFormProps) {
+  const [countries, setCountries] = useState<CountryVm[]>([]);
+  const [stateOrProvinces, setStateOrProvinces] = useState<StateOrProvince[]>();
+  const [districts, setDistricts] = useState<Districts[]>([]);
 
-    useEffect(() => {
-        getAllCountries().then((res) => {
-            setCountries(res);
-        });
-    }, []);
+  useEffect(() => {
+    getAllCountries().then((res) => {
+      setCountries(res);
+    });
+  }, []);
 
-    useEffect(() => {
-        if (address) {
-            getStateOrProvinces(address.stateOrProvinceId).then((data) => { setStateOrProvinces(data) });
-            getDistricts(address.districtId).then((data) => { setDistricts(data) });
-        }
-    }, [address]);
+  useEffect(() => {
+    if (address) {
+      getStateOrProvinces(address.stateOrProvinceId).then((data) => {
+        setStateOrProvinces(data);
+      });
+      getDistricts(address.districtId).then((data) => {
+        setDistricts(data);
+      });
+    }
+  }, [address]);
 
+  const onCountryChange = async (event: any) => {
+    setValue('countryName', event.target.selectedOptions[0].text);
+    getStateOrProvinces(event.target.value).then(setStateOrProvinces);
+  };
 
-    const onCountryChange = async (event: any) => {
-        setValue('countryName', event.target.selectedOptions[0].text);
-        getStateOrProvinces(event.target.value).then(setStateOrProvinces);
-    };
+  const onStateOrProvinceChange = async (event: any) => {
+    setValue('stateOrProvinceName', event.target.selectedOptions[0].text);
+    getDistricts(event.target.value).then(setDistricts);
+  };
 
-    const onStateOrProvinceChange = async (event: any) => {
-        setValue('stateOrProvinceName', event.target.selectedOptions[0].text);
-        getDistricts(event.target.value).then(setDistricts);
-    };
+  return (
+    <>
+      <div
+        className={`fixed inset-0 z-40 flex items-center justify-center bg-black/40 ${isDisplay ? '' : 'hidden'
+          }`}
+      >
+        <div className="w-full max-w-2xl rounded-xl bg-white shadow-xl">
+          <div className="border-b px-6 py-4">
+            <ModalHeadersProps titleModal={titleModal} onClose={onClose} />
+          </div>
 
-
-    return (
-        <>
-            <div className={`fixed flex-col inset-0 flex items-center justify-center bg-black bg-opacity-50 ${isDisplay ? '' : 'hidden'} `} >
-                <div className="bg-white p-5 rounded-lg shadow-lg w-1/2 max-w-lg">
-                    <ModalHeadersProps titleModal={titleModal} onClose={() => onclose} />
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Input
-                            labelText="Contact name"
-                            register={register}
-                            field="contactName"
-                            registerOptions={{ required: { value: true, message: 'This field is required' } }}
-                            defaultValue={address?.contactName} />
-                        <Input labelText="Phone number" register={register} field="phone" registerOptions={{ required: { value: true, message: 'This field is required' } }} defaultValue={address?.phone} />
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                        <OptionSelect
-                            labelText="Country"
-                            field="countryId"
-                            placeholder="Select country"
-                            options={countries}
-                            register={register} registerOptions={{
-                                required: {
-                                    value: true, message: 'Please select country'
-
-                                }, onChange: onCountryChange
-                            }}
-                            error={errors.countryId?.message}
-                            defaultValue={address?.countryId} />
-                        <OptionSelect labelText="State Or Province" register={register} field="stateOrProvinceId" options={stateOrProvinces} placeholder="Select state or province" defaultValue={address?.stateOrProvinceId} registerOptions={{ required: { value: true, message: 'Please select state or province' }, onChange: onStateOrProvinceChange }} />
-                        <OptionSelect labelText="District" register={register} field="districtId"
-                            options={districts} placeholder="Select district"
-                            defaultValue={address?.districtId}
-                            registerOptions={{
-                                required: { value: true, message: 'Please select district' }
-                                , onChange: (event: any) => setValue('districtName', event.target.selectedOptions[0].text)
-                            }} />
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        <Input labelText="City"
-                            register={register} field="city"
-                            placeholder="Please skip this field if you are not in a city"
-                            defaultValue={address?.city} />
-                        <Input labelText="Zip code" register={register} field="zipCode" registerOptions={{ required: { value: true, message: 'This field is required' } }} defaultValue={address?.zipCode} />
-                    </div>
-                    <div className="mt-4">
-                        <Input labelText="Address" register={register} field="addressLine1" registerOptions={{ required: { value: true, message: 'This field is required' } }} defaultValue={address?.addressLine1} />
-                        <Input labelText="Address2" register={register} field="addressLine2" placeholder="" defaultValue={address?.addressLine2} />
-                    </div>
-                    <div className="mt-4 flex justify-end">
-                        <button type="button" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={handleSubmit}>
-                            {buttonText ?? 'Create'}
-                        </button>
-                    </div>
-                </div>
-
+          <div className="px-6 py-5">
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Loại địa chỉ</label>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    value="SHIPPING"
+                    {...register("addressType", { required: "Vui lòng chọn loại địa chỉ" })}
+                    defaultChecked={address?.addressType === 'SHIPPING' || true}
+                  />
+                  <span className="text-sm">Giao hàng (Shipping)</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    value="BILLING"
+                    {...register("addressType", { required: "Vui lòng chọn loại địa chỉ" })}
+                    defaultChecked={address?.addressType === 'BILLING'}
+                  />
+                  <span className="text-sm">Thanh toán (Billing)</span>
+                </label>
+              </div>
+              {errors.addressType && <p className="text-red-500 text-xs mt-1">{errors.addressType.message}</p>}
             </div>
-        </>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <Input
+                labelText="Tên người nhận"
+                register={register}
+                field="contactName"
+                registerOptions={{ required: { value: true, message: 'This field is required' } }}
+                defaultValue={address?.contactName}
+              />
+              <Input
+                labelText="Số điện thoại"
+                register={register}
+                field="phone"
+                registerOptions={{ required: { value: true, message: 'This field is required' } }}
+                defaultValue={address?.phone}
+              />
+            </div>
 
-    )
+            <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+              <OptionSelect
+                labelText="Quốc gia"
+                field="countryId"
+                placeholder="Chọn quốc gia"
+                options={countries}
+                register={register}
+                registerOptions={{
+                  required: { value: true, message: 'Please select country' },
+                  onChange: onCountryChange,
+                }}
+                error={errors.countryId?.message}
+                defaultValue={address?.countryId}
+              />
+              <OptionSelect
+                labelText="Tỉnh / Thành phố"
+                register={register}
+                field="stateOrProvinceId"
+                options={stateOrProvinces}
+                placeholder="Chọn tỉnh / thành phố"
+                defaultValue={address?.stateOrProvinceId}
+                registerOptions={{
+                  required: { value: true, message: 'Please select state or province' },
+                  onChange: onStateOrProvinceChange,
+                }}
+              />
+              <OptionSelect
+                labelText="Quận / Huyện"
+                register={register}
+                field="districtId"
+                options={districts}
+                placeholder="Chọn quận / huyện"
+                defaultValue={address?.districtId}
+                registerOptions={{
+                  required: { value: true, message: 'Please select district' },
+                  onChange: (event: any) =>
+                    setValue('districtName', event.target.selectedOptions[0].text),
+                }}
+              />
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+              <Input
+                labelText="Thành phố"
+                register={register}
+                field="city"
+                placeholder="Bỏ qua nếu không cần"
+                defaultValue={address?.city}
+              />
+              <Input
+                labelText="Mã bưu chính"
+                register={register}
+                field="zipCode"
+                registerOptions={{ required: { value: true, message: 'This field is required' } }}
+                defaultValue={address?.zipCode}
+              />
+            </div>
+
+            <div className="mt-4 space-y-3">
+              <Input
+                labelText="Địa chỉ"
+                register={register}
+                field="addressLine1"
+                registerOptions={{ required: { value: true, message: 'This field is required' } }}
+                defaultValue={address?.addressLine1}
+              />
+              <Input
+                labelText="Địa chỉ bổ sung"
+                register={register}
+                field="addressLine2"
+                placeholder=""
+                defaultValue={address?.addressLine2}
+              />
+            </div>
+
+            <div className="mt-6 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={onClose}
+                className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              >
+                Hủy
+              </button>
+              <button
+                type="button"
+                className="rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+                onClick={handleSubmit}
+              >
+                {buttonText ?? 'Lưu địa chỉ'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }

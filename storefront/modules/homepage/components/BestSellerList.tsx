@@ -14,9 +14,9 @@ const BestSellerList = () => {
                 </div>
                 <div className="flex min-h-[150px] items-center justify-center">
                     <AsyncBoundary isLoading={isLoading} error={error} className="w-full">
-                        {!isLoading && data && data.productList.length > 0 ? (
+                        {!isLoading && data && data.productList?.length > 0 ? (
                             <div className="flex flex-wrap justify-center">
-                                {data.productList.map((product: ProductThumbnail) => (
+                                {data.productList?.map((product: ProductThumbnail) => (
                                     <ProductCard
                                         key={product.id}
                                         product={product}
@@ -25,7 +25,7 @@ const BestSellerList = () => {
                                 ))}
                             </div>
                         ) : null}
-                        {!isLoading && (!data || data.productList.length === 0) && (
+                        {!isLoading && (!data || data.productList?.length === 0) && (
                             <p className="text-center">Hiện tại chưa có sản phẩm</p>
                         )}
                     </AsyncBoundary>

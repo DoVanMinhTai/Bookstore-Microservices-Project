@@ -20,13 +20,13 @@ const ImageWithFallBack = ({
     style,
     fallback: customFallBack = '/static/images/default-fallback-image.jpg', ...props }: Props) => {
     
-    const [fallBack, setFallBack] = useState<string | null>(null);
-    const [srcImg, setSrcImg] = useState<string>(src);
+        const initialSrc = (src && src.trim() !== "") ? src : customFallBack;
+    const [srcImg, setSrcImg] = useState<string>(initialSrc);
 
     useEffect(() => {
-        setFallBack(null);
-        setSrcImg(src);
-    }, [src]);
+        const nextSrc = (src && src.trim() !== "") ? src : customFallBack;
+        setSrcImg(nextSrc);
+    }, [src, customFallBack]);
     return (
         <>
             <img
@@ -35,11 +35,12 @@ const ImageWithFallBack = ({
                 style={style}
                 className={clsx(className)}
                 alt={alt}
-                src={fallBack || srcImg}
+                src={srcImg}
                 {...props}
-                onError={(event) => {
-                    event.currentTarget.onerror = null;
-                    setFallBack(customFallBack)
+                onError={() => {
+                    if (srcImg !== customFallBack) {
+                        setSrcImg(customFallBack);
+                    }
                 }}>
             </img>
         </>

@@ -49,7 +49,7 @@ export default function AuthenticationInfo() {
           </button>
 
           {dropdownOpen && (
-            <div className="absolute mt-1  bg-gray-800 text-white rounded-md shadow-lg ">
+            <div className="absolute mt-1 z-50 bg-gray-800 text-white rounded-md shadow-lg ">
               <div className="block text-lg px-4 py-2">
                 Xin chào: {authenticatedInfoVm.authenticatedUser.userName.split('@')[0]}
               </div>

@@ -53,6 +53,8 @@ const Profile: NextPage = () => {
 
   const [carts, setCarts] = useState<Cart[]>();
 
+  const [userAvatar, setUserAvatar] = useState<string>('');
+
   const handleActiveTabs = (tab: Tabs) => {
     setActiveTab(tab);
   }
@@ -119,13 +121,13 @@ const Profile: NextPage = () => {
       <div className="grid grid-cols-12">
         <div className="col-span-2 py-8">
           <ImageWithFallBack
-            src='abaa'
-            alt={adddressDefault ? adddressDefault.contactName : 'Error name'}
+            src={userAvatar || '/static/images/default-avatar.png'}
+            fallback="/static/images/default-avatar.png"
+            alt='User avatar'
             className="rounded-full border-gray-300 border-2 w-32 h-32 object-cover mx-auto"
           />
         </div>
         {activeTab === Tabs.Tab1 && (
-
           <div className="col-span-8 px-5 gap-3">
             <div className="gap-3 flex-col flex">
               <div className="flex py-3">
@@ -175,11 +177,15 @@ const Profile: NextPage = () => {
                 <label className="font-bold text-sm w-[30%] text-gray-700">Quốc gia: </label>
                 <h3 className="w-[70%] font-bold text-sm text-gray-700">{selectedCountryVm?.name}</h3>
               </div>
-            </div>
-            <div>
-              <button>1</button>
-              <button>2</button>
-              <button>3</button>
+              <div className="flex w-full justify-end">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(true)}
+                  className="rounded-md border border-slate-300 bg-white px-4 py-1.5 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-50"
+                >
+                  Đổi địa chỉ
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -196,7 +202,6 @@ const Profile: NextPage = () => {
             ))}
           </div>
         )}
-
 
         <div className="col-span-2 py-3 gap-3 flex flex-col">
           <button

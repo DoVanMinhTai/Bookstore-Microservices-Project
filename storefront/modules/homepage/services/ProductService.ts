@@ -17,15 +17,9 @@ export async function getProductFeature(): Promise<ProductFeature> {
 }
 
 export function useGetProductBestSelling(): UseApiRequestResult<ProductBestSeller> {
-    return useApiRequest(async () => {
-        const response = await apiClientService.get(`${baseUrl}/products/productsBestSelling`);
-        return response.json();
-    });
+    return useApiRequest(getProductBestSelling);
 }
 
 export function useGetProductFeature(): UseApiRequestResult<ProductFeature> {
-    return useApiRequest(async () => {
-        const response = await apiClientService.get(`${baseUrl}/products/productFeatured`);
-        return response.json();
-    });
+    return useApiRequest(getProductFeature);
 }

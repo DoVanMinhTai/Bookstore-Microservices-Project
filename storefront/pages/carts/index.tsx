@@ -1,15 +1,12 @@
 import { useCartContext } from '@/context/CartContext';
 import { CartItemGetDetailVms } from '@/modules/cart/model/CartItemGetVm'
-import { getCartItemDetailVms, updateCartItem } from '@/modules/cart/services/CartServices';
-import React, { useCallback, useEffect, useState } from 'react'
+import { getCartItemDetailVms, updateCartItem, deleteCartItemByProductId } from '@/modules/cart/services/CartServices';
+import React, { useCallback, useEffect, useState, useMemo } from 'react'
 import Link from 'next/link';
-import { deleteCartItemByProductId } from '@/modules/cart/services/CartServices';
 import { formatPrice } from '@/utils/formatPrice';
 import { useRouter } from 'next/router';
 import ConfimationDialog from '@/common/dialog/ConfirmationDialog';
-import { CartItemPutVm } from '@/modules/cart/model/CartItemPutVm';
 import { CartItem, calculateTotalPrice } from '@/modules/cart/components/CartItem';
-import { CheckoutItem } from '@/modules/checkout/model/CheckoutItem';
 import { Checkout } from '@/modules/checkout/model/Checkout';
 import { useUserInfoContext } from '@/context/UserInforProvider';
 import { createCheckout } from '@/modules/checkout/service/CheckoutService';
@@ -17,10 +14,9 @@ import { createCheckout } from '@/modules/checkout/service/CheckoutService';
 const Index = () => {
   const [cartItems, setCartItem] = useState<CartItemGetDetailVms[]>([]);
   const [productIdToRemove, setProductIdToRemove] = useState<number>(0);
-  const { fetchNumberCartItems, numberCartItems } = useCartContext();
+  const { fetchNumberCartItems } = useCartContext();
   const [selectedCartItem, setSelectedCartItem] = useState<Set<number>>(new Set());
   const { email } = useUserInfoContext();
-  const [isDropdown, setIsDropdown] = useState(false);
   const [isShowDialog, setIsShowDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -28,269 +24,229 @@ const Index = () => {
   const loadCartDetail = useCallback(async () => {
     setIsLoading(true);
     try {
-      const newCartItems = await getCartItemDetailVms()
+      const newCartItems = await getCartItemDetailVms();
       setCartItem(newCartItems);
       fetchNumberCartItems();
+    } catch (err) {
+      console.error("Failed to load cart", err);
     } finally {
       setIsLoading(false);
     }
   }, [fetchNumberCartItems]);
 
   useEffect(() => {
-    loadCartDetail()
-  }, [loadCartDetail])
+    loadCartDetail();
+  }, [loadCartDetail]);
 
-  const deleteCartItem = async (productId: number) => {
-    try {
-      await deleteCartItemByProductId(productId);
-      setCartItem((prevItem) => prevItem.filter((item) => item.productId !== productId));
-
-      fetchNumberCartItems();
-    } catch (error) {
-      throw new Error("error server")
-    }
-  }
-
-  const handleDecreaseQuantity = async (productId: number) => {
-    const cartItem = cartItems.find((item) => item.productId === productId);
-    if (!cartItem) {
-      return;
-    }
-    const newQuantity = cartItem.quantity - 1;
-    if (newQuantity < 1) {
-      handleDialogDeleteCartItem(productId)
+  const isAllSelected = cartItems.length > 0 && selectedCartItem.size === cartItems.length;
+  const handleSelectAll = () => {
+    if (isAllSelected) {
+      setSelectedCartItem(new Set());
     } else {
-      await updateCartItemQuantity(productId, newQuantity);
+      setSelectedCartItem(new Set(cartItems.map(item => item.productId)));
     }
-  }
-  const handleIncreaseQuantity = async (productId: number) => {
-    const cartItem = cartItems.find((item) => item.productId === productId);
-    if (!cartItem) {
-      return;
-    }
-    const newQuantity = cartItem.quantity + 1;
-
-    await updateCartItemQuantity(productId, newQuantity);
-
-  }
-  const updateCartItemQuantity = async (productId: number, quantity: number) => {
-    const payload: CartItemPutVm = {
-      quantity: quantity
-    }
-    setCartItem(prevsItem => prevsItem.map(
-      item => item.productId === productId ? { ...item, quantity } : item
-    ))
-    try {
-
-      await updateCartItem(productId, payload);
-    } catch (error) {
-      console.error(error)
-    }
-
-  }
-  const handleDialogDeleteCartItem = (productId: number) => {
-    setProductIdToRemove(productId)
-    setIsShowDialog(true);
-  }
-
-  const handleDeleteCartItem = async (productId: number) => {
-    try {
-
-      await deleteCartItemByProductId(productId);
-      loadCartDetail();
-      setIsShowDialog(false);
-      setProductIdToRemove(0);
-    } catch (error) {
-      console.error(error);
-    }
-
-  }
+  };
 
   const handleSelectedCartItemChange = (productId: number) => {
     setSelectedCartItem((prev) => {
-      const newSelectedCart = new Set(prev);
-      if (newSelectedCart.has(productId)) {
-        newSelectedCart.delete(productId);
-      } else {
-        newSelectedCart.add(productId)
-      }
-      return newSelectedCart;
+      const newSet = new Set(prev);
+      if (newSet.has(productId)) newSet.delete(productId);
+      else newSet.add(productId);
+      return newSet;
     });
+  };
 
-  }
-
-
-  const totalPrice = calculateTotalPrice(cartItems, [...selectedCartItem]);
-
-  const getSelectedCartItem = () => {
-    if (!cartItems || !selectedCartItem) return []
-    return cartItems.filter((item) => selectedCartItem.has(item.productId));
-  }
-
-  const handleCheckout = () => {
-    const cartItems = getSelectedCartItem();
-
-    if (cartItems.length === 0) {
-      alert("Vui lòng chọn 1 sản phẩm")
-      return;
+  const updateCartItemQuantity = async (productId: number, quantity: number) => {
+    setCartItem(prev => prev.map(item => item.productId === productId ? { ...item, quantity } : item));
+    try {
+      await updateCartItem(productId, { quantity });
+      fetchNumberCartItems();
+    } catch (error) {
+      console.error(error);
     }
+  };
 
-    const checkoutItem = cartItems.map((item) => convertItemToCheckoutItem(item))
+  const handleDecreaseQuantity = (productId: number) => {
+    const item = cartItems.find(i => i.productId === productId);
+    if (item && item.quantity > 1) updateCartItemQuantity(productId, item.quantity - 1);
+    else handleDialogDeleteCartItem(productId);
+  };
 
-    const checkOut: Checkout = {
-      email: email,
+  const handleIncreaseQuantity = (productId: number) => {
+    const item = cartItems.find(i => i.productId === productId);
+    if (item) updateCartItemQuantity(productId, item.quantity + 1);
+  };
+
+  const handleDialogDeleteCartItem = (productId: number) => {
+    setProductIdToRemove(productId);
+    setIsShowDialog(true);
+  };
+
+  const handleDeleteCartItem = async () => {
+    try {
+      await deleteCartItemByProductId(productIdToRemove);
+      setCartItem(prev => prev.filter(item => item.productId !== productIdToRemove));
+      setSelectedCartItem(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(productIdToRemove);
+        return newSet;
+      });
+      fetchNumberCartItems();
+      setIsShowDialog(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const totalPrice = useMemo(() => 
+    calculateTotalPrice(cartItems, Array.from(selectedCartItem)), 
+    [cartItems, selectedCartItem]
+  );
+
+  const handleCheckout = async () => {
+    const selectedItems = cartItems.filter(item => selectedCartItem.has(item.productId));
+    if (selectedItems.length === 0) return alert("Vui lòng chọn sản phẩm!");
+
+    const checkoutData: Checkout = {
+      email,
       note: '',
-      promotionCode: 'JAHFKHLD',
-      checkOutItemPostVms: checkoutItem
-    }
-
-    createCheckout(checkOut).then((res) => {
-      router.push(`/checkouts/${res?.id}`)
-    }).catch((error) => {
-      if (error.status === 403) {
-        throw new Error("Bạn vui lòng đăng nhập trước");
-      }
-    }
-    )
-  }
-
-  const convertItemToCheckoutItem = (cartItems: CartItemGetDetailVms): CheckoutItem => {
-    return {
-      productId: cartItems.productId,
-      description: "a1",
-      quantity: cartItems.quantity,
+      promotionCode: '', 
+      checkoutItemVms: selectedItems.map(item => ({
+        productId: item.productId,
+        description: "",
+        quantity: item.quantity
+      }))
     };
-  }
+
+    try {
+      const res = await createCheckout(checkoutData);
+      router.push(`/checkouts/${res?.id}`);
+    } catch (error: any) {
+      if (error.status === 403) alert("Vui lòng đăng nhập");
+    }
+  };
 
   return (
-    <>
-      <div className="container mx-auto my-5 px-4">
-        {cartItems.length > 0 ?
-          <>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="col-span-2 p-5 bg-[#fff] border-2 rounded-lg">
-                <div className="flex justify-between mb-4 ">
-                  <label className="text-2xl  font-bold block text-gray-700 py-10" >
-                    Chi tiết giỏ hàng
-                  </label>
-                  <div className="text-lg font-bold block text-gray-700 py-10 mr-5">{numberCartItems} sản phẩm</div>
-                </div>
-                <table className="min-w-full border-collapse border border-gray-300">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      <th className="border p-2">Select</th>
-                      <th className="border p-2">Product</th>
-                      <th className="border p-2">Quantity</th>
-                      <th className="border p-2">Price</th>
-                      <th className="border p-2">Actions</th>
-                    </tr>
-                  </thead>
-                  {cartItems.map((cartItem) => {
-                    return <CartItem
-                      key={cartItem.productId}
-                      item={cartItem}
-                      isLoading={isLoading}
-                      isSelected={selectedCartItem.has(cartItem.productId)}
-                      handleSelectedCartItemChange={handleSelectedCartItemChange}
-                      handleDecreaseQuantity={handleDecreaseQuantity}
-                      handleIncreaseQuantity={handleIncreaseQuantity}
-                      handleDialogDeleteCartItem={handleDialogDeleteCartItem}
-                    />
-                  })}
-                </table>
-                <div className="h-48 items-center flex gap-3 ">
+    <div className="bg-slate-50 min-h-screen pb-12">
+      <div className="container mx-auto pt-8 px-4">
+        <h1 className="text-2xl font-bold text-slate-900 mb-8">Giỏ hàng của bạn</h1>
 
-
-                  <Link href="/" className=" font-bold text-sm text-gray-700 items-center flex gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18" />
-                    </svg>
-                    <label htmlFor="">  Trở về trang chủ</label>
-                  </Link>
-                </div>
+        {cartItems.length > 0 ? (
+          <div className="flex flex-col lg:flex-row gap-8 items-start">
+            <div className="w-full lg:w-2/3 space-y-4">
+              <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    checked={isAllSelected} 
+                    onChange={handleSelectAll}
+                    className="w-5 h-5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                  />
+                  <span className="font-medium text-slate-700">Chọn tất cả ({cartItems.length})</span>
+                </label>
+                <button className="text-red-500 text-sm hover:underline">Xóa mục đã chọn</button>
               </div>
-              <div className="p-5 bg-[#dddddd] border-2">
-                <label htmlFor="" className="text-2xl font-bold block text-gray-700 py-10">Tóm tắt</label>
-                <div className="flex justify-between">
-                  <div className="text-lg font-bold text-gray-700 mb-5">Tổng tiền</div>
-                  <div>result tong tien</div>
 
-                </div>
-
-                <div className="flex justify-between">
-                  <label className="text-lg font-bold text-gray-700 mb-5">Thời Gian Vận Chuyển</label>
-                  <div>
-                    <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown"
-                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                      type="button"
-                      onClick={() => setIsDropdown(!isDropdown)}
-                    >Dropdown button
-                      <svg className="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
-                      </svg>
-                    </button>
-
-                    {isDropdown && (<div id="dropdown" className="z-10 absolute  bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
-                      <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-                        <li>
-                          <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
-                        </li>
-                        <li>
-                          <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
-                        </li>
-                        <li>
-                          <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</a>
-                        </li>
-                        <li>
-                          <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign out</a>
-                        </li>
-                      </ul>
-                    </div>)
-                    }
+              <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                {isLoading ? (
+                  <div className="p-20 flex justify-center"><div className="animate-spin h-8 w-8 border-4 border-emerald-500 border-t-transparent rounded-full" /></div>
+                ) : (
+                  <div className="divide-y divide-slate-100">
+                    {cartItems.map((item) => (
+                      <CartItem
+                        key={item.productId}
+                        item={item}
+                        isSelected={selectedCartItem.has(item.productId)}
+                        handleSelectedCartItemChange={handleSelectedCartItemChange}
+                        handleDecreaseQuantity={handleDecreaseQuantity}
+                        handleIncreaseQuantity={handleIncreaseQuantity}
+                        handleDialogDeleteCartItem={handleDialogDeleteCartItem} isLoading={false}                      />
+                    ))}
                   </div>
-
-                </div>
-                <div className="mb-5">
-                  <label htmlFor=""
-                    className="text-lg font-bold text-gray-700 mb-5"
-                  >Mã giảm giá</label>
-                  <div>
-
-                  </div>
-                </div>
-                <div className="mt-20 border-t-2 flex justify-between">
-                  <label htmlFor=""
-                    className="text-lg font-bold text-gray-700 mb-5" >
-                    Tổng tiền
-                  </label>
-                  <div className="font-bold text-lg text-gray-700 mb-5 ">{formatPrice(totalPrice)}</div>
-                </div>
-                <button className="mt-10 py-5 w-full bg-blue-700" onClick={handleCheckout}>Checkout</button>
-
+                )}
               </div>
-            </div>
-            <div>
-              <ConfimationDialog
-                isOpen={isShowDialog}
-                title={'Xóa sản phẩm'}
-                okText={"Xóa"}
-                cancelText={"Hủy"}
-                isShowCancel={true}
-                isShowOk={true}
-                cancel={() => setIsShowDialog(false)}
-                ok={() => handleDeleteCartItem(productIdToRemove)}
-              >
-                <p>Bạn có muốn xóa sản phẩm trong giỏ hàng</p>
-              </ConfimationDialog>
+
+              <Link href="/" className="inline-flex items-center gap-2 text-emerald-600 font-medium hover:text-emerald-700 transition-colors">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Tiếp tục mua sắm
+              </Link>
             </div>
 
-          </>
+            <div className="w-full lg:w-1/3 sticky top-6">
+              <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <h2 className="text-lg font-bold text-slate-900 mb-5 border-b pb-4">Đơn hàng</h2>
+                
+                <div className="space-y-3 mb-6">
+                  <div className="flex justify-between text-slate-600">
+                    <span>Tạm tính</span>
+                    <span className="font-medium text-slate-900">{formatPrice(totalPrice)}</span>
+                  </div>
+                  <div className="flex justify-between text-slate-600">
+                    <span>Giảm giá</span>
+                    <span className="text-emerald-600">- {formatPrice(0)}</span>
+                  </div>
+                  <div className="flex justify-between text-slate-600">
+                    <span>Phí vận chuyển</span>
+                    <span className="text-sm">Tính khi thanh toán</span>
+                  </div>
+                </div>
 
-          : <><div>Không có sản phẩm trong giỏ hàng</div></>
+                <div className="mb-6">
+                   <div className="flex gap-2">
+                      <input 
+                        placeholder="Mã giảm giá" 
+                        className="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+                      />
+                      <button className="bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-black transition-colors">Áp dụng</button>
+                   </div>
+                </div>
 
-        }
+                <div className="border-t pt-4 mb-6">
+                  <div className="flex justify-between items-end">
+                    <span className="text-slate-900 font-bold">Tổng cộng</span>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-emerald-600">{formatPrice(totalPrice)}</p>
+                      <p className="text-xs text-slate-400">(Đã bao gồm VAT)</p>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  disabled={totalPrice === 0}
+                  onClick={handleCheckout}
+                  className="w-full bg-emerald-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-emerald-200 hover:bg-emerald-700 disabled:bg-slate-300 disabled:shadow-none transition-all active:scale-[0.98]"
+                >
+                  Thanh toán ngay
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-white rounded-2xl p-16 text-center shadow-sm border border-slate-100 mt-10">
+            <div className="bg-slate-50 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
+               <svg className="w-12 h-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            </div>
+            <h3 className="text-xl font-bold text-slate-900 mb-2">Giỏ hàng đang trống</h3>
+            <p className="text-slate-500 mb-8">Có vẻ như bạn chưa thêm sản phẩm nào vào giỏ hàng.</p>
+            <Link href="/" className="bg-emerald-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-emerald-700 transition-all inline-block">
+              Khám phá sản phẩm
+            </Link>
+          </div>
+        )}
       </div>
-    </>
+
+      <ConfimationDialog
+        isOpen={isShowDialog}
+        title="Xóa sản phẩm?"
+        okText="Xóa ngay"
+        cancelText="Hủy"
+        isShowCancel isShowOk
+        cancel={() => setIsShowDialog(false)}
+        ok={handleDeleteCartItem}
+      >
+        <p className="text-slate-600">Bạn chắc chắn muốn loại bỏ sản phẩm này khỏi giỏ hàng?</p>
+      </ConfimationDialog>
+    </div>
   )
 }
-export default Index
+export default Index;
