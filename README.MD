@@ -94,7 +94,7 @@ git clone https://github.com/DoVanMinhTai/Bookstore-Microservices-Project.git
 cd Bookstore-Microservices-Project 
 ```
 Important: You need to cd to Root Project
-### Step 3: Configure Local Domains (Hosts File)
+### Step 2: Configure Local Domains (Hosts File)
 To route traffic properly through Nginx, you must map the local domains to your `localhost`.
 
 **For Windows Users:**
@@ -109,13 +109,13 @@ To route traffic properly through Nginx, you must map the local domains to your 
    ```
 4. Save and close.
 
-### Step 4: Environment Variables (Added)
-### Step 5: Build Java Executables (.jar)
+### Step 3: Environment Variables (Added)
+### Step 4: Build Java Executables (.jar)
 Before running Docker, you must compile the Spring Boot applications into .jar files so Docker can build the images. Run this command in the root directory (or inside each service folder):
    ```bash
     mvn clean install -DskipTests
    ```
-### Step 4: Run Docker Compose
+### Step 5: Run Docker Compose
 Once the .jar files are built, use Docker Compose (V2) to build the images and start all containers.
    ```bash
     docker compose up -d --build --force-recreate
