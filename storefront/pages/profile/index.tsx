@@ -4,7 +4,6 @@ import ImageWithFallBack from '@/common/components/ImageWithFallBack';
 import { useUserInfoContext } from '@/context/UserInforProvider';
 import AddressForm from '@/modules/address/components/AddressForm';
 import { Address } from '@/modules/address/model/Address';
-import { AddressDetailVm } from '@/modules/address/model/AddressDetail';
 import { CountryVm } from '@/modules/country/model/CountryVm';
 import { getAllCountries, getStateOrProvinces } from '@/modules/country/service/CountryService';
 import { Districts } from '@/modules/districts/model/Districts';
@@ -31,7 +30,7 @@ const Profile: NextPage = () => {
 
   const { firstname, email, lastname } = useUserInfoContext();
 
-  const [adddressDefault, setAddressDefault] = useState<AddressDetailVm>();
+  const [adddressDefault, setAddressDefault] = useState<Address | null | undefined>();
 
   const [coutries, setCountries] = useState<CountryVm[]>();
   const [stateOrProvinces, setStateOrProvinces] = useState<StateOrProvince[]>();
@@ -49,11 +48,11 @@ const Profile: NextPage = () => {
 
   const [activeTab, setActiveTab] = useState<Tabs.Tab1 | Tabs.Tab2 | Tabs.Tab3>(Tabs.Tab1);
 
-  const [orderStatus] = useState("PENDING");
+  // const [orderStatus] = useState("PENDING");
 
-  const [carts, setCarts] = useState<Cart[]>();
+  const [carts] = useState<Cart[]>();
 
-  const [userAvatar, setUserAvatar] = useState<string>('');
+  const [userAvatar] = useState<string>('');
 
   const handleActiveTabs = (tab: Tabs) => {
     setActiveTab(tab);
@@ -67,18 +66,11 @@ const Profile: NextPage = () => {
      setOrderStatus(event.target.value);
    } */
 
-  /*Example Data to Show */
-  const dummyCarts: Cart[] = [
-    { id: 1, productName: 'Gạo ST25', quantity: 2, totalPrice: 40000, status: 'pending' },
-    { id: 2, productName: 'Gạo Lứt', quantity: 1, totalPrice: 20000, status: 'shipping' },
-    { id: 3, productName: 'Gạo Nhật', quantity: 3, totalPrice: 60000, status: 'cancelled' },
-  ];
-
   useEffect(() => {
     getAddressDefault().then((res) => {
       setAddressDefault(res);
     }).catch((error) => console.error(error));
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (adddressDefault) {
@@ -111,10 +103,15 @@ const Profile: NextPage = () => {
 
   }, [coutries, stateOrProvinces, districts, adddressDefault]);
 
-  useEffect(() => {
-    const filter = dummyCarts.filter((cartStatus) => cartStatus.status === orderStatus);
+  // useEffect(() => {
+    // const dummyCarts: Cart[] = [
+    //   { id: 1, productName: 'Gạo ST25', quantity: 2, totalPrice: 40000, status: 'pending' },
+    //   { id: 2, productName: 'Gạo Lứt', quantity: 1, totalPrice: 20000, status: 'shipping' },
+    //   { id: 3, productName: 'Gạo Nhật', quantity: 3, totalPrice: 60000, status: 'cancelled' },
+    // ];
+    // const filter = dummyCarts.filter((cartStatus) => cartStatus.status === orderStatus);
     // setCarts(filter)
-  }, [dummyCarts, orderStatus])
+  // }, [dummyCarts, orderStatus])
 
   return (
     <div className="container mx-auto">
@@ -219,7 +216,7 @@ const Profile: NextPage = () => {
         </div>
       </div>
 
-      {isModalOpen && (
+      {adddressDefault && isModalOpen && (
         <AddressForm
           titleModal='Đổi địa chỉ'
           setValue={setValue}

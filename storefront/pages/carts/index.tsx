@@ -98,8 +98,8 @@ const Index = () => {
     }
   };
 
-  const totalPrice = useMemo(() => 
-    calculateTotalPrice(cartItems, Array.from(selectedCartItem)), 
+  const totalPrice = useMemo(() =>
+    calculateTotalPrice(cartItems, Array.from(selectedCartItem)),
     [cartItems, selectedCartItem]
   );
 
@@ -110,7 +110,7 @@ const Index = () => {
     const checkoutData: Checkout = {
       email,
       note: '',
-      promotionCode: '', 
+      promotionCode: '',
       checkoutItemVms: selectedItems.map(item => ({
         productId: item.productId,
         description: "",
@@ -121,8 +121,15 @@ const Index = () => {
     try {
       const res = await createCheckout(checkoutData);
       router.push(`/checkouts/${res?.id}`);
-    } catch (error: any) {
-      if (error.status === 403) alert("Vui lòng đăng nhập");
+    } catch (error: unknown) {
+      if (error && typeof error === 'object' && 'status' in error) {
+        const err = error as { status: number };
+        if (err.status === 403) {
+          alert("Vui lòng đăng nhập");
+        }
+      } else {
+        console.error("An unexpected error occurred:", error);
+      }
     }
   };
 
@@ -136,9 +143,9 @@ const Index = () => {
             <div className="w-full lg:w-2/3 space-y-4">
               <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
                 <label className="flex items-center gap-3 cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    checked={isAllSelected} 
+                  <input
+                    type="checkbox"
+                    checked={isAllSelected}
                     onChange={handleSelectAll}
                     className="w-5 h-5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
                   />
@@ -160,14 +167,14 @@ const Index = () => {
                         handleSelectedCartItemChange={handleSelectedCartItemChange}
                         handleDecreaseQuantity={handleDecreaseQuantity}
                         handleIncreaseQuantity={handleIncreaseQuantity}
-                        handleDialogDeleteCartItem={handleDialogDeleteCartItem} isLoading={false}                      />
+                        handleDialogDeleteCartItem={handleDialogDeleteCartItem} isLoading={false} />
                     ))}
                   </div>
                 )}
               </div>
 
               <Link href="/" className="inline-flex items-center gap-2 text-emerald-600 font-medium hover:text-emerald-700 transition-colors">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
                 Tiếp tục mua sắm
               </Link>
             </div>
@@ -175,7 +182,7 @@ const Index = () => {
             <div className="w-full lg:w-1/3 sticky top-6">
               <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                 <h2 className="text-lg font-bold text-slate-900 mb-5 border-b pb-4">Đơn hàng</h2>
-                
+
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between text-slate-600">
                     <span>Tạm tính</span>
@@ -192,13 +199,13 @@ const Index = () => {
                 </div>
 
                 <div className="mb-6">
-                   <div className="flex gap-2">
-                      <input 
-                        placeholder="Mã giảm giá" 
-                        className="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
-                      />
-                      <button className="bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-black transition-colors">Áp dụng</button>
-                   </div>
+                  <div className="flex gap-2">
+                    <input
+                      placeholder="Mã giảm giá"
+                      className="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+                    />
+                    <button className="bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-black transition-colors">Áp dụng</button>
+                  </div>
                 </div>
 
                 <div className="border-t pt-4 mb-6">
@@ -224,7 +231,7 @@ const Index = () => {
         ) : (
           <div className="bg-white rounded-2xl p-16 text-center shadow-sm border border-slate-100 mt-10">
             <div className="bg-slate-50 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
-               <svg className="w-12 h-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+              <svg className="w-12 h-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
             </div>
             <h3 className="text-xl font-bold text-slate-900 mb-2">Giỏ hàng đang trống</h3>
             <p className="text-slate-500 mb-8">Có vẻ như bạn chưa thêm sản phẩm nào vào giỏ hàng.</p>

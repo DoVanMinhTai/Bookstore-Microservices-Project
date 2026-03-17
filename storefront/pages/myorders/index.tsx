@@ -76,7 +76,7 @@ export default function Myorders() {
                   <div className="flex flex-wrap justify-between items-center gap-4 mb-4 pb-4 border-b border-slate-50">
                     <div className="flex items-center gap-3">
                       <span className="font-bold text-slate-900">Mã đơn: #{order.id}</span>
-                      <span className={`text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${getStatusColor(order.orderStatus as any)}`}>
+                      <span className={`text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${getStatusColor(order.orderStatus as string)}`}>
                         {order.orderStatus}
                       </span>
                     </div>

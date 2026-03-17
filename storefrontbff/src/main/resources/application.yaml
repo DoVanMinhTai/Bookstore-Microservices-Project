@@ -84,25 +84,25 @@ spring:
       default-filters:
         - SaveSession
 ---
-#spring:
-#  profiles:
-#    active: dev
-#  cloud:
-#    gateway:
-#      routes:
-#        - id: api_local
-#          uri: http://nginx
-#          predicates:
-#            - Path=/api/**
-#          filters:
-#            - TokenRelay=
-#            - StripPrefix=1
-##        - id: nextJs
-##          uri: http://host.docker.internal:3000
-##          predicates:
-##            - Path=/**
-#      default-filters:
-#        - SaveSession
+spring:
+ profiles:
+   active: prod
+ cloud:
+   gateway:
+     routes:
+       - id: api_local
+         uri: http://nginx
+         predicates:
+           - Path=/api/**
+         filters:
+           - TokenRelay=
+           - StripPrefix=1
+       - id: nextJs
+         uri: http://storefront-nextjs:3000
+         predicates:
+           - Path=/**
+     default-filters:
+       - SaveSession
 ---
 services:
   token-identity: http://identity.local/realms/Identity/protocol/openid-connect/token

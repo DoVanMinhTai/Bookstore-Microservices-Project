@@ -26,11 +26,75 @@ To run this project locally, ensure your machine meets the following requirement
 
 ---
 
+---
+
+## Tested Hardware Configuration
+
+This project has been tested and runs smoothly on the following setup:
+- **Model:** MSI GL73 8RC.
+- **Processor:** Intel Core i7 (8th Gen).
+- **RAM:** 16GB.
+- **Storage:** SSD is highly recommended for faster container startup.
+
+---
+
+## System Prerequisites (Windows Users)
+To ensure this project runs smoothly, it is highly recommended to use WSL2 (Windows Subsystem for Linux) with an Ubuntu distribution.
+### 1. Enable WSL2 & Install Ubuntu
+   If you haven't installed WSL yet, open PowerShell as Administrator and run:
+   ```bash
+   wsl --install -d Ubuntu
+   ```
+   After installation, restart your computer and set up your Ubuntu username and password.
+### 2. Install Docker Engine inside Ubuntu
+   Open your Ubuntu terminal and run these commands to install Docker:
+```bash
+sudo apt update
+sudo apt install -y ca-certificates curl gnupg
+
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+echo \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+sudo usermod -aG docker $USER
+```
+Important: Close and reopen your Ubuntu terminal for the user group changes to take effect.
+
+### 3.Start Docker Service
+In WSL2, you need to start the Docker service manually (or enable systemd):
+```bash
+sudo service docker start
+```
+
+Before building the project, ensure you have JDK 21 installed in your WSL environment:
+
+```bash
+sudo apt update
+sudo apt install openjdk-21-jdk -y
+```
+Check the version to confirm:
+```bash
+java -version
+# Should output: openjdk version "21.x.x"
+```
+
 ## Installation & Setup
 
-Follow these steps to set up and run the application on your local machine.
-
-### Step 1: Configure Local Domains (Hosts File)
+### Step 1: Clone the Project
+```bash
+git clone https://github.com/DoVanMinhTai/Bookstore-Microservices-Project.git
+cd Bookstore-Microservices-Project 
+```
+Important: You need to cd to Root Project
+### Step 3: Configure Local Domains (Hosts File)
 To route traffic properly through Nginx, you must map the local domains to your `localhost`.
 
 **For Windows Users:**
@@ -45,19 +109,17 @@ To route traffic properly through Nginx, you must map the local domains to your 
    ```
 4. Save and close.
 
-### Step 2: Environment Variables (Added)
-### Step 3: Build Java Executables (.jar)
+### Step 4: Environment Variables (Added)
+### Step 5: Build Java Executables (.jar)
 Before running Docker, you must compile the Spring Boot applications into .jar files so Docker can build the images. Run this command in the root directory (or inside each service folder):
    ```bash
-    ./mvnw clean package -DskipTests
+    mvn clean install -DskipTests
    ```
 ### Step 4: Run Docker Compose
 Once the .jar files are built, use Docker Compose (V2) to build the images and start all containers.
    ```bash
     docker compose up -d --build --force-recreate
    ```
-### Step 5: Start the Frontend (Next.js)
-
 ---
 
 ### You might also want to explore:

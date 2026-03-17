@@ -52,25 +52,25 @@ const CheckoutPage = () => {
         };
     }, [id, router]);
 
-    const productDetail = async () => {
-        if (checkout) {
-            const checkoutitemProduct = checkout.checkoutItemVms ? Array.from(checkout.checkoutItemVms) : [];
-            console.log(checkout);
-            const productIds = checkoutitemProduct.map((item) => item.productId);
-
-            await getProductById(productIds)
-                .then((res) => {
-                    setProduct(res);
-                }).catch((error) => {
-                    if (error.status == 404) {
-                        return;
-                    }
-                    console.error(error)
-                })
-        }
-    }
 
     useEffect(() => {
+        const productDetail = async () => {
+            if (checkout) {
+                const checkoutitemProduct = checkout.checkoutItemVms ? Array.from(checkout.checkoutItemVms) : [];
+                console.log(checkout);
+                const productIds = checkoutitemProduct.map((item) => item.productId);
+
+                await getProductById(productIds)
+                    .then((res) => {
+                        setProduct(res);
+                    }).catch((error) => {
+                        if (error.status == 404) {
+                            return;
+                        }
+                        console.error(error)
+                    })
+            }
+        }
         if (checkout) {
             productDetail();
         }

@@ -12,6 +12,7 @@ import { createCheckout } from '@/modules/checkout/service/CheckoutService';
 import { useUserInfoContext } from '@/context/UserInforProvider';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { Checkout } from '@/modules/checkout/model/Checkout';
 
 type ProductDetailProps = {
     product: ProductDetail;
@@ -40,14 +41,14 @@ export default function ProductDetails({ product }: ProductDetailProps) {
 
     const onClickHandleSubmit = async () => {
         if (quantity < 1) return;
-        const checkoutPayload = {
+        const checkoutPayload : Checkout = {
             email: email,
             note: '',
             promotionCode: "",
             shipmentMethodId: "1",
             paymentMethodId: "1",
             shippingAddressId: 1,
-            checkOutItemPostVms: [{
+            checkoutItemVms: [{
                 productId: product.id,
                 description: "",
                 quantity: quantity,

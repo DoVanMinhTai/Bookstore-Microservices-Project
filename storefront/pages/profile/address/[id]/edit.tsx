@@ -23,7 +23,7 @@ const Edit: NextPage = () => {
 
     useEffect(() => {
         const idNumber = Number(id);
-        getAddressById(idNumber).then((res) => {
+        getAddressById(idNumber).then((res : Address) => {
             setAddress(res);
         })
     }, [id]);

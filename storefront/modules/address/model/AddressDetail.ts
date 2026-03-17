@@ -9,4 +9,5 @@ export type AddressDetailVm = {
     districtId: number;
     stateOrProvinceId: number;
     countryId: number;
+    addressType: 'SHIPPING' | 'BILLING';
 }

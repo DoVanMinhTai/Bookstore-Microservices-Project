@@ -25,7 +25,7 @@ const OrderSuccessPage = () => {
                 .then((res) => {
                     setOrder(res);
                     if (res?.orderItemVms) {
-                        const productIds = Array.from(res.orderItemVms).map((item: any) => item.productId);
+                        const productIds = Array.from(res.orderItemVms).map((item: { productId: number }) => item.productId);
                         return getProductById(productIds);
                     }
                 })

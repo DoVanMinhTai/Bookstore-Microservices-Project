@@ -24,7 +24,7 @@ export async function updateAddress(id: number, addressPostVm: AddressPostVm) {
     return response
 }
 
-export async function getAddressById(id: number): Promise<AddressDetailVm> {
+export async function getAddressById(id: number): Promise<Address> {
     const reponse = await apiClientService.get(`${baseUrl}/location/storefront/addresses/${id}`);
     if (!reponse.ok) {
         throw new Error("Không thể tải thông tin địa chỉ.");

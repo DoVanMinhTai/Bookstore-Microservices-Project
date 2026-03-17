@@ -39,7 +39,7 @@ services:
       - SERVER_PORT
       - PUBLIC_API_URL=${PUBLIC_API_URL}/customer
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_PROFILES_ACTIVE=prod
     networks:
       - adc-network
   cart:
@@ -47,7 +47,7 @@ services:
     container_name: cart
     build: ./cart
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/cart
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SERVER_SERVLET_CONTEXT_PATH= /cart
@@ -65,7 +65,7 @@ services:
       - SERVER_SERVLET_CONTEXT_PATH= /location
       - SERVER_PORT
       - PUBLIC_API_URL= ${PUBLIC_API_URL}/location
-      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_PROFILES_ACTIVE=prod
     networks:
       - adc-network
   inventory:
@@ -73,7 +73,7 @@ services:
     build: ./inventory
     image: inventory:latest
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/inventory
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SERVER_SERVLET_CONTEXT_PATH= /inventory
@@ -90,7 +90,7 @@ services:
         - SPRING_JPA_HIBERNATE_DDL_AUTO=update
         - SERVER_SERVLET_CONTEXT_PATH=/media
         - SERVER_PORT=${SERVER_PORT}
-        - SPRING_PROFILES_ACTIVE=dev
+        - SPRING_PROFILES_ACTIVE=prod
         - PUBLIC_API_URL= ${PUBLIC_API_URL}/media
       volumes:
         - ./data/images:/images
@@ -101,7 +101,7 @@ services:
       build: ./order
       image: order:latest
       environment:
-        - SPRING_PROFILES_ACTIVE=dev
+        - SPRING_PROFILES_ACTIVE=prod
         - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/order
         - SPRING_JPA_HIBERNATE_DDL_AUTO=update
         - SERVER_SERVLET_CONTEXT_PATH= /order
@@ -117,7 +117,7 @@ services:
       image: storefrontbff:latest
       entrypoint: ["./wait-for-it.sh", "identity:80", "--timeout=300", "--", "java", "-jar", "/app.jar"]
       environment:
-        - SPRING_PROFILES_ACTIVE=dev
+        - SPRING_PROFILES_ACTIVE=prod
         - SERVER_PORT
         - SERVICES_BOOK
         - SERVICES_CART
@@ -130,12 +130,25 @@ services:
         - "host.docker.internal:host-gateway"
       networks:
         - adc-network
+  storefront-nextjs:
+      container_name: storefront-nextjs
+      build:
+          context: ./storefront
+          dockerfile: Dockerfile
+          args:
+              NEXT_PUBLIC_API_BASE_URL: http://storefront.local/api
+      image: storefront-nextjs:latest
+      networks:
+          - adc-network
+      depends_on:
+          - storefront
+          - identity.local
   product:
       build: ./product
       container_name: product
       image: product:latest
       environment:
-        - SPRING_PROFILES_ACTIVE=dev
+        - SPRING_PROFILES_ACTIVE=prod
         - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/book
         - SPRING_JPA_HIBERNATE_DDL_AUTO=update
         - SERVER_SERVLET_CONTEXT_PATH=/product
@@ -151,7 +164,7 @@ services:
       - URLS
       - OAUTH_CLIENT_ID=swagger-ui
       - OAUTH_USE_PKCE=true
-      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_PROFILES_ACTIVE=prod
     networks:
       - adc-network
   postgres:
@@ -165,7 +178,7 @@ services:
       - ./postgres_init.sql:/docker-entrypoint-initdb.d/postgres_init.sql
       - postgres:/var/lib/postgresql/data
     environment:
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: prod
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     networks:
@@ -181,7 +194,7 @@ services:
     container_name: pgadmin
     restart: always
     environment:
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: prod
       PGADMIN_DEFAULT_EMAIL: admin@adc.com
       PGADMIN_DEFAULT_PASSWORD: admin
       PGADMIN_SETUP_SERVER_JSON: |
