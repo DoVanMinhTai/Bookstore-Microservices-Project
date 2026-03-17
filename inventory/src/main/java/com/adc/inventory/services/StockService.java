@@ -2,17 +2,16 @@ package com.adc.inventory.services;
 
 import com.adc.commonlibrary.exception.NotFoundException;
 import com.adc.inventory.model.Stock;
+import com.adc.inventory.model.StockHistory;
 import com.adc.inventory.model.WareHouse;
 import com.adc.inventory.model.enumeration.FilterExitsInWhSelection;
 import com.adc.inventory.repository.StockHistoryRepository;
 import com.adc.inventory.repository.StockRepository;
 import com.adc.inventory.repository.WareHouseRepository;
 import com.adc.inventory.viewmodel.product.ProductQuantityPostVm;
-import com.adc.inventory.viewmodel.stock.StockPostVm;
+import com.adc.inventory.viewmodel.stock.*;
 import com.adc.inventory.viewmodel.product.ProductInfo;
-import com.adc.inventory.viewmodel.stock.StockQuantityUpdateVm;
-import com.adc.inventory.viewmodel.stock.StockQuantityVm;
-import com.adc.inventory.viewmodel.stock.StockVm;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,19 +25,11 @@ import java.util.stream.Collectors;
 public class StockService {
     private final StockRepository stockRepository;
     private final WareHouseRepository wareHouseRepository;
-    private final StockHistoryRepository stockHistoryRepository;
     private final ProductService productService;
     private final WareHouseService wareHouseService;
     private final StockHistoryService stockHistoryService;
+    private final StockHistoryRepository stockHistoryRepository;
 
-    /*     Steps:
-     *           1.check warehouseid and productid
-     *               if exists => throw
-     *           2.check product exist
-     *               if not exists => throw
-     *           3.check warehouse exist
-     *               if not exists => throw
-     * */
     public void addProductIntoWareHouse(List<StockPostVm> postVms) {
         List<Stock> stocks = postVms.stream().map(postVm -> {
             boolean existWareHouseIdAndProductId = stockRepository.existsByWareHouseIdAndProductId(postVm.wareHouseId(), postVm.productId());
@@ -74,7 +65,6 @@ public class StockService {
                 .parallelStream()
                 .collect(Collectors.toMap(ProductInfo::id, productInfo -> productInfo));
 
-
         List<Stock> stocks = stockRepository.findAllByWareHouseIdAndProductIdIn(warehouseId
                 , productInfoHashMap.values().parallelStream().map(ProductInfo::id).toList());
 
@@ -85,8 +75,6 @@ public class StockService {
                     return StockVm.fromModel(stock, productInfo);
                 }
         ).toList();
-
-
     }
 
 
@@ -109,7 +97,7 @@ public class StockService {
             stock.setQuantity(stockQuantityVm.quantity() + adjustedQuantity);
         }
         stockRepository.saveAll(stocks);
-        stockHistoryService.createStockHistories(stocks,stockQuantityVms);
+        stockHistoryService.createStockHistories(stocks, stockQuantityVms);
 
         List<ProductQuantityPostVm> productQuantityPostVms = stocks.parallelStream()
                 .map(ProductQuantityPostVm::fromModel)
@@ -118,7 +106,56 @@ public class StockService {
         if (!productQuantityPostVms.isEmpty()) {
             productService.updateQuantity(productQuantityPostVms);
         }
+    }
 
+    @Transactional
+    public void reduceStock(List<StockDeleteVm> stockDeleteVms) {
+        for (StockDeleteVm vm : stockDeleteVms) {
+            Stock stock = stockRepository.findByProductIdAndWarehouseIdWithLock(vm.productId(), vm.warehouseId()).orElseThrow(
+                    () -> new NotFoundException("STOCK_NOT_FOUND")
+            );
 
+            if (stock.getQuantity() < vm.quantity()) {
+                throw new RuntimeException("OUT_OF_STOCK");
+            }
+
+            if(stock.getReversedQuantity() < vm.quantity()) {
+                stock.setReversedQuantity(0L);
+            } else {
+                stock.setReversedQuantity(stock.getReversedQuantity() - vm.quantity());
+            }
+
+            stock.setQuantity(stock.getQuantity() - vm.quantity());
+
+            StockHistory history = StockHistory.builder()
+                    .productId(vm.productId())
+                    .wareHouse(stock.getWareHouse())
+                    .adjustedQuantity((long) -vm.quantity())
+                    .note("Xuất kho")
+                    .build();
+
+            stockHistoryRepository.save(history);
+        }
+    }
+
+    @Transactional
+    public void reserveStock(Long productId, Long warehouseId, Long quantity) {
+        Stock stock = stockRepository.findByProductIdAndWarehouseIdWithLock(productId, warehouseId).orElseThrow();
+
+        long availableStock = stock.getQuantity() - stock.getReversedQuantity();
+        if (availableStock < quantity) {
+            throw new RuntimeException("PRODUCT_ORDERED");
+        }
+
+        stock.setReversedQuantity(stock.getReversedQuantity() + quantity);
+        stockRepository.save(stock);
+    }
+
+    @Transactional
+    public void releaseStock(Long productId, Long warehouseId, Long quantity) {
+        Stock stock = stockRepository.findByProductIdAndWarehouseIdWithLock(productId, warehouseId).orElseThrow();
+
+        stock.setReversedQuantity(Math.max(0, stock.getReversedQuantity() - quantity));
+        stockRepository.save(stock);
     }
 }

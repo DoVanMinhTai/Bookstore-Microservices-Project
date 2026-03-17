@@ -47,14 +47,7 @@ public class OrderItem extends AbstractAuditEntity {
     @SuppressWarnings("unused")
     private String status;
 
-//    @SuppressWarnings("unused")
-//    private BigDecimal shipmentTax;
-//
-//    @SuppressWarnings("unused")
-//    @JdbcTypeCode(SqlTypes.JSON)
-//    @Column(name = "processing_state", columnDefinition = "jsonb")
-//    private String processingState;
-
+    private Long warehouseId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id",insertable = false, updatable = false)

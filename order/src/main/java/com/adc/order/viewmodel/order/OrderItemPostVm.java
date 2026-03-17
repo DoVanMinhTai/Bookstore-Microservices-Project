@@ -13,6 +13,7 @@ public record OrderItemPostVm(
         String note,
         BigDecimal discountAmount,
         BigDecimal taxAmount,
-        BigDecimal taxPercent
+        BigDecimal taxPercent,
+        Long warehouseId
 ) {
 }

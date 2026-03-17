@@ -21,7 +21,5 @@ public class UserAddress extends AbstractAuditEntity {
 
     private Boolean isActive;
 
-
-
 }
 

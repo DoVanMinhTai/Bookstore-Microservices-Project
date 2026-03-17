@@ -1049,7 +1049,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "VMG9bsXmILYGGreSMO51AVoXTlE14rvb",
       "redirectUris": [
         ""
       ],
@@ -1383,7 +1383,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "O4ZjxsbPLl1c7RxiUO26Y4BzBztGeV1F",
       "redirectUris": [
         "http://storefront.local/*",
         "http://localhost:8087/*"

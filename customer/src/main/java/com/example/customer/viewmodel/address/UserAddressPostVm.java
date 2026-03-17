@@ -1,9 +1,10 @@
 package com.example.customer.viewmodel.address;
 
+import com.example.customer.model.enumeration.AddressType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public record AddressPostVm(
+public record UserAddressPostVm(
         @Size(max = 450) String contactName,
         @Size(max = 25) String phone,
         @Size(max = 450) String addressLine1,
@@ -12,5 +13,9 @@ public record AddressPostVm(
         @Size(max = 25) String zipCode,
         @NotNull Long districtId,
         @NotNull Long stateOrProvinceId,
-        @NotNull Long countryId) {
+        @NotNull Long countryId,
+        AddressType addressType,
+        Boolean isActiveShipping,
+        Boolean isActiveBilling
+) {
 }

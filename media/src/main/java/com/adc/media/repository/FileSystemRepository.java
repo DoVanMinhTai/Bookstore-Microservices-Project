@@ -16,8 +16,12 @@ public class FileSystemRepository {
     private static final String DIRECTORY_DOES_NOT_EXIST = "Directory does not exist";
     @SneakyThrows
     public InputStream getFile(String filePath)  {
-        Path path = Paths.get(filePath);
-        System.out.println("Test" + path);
+
+        String baseDir = fileSystemConfig.getDirectory();
+        String relative = filePath.startsWith("/") ? filePath.substring(1) : filePath;
+        Path path = Paths.get(baseDir,relative);
+        System.out.println("Path" + path);
+
         if (!Files.exists(path)) {
             throw new IllegalStateException(String.format(DIRECTORY_DOES_NOT_EXIST, fileSystemConfig.getDirectory()));
         }

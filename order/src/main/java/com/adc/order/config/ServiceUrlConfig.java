@@ -4,6 +4,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "services")
 public record ServiceUrlConfig(
-        String customer,String product,String promotion
+        String customer,String product,String promotion, String inventory
 ) {
 }

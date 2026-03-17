@@ -32,9 +32,7 @@ public class AddressService {
         Country country = countryRepository.findById(dto.countryId()).orElseThrow(
                 () -> new IllegalArgumentException("Country not found")
         );
-
         address.setCountry(country);
-        System.out.println(address);
         return AddressGetVm.fromModel(addressRepository.save(address));
     }
 
@@ -73,9 +71,8 @@ public class AddressService {
         addressRepository.delete(address);
     }
 
-
-    public List<AddressDetailVm> getBillingAddressByID(Long id) {
-        List<Address> billingAddress = addressRepository.findAllByIdAndAddressType(id, AddressType.BILLING);
+    public List<AddressDetailVm> getListBillingAddressByIds(List<Long> id) {
+        List<Address> billingAddress = addressRepository.findAllByIdInAndAddressType(id, AddressType.BILLING);
         return billingAddress.stream().map(AddressDetailVm::fromModel).toList();
     }
 }

@@ -21,11 +21,10 @@ public class MediaService extends AbstractCircuitBreakFallbackHandler {
     @CircuitBreaker(name = "restCircuitBreaker", fallbackMethod = "handleMediaFallback")
     public MetaData getMedia(Long id) {
         if (id == null) {
-            return new MetaData(null, "", "", "", "", "");
+            return new MetaData(null, null, null, null, null, null);
         }
         final URI url = UriComponentsBuilder.fromUriString(serviceUrlConfig.media())
                 .path("/media/{id}").buildAndExpand(id).toUri();
-        System.out.println("Test URL" + url);
         return restClient.get().uri(url)
                 .retrieve().body(MetaData.class);
     }

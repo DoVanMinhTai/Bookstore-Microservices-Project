@@ -15,6 +15,8 @@ import com.adc.order.viewmodel.order.OrderItemVm;
 import com.adc.order.viewmodel.order.OrderPostVm;
 import com.adc.order.viewmodel.order.OrderVm;
 import com.adc.order.viewmodel.orderaddress.OrderAddressPostVm;
+import com.adc.order.viewmodel.stock.StockDeleteVm;
+import com.adc.order.viewmodel.stock.StockReservationVm;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,41 +33,23 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
+    private final InventoryService inventoryService;
 
     public List<Long> findProductIdsByCompletedOrders() {
         return orderItemRepository.findProductIdsByCompletedOrders();
     }
 
+    @Transactional
     public OrderVm createOrder(OrderPostVm orderPostVm) {
-        OrderAddressPostVm shippingOrderAddressPostVm = orderPostVm.shippingAddressPostVm();
-        OrderAddress shippingAddress = OrderAddress.builder()
-                .contactName(shippingOrderAddressPostVm.contactName())
-                .phone(shippingOrderAddressPostVm.phone())
-                .addressLine1(shippingOrderAddressPostVm.addressLine1())
-                .addressLine2(shippingOrderAddressPostVm.addressLine2())
-                .city(shippingOrderAddressPostVm.city())
-                .zipCode(shippingOrderAddressPostVm.zipCode())
-                .districtId(shippingOrderAddressPostVm.districtId())
-                .districtName(shippingOrderAddressPostVm.districtName())
-                .stateOrProvinceId(shippingOrderAddressPostVm.stateOrProvinceId())
-                .stateOrProvinceName(shippingOrderAddressPostVm.stateOrProvinceName())
-                .countryId(shippingOrderAddressPostVm.countryId())
-                .countryName(shippingOrderAddressPostVm.countryName()).build();
+        OrderAddress shippingAddress = mapAddress(orderPostVm.shippingAddressPostVm());
+        OrderAddress billingAddress = mapAddress(orderPostVm.billingAddressPostVm());
 
-        OrderAddressPostVm billingAddressPostVm = orderPostVm.shippingAddressPostVm();
-        OrderAddress billingAddress = OrderAddress.builder()
-                .contactName(billingAddressPostVm.contactName())
-                .phone(billingAddressPostVm.phone())
-                .addressLine1(billingAddressPostVm.addressLine1())
-                .addressLine2(billingAddressPostVm.addressLine2())
-                .city(billingAddressPostVm.city())
-                .zipCode(billingAddressPostVm.zipCode())
-                .districtId(billingAddressPostVm.districtId())
-                .districtName(billingAddressPostVm.districtName())
-                .stateOrProvinceId(billingAddressPostVm.stateOrProvinceId())
-                .stateOrProvinceName(billingAddressPostVm.stateOrProvinceName())
-                .countryId(billingAddressPostVm.countryId())
-                .countryName(billingAddressPostVm.countryName()).build();
+        // double total = 0;
+        // for(var item : orderPostVm.orderItemPostVmList()) {
+        //    Product product = productRepo.findById(item.productId()).orElseThrow();
+        //    checkInventory(product, item.quantity());
+        //    total += product.getPrice() * item.quantity();
+        // }
 
         Order order = Order.builder()
                 .email(orderPostVm.email())
@@ -81,34 +65,53 @@ public class OrderService {
                 .deliveryMethod(orderPostVm.deliveryMethod())
                 .deliveryStatus(DeliveryStatus.PREPARING)
                 .paymentStatus(orderPostVm.paymentStatus())
-                .checkoutId(orderPostVm.checkoutId())
-                .build();
+                .checkoutId(orderPostVm.checkoutId()).build();
         orderRepository.save(order);
 
-        Set<OrderItem> orderItems = orderPostVm.orderItemPostVmList().stream()
-                .map(item -> OrderItem.builder()
+        Set<OrderItem> orderItems = orderPostVm.orderItemPostVmList().stream().map(item ->
+                OrderItem.builder()
                         .productId(item.productId())
                         .productName(item.productName())
                         .quantity(item.quantity())
+//                       Nên lấy giá từ DB
                         .productPrice(item.productPrice())
                         .note(item.note())
-                        .orderId(order.getId()).build())
-                .collect(Collectors.toSet());
+                        .orderId(order.getId())
+                        .warehouseId(item.warehouseId())
+                        .build()).collect(Collectors.toSet());
         orderItemRepository.saveAll(orderItems);
         OrderVm orderVm = OrderVm.fromModel(order, orderItems);
 
-//        con tru san pham trong kho
-//        xoa san pham trong gio hang
-//        chap nhan order
-
+        List<StockReservationVm> stockReservationVms = orderItems.stream().map(item -> new StockReservationVm(
+                item.getProductId(),
+                item.getQuantity(),
+                item.getWarehouseId()
+                )).collect(Collectors.toList());
+        inventoryService.reserveStock(stockReservationVms);
         acceptOrder(orderVm.id());
         return orderVm;
+    }
 
+    private OrderAddress mapAddress(OrderAddressPostVm dto) {
+        if (dto == null) return null;
+        return OrderAddress.builder()
+                .contactName(dto.contactName())
+                .phone(dto.phone())
+                .addressLine1(dto.addressLine1())
+                .addressLine2(dto.addressLine2())
+                .city(dto.city())
+                .districtId(dto.districtId())
+                .districtName(dto.districtName())
+                .stateOrProvinceId(dto.stateOrProvinceId())
+                .stateOrProvinceName(dto.stateOrProvinceName())
+                .countryId(dto.countryId())
+                .countryName(dto.countryName())
+                .zipCode(dto.zipCode())
+                .build();
     }
 
     private void acceptOrder(Long orderId) {
-        Order order = this.orderRepository.findById(orderId).orElseThrow(
-                () -> new NotFoundException("ORDER_NOT_FOUND", orderId));
+        Order order = this.orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("ORDER_NOT_FOUND", orderId));
         order.setOrderStatus(OrderStatus.ACCEPTED);
         orderRepository.save(order);
     }
@@ -135,13 +138,11 @@ public class OrderService {
             return List.of();
         }
 
-        return orders.stream().map(
-                order -> {
-                    Set<OrderItem> orderItemSet = new HashSet<>(orderItemRepository.findByOrderId(order.getId()));
-                    OrderVm orderVm = OrderVm.fromModel(order, orderItemSet);
-                    return orderVm;
-                }
-        ).toList();
+        return orders.stream().map(order -> {
+            Set<OrderItem> orderItemSet = new HashSet<>(orderItemRepository.findByOrderId(order.getId()));
+            OrderVm orderVm = OrderVm.fromModel(order, orderItemSet);
+            return orderVm;
+        }).toList();
     }
 
     public PaymentOrderStatusVm updateOrderPaymentStatus(@Valid PaymentOrderStatusVm paymentOrderStatusVm) {
@@ -153,11 +154,7 @@ public class OrderService {
             order.setOrderStatus(OrderStatus.PAID);
         }
         Order result = orderRepository.save(order);
-        return PaymentOrderStatusVm.builder()
-                .orderId(result.getId())
-                .orderStatus(String.valueOf(result.getOrderStatus()))
-                .paymentId(result.getPaymentId())
-                .paymentStatus(String.valueOf(result.getPaymentStatus())).build();
+        return PaymentOrderStatusVm.builder().orderId(result.getId()).orderStatus(String.valueOf(result.getOrderStatus())).paymentId(result.getPaymentId()).paymentStatus(String.valueOf(result.getPaymentStatus())).build();
     }
 
     public List<OrderVm> getOrdersByOrderState(String orderState) throws AccessDeniedException {
@@ -180,7 +177,7 @@ public class OrderService {
         }
 
         return order.stream().map(item -> {
-            List<OrderItem> orderItems = orderItemRepository.findAllByIdAndCreatedBy(item.getId(),userId);
+            List<OrderItem> orderItems = orderItemRepository.findAllByIdAndCreatedBy(item.getId(), userId);
             return OrderVm.fromModel(item, new HashSet<>(orderItems));
         }).toList();
     }

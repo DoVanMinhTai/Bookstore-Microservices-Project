@@ -41,9 +41,9 @@ public class AddressController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/storefront/addresses/billingAddresses/{id}")
-    public ResponseEntity<List<AddressDetailVm>> getBillingAddressByID(@PathVariable Long id) {
-        return ResponseEntity.ok(addressService.getBillingAddressByID(id));
+    @GetMapping("/storefront/addresses/billingAddresses")
+    public ResponseEntity<List<AddressDetailVm>> getBillingAddressById(@RequestParam List<Long> ids) {
+        return ResponseEntity.ok(addressService.getListBillingAddressByIds(ids));
     }
 
 }

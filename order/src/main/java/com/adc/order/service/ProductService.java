@@ -32,13 +32,13 @@ public class ProductService extends AbstractCircuitBreakFallbackHandler {
     public Map<Long, ProductCheckoutListVm> getProductInformation(Set<Long> ids, int pageNo, int pageSize) {
         final String jwt = AuthenticationUtils.extractJwt();
         final URI url = UriComponentsBuilder.fromHttpUrl(serverUrlConfig.product())
-                .path("/products")
-                .queryParam("ids",ids)
-                .queryParam("pageNo",pageNo)
-                .queryParam("pageSize",pageSize)
+                .path("/storefront/products")
+                .queryParam("ids", ids)
+                .queryParam("pageNo", pageNo)
+                .queryParam("pageSize", pageSize)
                 .buildAndExpand()
                 .toUri();
-        log.info("🔹 Request URL: {}", url);
+
         try {
             ProductGetCheckOutListVm response = restClient.get()
                     .uri(url)
@@ -48,10 +48,7 @@ public class ProductService extends AbstractCircuitBreakFallbackHandler {
                     })
                     .getBody();
 
-            log.info("🔹 Response: {}", response);
-
             if (response == null || response.productCheckoutListVms() == null) {
-                log.error("❌ PRODUCT_NOT_FOUND: Response is null");
                 throw new NotFoundException("PRODUCT_NOT_FOUND");
             }
 
@@ -59,15 +56,12 @@ public class ProductService extends AbstractCircuitBreakFallbackHandler {
                     .stream()
                     .collect(Collectors.toMap(ProductCheckoutListVm::getId, Function.identity()));
 
-            log.info("✅ Successfully retrieved products: {}", result.keySet());
             return result;
-
         } catch (Exception e) {
-            log.error("❌ Error fetching product information: {}", e.getMessage(), e);
             throw e;
         }
-
     }
+
     protected Map<Long, ProductCheckoutListVm> handleProductInfomationFallback(Throwable throwable) throws Throwable {
         return handleTypedFallback(throwable);
     }

@@ -2,7 +2,7 @@ package com.example.customer.controller;
 
 import com.example.customer.service.UserAddressService;
 import com.example.customer.viewmodel.address.AddressDetailVm;
-import com.example.customer.viewmodel.address.AddressPostVm;
+import com.example.customer.viewmodel.address.UserAddressPostVm;
 import com.example.customer.viewmodel.useraddress.UserAddressVm;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +18,8 @@ public class UserAddressController {
     }
 
     @PostMapping("/storefront/createUserAddress")
-    public ResponseEntity<UserAddressVm> create(@RequestBody AddressPostVm addressPostVm) {
-        return ResponseEntity.ok(userAddressService.createUserAddress(addressPostVm));
+    public ResponseEntity<UserAddressVm> create(@RequestBody UserAddressPostVm userAddressPostVm) {
+        return ResponseEntity.ok(userAddressService.createUserAddress(userAddressPostVm));
     }
 
     @GetMapping("/storefront/getUserAddressList")

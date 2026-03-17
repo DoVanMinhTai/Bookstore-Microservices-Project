@@ -34,7 +34,7 @@ services:
     container_name: customer
     volumes:
       - ./customer/target:/app-bin
-    entrypoint: ["java", "-jar", "/app-bin/customer-0.0.1-SNAPSHOT.jar"]
+    entrypoint: ["java", "-jar", "/app-bin/customer-1.0-SNAPSHOT.jar"]
     environment:
       - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/customer
       - SERVER_SERVLET_CONTEXT_PATH= /customer
@@ -49,7 +49,7 @@ services:
     container_name: cart
     volumes:
       - ./cart/target:/app-bin
-    entrypoint: [ "java", "-jar", "/app-bin/cart-0.0.1-SNAPSHOT.jar" ]
+    entrypoint: [ "java", "-jar", "/app-bin/cart-1.0-SNAPSHOT.jar" ]
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/cart
@@ -64,7 +64,7 @@ services:
     container_name: location
     volumes:
       - ./location/target:/app-bin
-    entrypoint: [ "java", "-jar", "/app-bin/location-0.0.1-SNAPSHOT.jar" ]
+    entrypoint: [ "java", "-jar", "/app-bin/location-1.0-SNAPSHOT.jar" ]
     environment:
       - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/location
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
@@ -79,7 +79,7 @@ services:
     container_name: inventory
     volumes:
       - ./inventory/target:/app-bin
-    entrypoint: [ "java", "-jar", "/app-bin/inventory-0.0.1-SNAPSHOT.jar" ]
+    entrypoint: [ "java", "-jar", "/app-bin/inventory-1.0-SNAPSHOT.jar" ]
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - SPRING_DATASOURCE_URL= jdbc:postgresql://postgres:5432/inventory
@@ -179,6 +179,7 @@ services:
       SPRING_PROFILES_ACTIVE: dev
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    command: postgres -c 'max_connections=500'
     networks:
       - adc-network
     healthcheck:

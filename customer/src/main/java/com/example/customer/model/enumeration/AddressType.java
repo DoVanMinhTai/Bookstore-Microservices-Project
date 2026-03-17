@@ -1,4 +1,4 @@
-package com.adc.location.model.enumeration;
+package com.example.customer.model.enumeration;
 
 public enum AddressType {
     SHIPPING,   BILLING,

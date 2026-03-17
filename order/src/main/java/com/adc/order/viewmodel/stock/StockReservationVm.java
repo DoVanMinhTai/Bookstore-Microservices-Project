@@ -1,6 +1,6 @@
 package com.adc.order.viewmodel.stock;
 
-public record StockDeleteVm(
+public record StockReservationVm(
         Long productId, int quantity, Long warehouseId
 ) {
 }
